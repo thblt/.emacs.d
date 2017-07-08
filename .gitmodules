@@ -1,0 +1,258 @@
+[submodule "alert"]
+	path = lib/alert
+	url = git@github.com:jwiegley/alert.git
+[submodule "async"]
+	path = lib/async
+	url = git@github.com:jwiegley/emacs-async.git
+[submodule "auth-password-store"]
+	path = lib/auth-password-store
+	url = git@github.com:DamienCassou/auth-password-store.git
+[submodule "auto-dictionary"]
+	path = lib/auto-dictionary
+	url = git@github.com:nschum/auto-dictionary-mode.git
+[submodule "borg"]
+	path = lib/borg
+	url = https://github.com/emacscollective/borg
+[submodule "calfw"]
+	path = lib/calfw
+	url = git@github.com:kiwanami/emacs-calfw.git
+[submodule "clang-format"]
+	path = lib/clang-format
+	url = git@github.com:emacsmirror/clang-format.git
+[submodule "closql"]
+	path = lib/closql
+	url = https://github.com/emacscollective/closql
+[submodule "cmake-mode"]
+	path = lib/cmake-mode
+	url = git@github.com:emacsmirror/cmake-mode.git
+[submodule "company"]
+	path = lib/company
+	url = git@github.com:company-mode/company-mode.git
+[submodule "company-auctex"]
+	path = lib/company-auctex
+	url = git@github.com:alexeyr/company-auctex.git
+[submodule "company-irony"]
+	path = lib/company-irony
+	url = git@github.com:Sarcasm/company-irony.git
+[submodule "company-irony-c-headers"]
+	path = lib/company-irony-c-headers
+	url = git@github.com:hotpxl/company-irony-c-headers.git
+[submodule "counsel-projectile"]
+	path = lib/counsel-projectile
+	url = git@github.com:ericdanan/counsel-projectile.git
+[submodule "dash"]
+	path = lib/dash
+	url = https://github.com/magnars/dash.el
+[submodule "debian-bug"]
+	path = lib/debian-bug
+	url = git@github.com:emacsmirror/debian-bug.git
+[submodule "diminish"]
+	path = lib/diminish
+	url = git@github.com:myrjola/diminish.el.git
+[submodule "dired+"]
+	path = lib/dired+
+	url = git@github.com:emacsmirror/dired-plus.git
+[submodule "ebib"]
+	path = lib/ebib
+	url = git@github.com:joostkremers/ebib.git
+[submodule "editorconfig"]
+	path = lib/editorconfig
+	url = git@github.com:editorconfig/editorconfig-emacs.git
+[submodule "emacsql"]
+	path = lib/emacsql
+	url = https://github.com/skeeto/emacsql
+[submodule "emmet-mode"]
+	path = lib/emmet-mode
+	url = git@github.com:smihica/emmet-mode.git
+[submodule "epkg"]
+	path = lib/epkg
+	url = https://github.com/emacscollective/epkg
+[submodule "erc-hl-nicks"]
+	path = lib/erc-hl-nicks
+	url = git@github.com:leathekd/erc-hl-nicks.git
+[submodule "evil-nerd-commenter"]
+	path = lib/evil-nerd-commenter
+	url = git@github.com:redguardtoo/evil-nerd-commenter.git
+[submodule "exec-path-from-shell"]
+	path = lib/exec-path-from-shell
+	url = git@github.com:purcell/exec-path-from-shell.git
+[submodule "expand-region"]
+	path = lib/expand-region
+	url = git@github.com:magnars/expand-region.el.git
+[submodule "eziam-theme-emacs"]
+	path = lib/eziam-theme-emacs
+	url = https://github.com/thblt/eziam-theme-emacs
+[submodule "f"]
+	path = lib/f
+	url = git@github.com:rejeep/f.el.git
+[submodule "finalize"]
+	path = lib/finalize
+	url = https://github.com/skeeto/elisp-finalize
+[submodule "flycheck"]
+	path = lib/flycheck
+	url = git@github.com:flycheck/flycheck.git
+[submodule "flycheck-irony"]
+	path = lib/flycheck-irony
+	url = git@github.com:Sarcasm/flycheck-irony.git
+[submodule "flycheck-pos-tip"]
+	path = lib/flycheck-pos-tip
+	url = git@github.com:flycheck/flycheck-pos-tip.git
+[submodule "flyspell-correct"]
+	path = lib/flyspell-correct
+	url = git@github.com:d12frosted/flyspell-correct.git
+[submodule "general"]
+	path = lib/general
+	url = git@github.com:noctuid/general.el.git
+[submodule "git-time-machine"]
+	path = lib/git-time-machine
+	url = git@github.com:psanford/git-time-machine-el.git
+[submodule "haml-mode"]
+	path = lib/haml-mode
+	url = git@github.com:nex3/haml-mode.git
+[submodule "haskell-mode"]
+	path = lib/haskell-mode
+	url = git@github.com:haskell/haskell-mode.git
+[submodule "hayoo"]
+	path = lib/hayoo
+	url = git@github.com:benma/hayoo.el.git
+[submodule "helm-dash"]
+	path = lib/helm-dash
+	url = git@github.com:areina/helm-dash.git
+[submodule "highlight-indent-guides"]
+	path = lib/highlight-indent-guides
+	url = git@github.com:DarthFennec/highlight-indent-guides.git
+[submodule "ht"]
+	path = lib/ht
+	url = git@github.com:Wilfred/ht.el.git
+[submodule "hydra"]
+	path = lib/hydra
+	url = git@github.com:abo-abo/hydra.git
+[submodule "intero"]
+	path = lib/intero
+	url = git@github.com:commercialhaskell/intero.git
+[submodule "irony"]
+	path = lib/irony
+	url = git@github.com:Sarcasm/irony-mode.git
+[submodule "ivy"]
+	path = lib/ivy
+	url = git@github.com:abo-abo/swiper.git
+[submodule "json-mode"]
+	path = lib/json-mode
+	url = git@github.com:joshwnj/json-mode.git
+[submodule "kurecolor"]
+	path = lib/kurecolor
+	url = git@github.com:emacsfodder/kurecolor.git
+[submodule "less-css-mode"]
+	path = lib/less-css-mode
+	url = git@github.com:purcell/less-css-mode.git
+[submodule "lua-mode"]
+	path = lib/lua-mode
+	url = git@github.com:immerrr/lua-mode.git
+[submodule "magit"]
+	path = lib/magit
+	url = git@github.com:magit/magit.git
+[submodule "markdown-mode"]
+	path = lib/markdown-mode
+	url = git@github.com:jrblevin/markdown-mode.git
+[submodule "move-text"]
+	path = lib/move-text
+	url = git@github.com:emacsfodder/move-text.git
+[submodule "mu4e-alert"]
+	path = lib/mu4e-alert
+	url = git@github.com:iqbalansari/mu4e-alert.git
+[submodule "multiple-cursors"]
+	path = lib/multiple-cursors
+	url = git@github.com:magnars/multiple-cursors.el.git
+[submodule "no-littering"]
+	path = lib/no-littering
+	url = git@github.com:tarsius/no-littering.git
+[submodule "org"]
+	path = lib/org
+	url = ssh://git@repo.or.cz/org-mode.git
+[submodule "org-download"]
+	path = lib/org-download
+	url = git@github.com:abo-abo/org-download.git
+[submodule "org-ref"]
+	path = lib/org-ref
+	url = git@github.com:jkitchin/org-ref.git
+[submodule "password-store"]
+	path = lib/password-store
+	url = git@github.com:emacsmirror/password-store.git
+[submodule "pdf-tools"]
+	path = lib/pdf-tools
+	url = git@github.com:politza/pdf-tools.git
+[submodule "persp-mode"]
+	path = lib/persp-mode
+	url = git@github.com:Bad-ptr/persp-mode.el.git
+[submodule "po-mode"]
+	path = lib/po-mode
+	url = git@github.com:emacsmirror/po-mode.git
+[submodule "popwin"]
+	path = lib/popwin
+	url = git@github.com:m2ym/popwin-el.git
+[submodule "pos-tip"]
+	path = lib/pos-tip
+	url = git@github.com:pitkali/pos-tip.git
+[submodule "powerline"]
+	path = lib/powerline
+	url = git@github.com:milkypostman/powerline.git
+[submodule "projectile"]
+	path = lib/projectile
+	url = git@github.com:bbatsov/projectile.git
+[submodule "rainbow-delimiters"]
+	path = lib/rainbow-delimiters
+	url = git@github.com:Fanael/rainbow-delimiters.git
+[submodule "rainbow-mode"]
+	path = lib/rainbow-mode
+	url = git@github.com:emacsmirror/rainbow-mode.git
+[submodule "rust-mode"]
+	path = lib/rust-mode
+	url = git@github.com:rust-lang/rust-mode.git
+[submodule "s"]
+	path = lib/s
+	url = git@github.com:magnars/s.el.git
+[submodule "scss-mode"]
+	path = lib/scss-mode
+	url = git@github.com:antonj/scss-mode.git
+[submodule "selected"]
+	path = lib/selected
+	url = git@github.com:Kungsgeten/selected.el.git
+[submodule "skewer-mode"]
+	path = lib/skewer-mode
+	url = git@github.com:skeeto/skewer-mode.git
+[submodule "smartparens"]
+	path = lib/smartparens
+	url = git@github.com:Fuco1/smartparens.git
+[submodule "spaceline"]
+	path = lib/spaceline
+	url = git@github.com:TheBB/spaceline.git
+[submodule "toc-org"]
+	path = lib/toc-org
+	url = git@github.com:snosov1/toc-org.git
+[submodule "toml-mode"]
+	path = lib/toml-mode
+	url = git@github.com:dryman/toml-mode.el.git
+[submodule "undo-tree"]
+	path = lib/undo-tree
+	url = http://www.dr-qubit.org/git/undo-tree.git
+[submodule "unfill"]
+	path = lib/unfill
+	url = git@github.com:purcell/unfill.git
+[submodule "visual-fill-column"]
+	path = lib/visual-fill-column
+	url = git@github.com:joostkremers/visual-fill-column.git
+[submodule "visual-regexp"]
+	path = lib/visual-regexp
+	url = git@github.com:benma/visual-regexp.el.git
+[submodule "web-mode"]
+	path = lib/web-mode
+	url = git@github.com:fxbois/web-mode.git
+[submodule "with-editor"]
+	path = lib/with-editor
+	url = git@github.com:magit/with-editor.git
+[submodule "yaml-mode"]
+	path = lib/yaml-mode
+	url = git@github.com:yoshiki/yaml-mode.git
+[submodule "yasnippet"]
+	path = lib/yasnippet
+	url = git@github.com:joaotavora/yasnippet.git

@@ -1,0 +1,28 @@
+(add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
+
+(require 'borg)
+(borg-initialize)
+
+;; A utility macro to declare that a drone is actually required.
+(defvar thblt/required-drones '())
+
+(defmacro want-drone (&rest d)
+  "Declare drones D as required by the current configuration."
+  (mapc (lambda (x) (add-to-list 'thblt/required-drones (symbol-name x))) d)
+  'thblt/required-drones
+  )
+
+(defalias 'want-drones 'want-drone)
+
+(want-drones borg
+             no-littering)
+
+;; This must happen early in the init
+(require 'no-littering)
+
+;; We need to configure and (require) borg.el _before_ requiring org
+;; and tangling dotemacs.org, or builtin org-mode will be loaded
+;; instead of Elpa version and updated versions will never be used.
+
+(require 'org)
+(org-babel-load-file (expand-file-name "dotemacs.org" user-emacs-directory))
