@@ -235,12 +235,6 @@ Create some shortcut commands to load both Eziam themes:
 
   (require 'spaceline-config)
 
-  (spaceline-define-segment thblt-persp-project
-    "Displays the perspective, if active, or the projectile project"
-    (projectile-project-name)
-    :highlight t
-    )
-
   (spaceline-compile 'thblt
     '((persp-name
        :face highlight-face)
@@ -1212,7 +1206,7 @@ With Ivy integration:
 #+begin_src emacs-lisp
   (want-drone counsel-projectile)
 
-  (counsel-projectile-on) (define-prefix-command 'thblt-projectile-map)
+  (counsel-projectile-on) (define-prefix-command 'thblt/projectile-map)
 
   (ivy-add-actions
    ;; Allow to switch projects from counsel-projectile
@@ -1546,10 +1540,10 @@ First, let's configure the view.
           ("Branch"     10  magit-repolist-column-branch)
           ;; ("Version" 25  magit-repolist-column-version nil)
           ("Upstream"   15  magit-repolist-column-upstream)
-          ("↓U"         5   thblt-magit-repolist-column-unpulled-from-upstream)
-          ("↑U"         5   thblt-magit-repolist-column-unpushed-to-upstream)
-          ("↓P"         5   thblt-magit-repolist-column-unpulled-from-pushremote)
-          ("↑P"         5   thblt-magit-repolist-column-unpushed-to-pushremote)
+          ("↓U"         5   thblt/magit-repolist-column-unpulled-from-upstream)
+          ("↑U"         5   thblt/magit-repolist-column-unpushed-to-upstream)
+          ("↓P"         5   thblt/magit-repolist-column-unpulled-from-pushremote)
+          ("↑P"         5   thblt/magit-repolist-column-unpushed-to-pushremote)
           (""           6   magit-repolist-column-dirty)
           ("Path"       99  magit-repolist-column-path nil)))
 #+end_src
@@ -1559,25 +1553,25 @@ For some reasons, =magit-repolist-column-[unpushed-to|unpulled-from]-upstream= d
 [@TODO:  This has been [[https://github.com/magit/magit/issues/2960][fixed in magit]].  Untangle when the fix made it to a released version]
 
 #+begin_src emacs-lisp
-  (defun thblt-magit-repolist-column-unpushed-to-upstream (_id)
+  (defun thblt/magit-repolist-column-unpushed-to-upstream (_id)
     "Insert number of commits in the current branch but not its upstream."
     (--when-let (magit-get-upstream-branch)
       (let ((n (car (magit-rev-diff-count "HEAD" it))))
         (propertize (number-to-string n) 'face (if (> n 0) 'bold 'shadow)))))
 
-  (defun thblt-magit-repolist-column-unpulled-from-upstream (_id)
+  (defun thblt/magit-repolist-column-unpulled-from-upstream (_id)
     "Insert number of upstream commits not in the current branch."
     (--when-let (magit-get-upstream-branch)
       (let ((n (cadr (magit-rev-diff-count "HEAD" it))))
         (propertize (number-to-string n) 'face (if (> n 0) 'bold 'shadow)))))
 
-  (defun thblt-magit-repolist-column-unpushed-to-pushremote (_id)
+  (defun thblt/magit-repolist-column-unpushed-to-pushremote (_id)
     "Insert number of commits in the current branch but not its upstream."
     (--when-let (magit-get-push-branch)
       (let ((n (car (magit-rev-diff-count "HEAD" it))))
         (propertize (number-to-string n) 'face (if (> n 0) 'bold 'shadow)))))
 
-  (defun thblt-magit-repolist-column-unpulled-from-pushremote (_id)
+  (defun thblt/magit-repolist-column-unpulled-from-pushremote (_id)
     "Insert number of upstream commits not in the current branch."
     (--when-let (magit-get-push-branch)
       (let ((n (cadr (magit-rev-diff-count "HEAD" it))))
@@ -1608,7 +1602,7 @@ An extra feature:  update all remotes.  Probably very dirty.
   (require 'cl)
   (require 'magit-repos)
 
-  (defun thblt-magit-repolist-refresh ()
+  (defun thblt/magit-repolist-refresh ()
     "@TODO Add documentation"
     (interactive)
     (goto-char (point-min))
@@ -1628,14 +1622,14 @@ An extra feature:  update all remotes.  Probably very dirty.
       ()
       ))
 
-  (define-key magit-repolist-mode-map (kbd "G") 'thblt-magit-repolist-refresh)
+  (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-refresh)
 #+end_src
 
 ** Mu4e
 
 *** General
 
-Configuration for mu4e is split between a published part, below, and a private part, tangled from =~/.emacs.d/thblt-mu4e.el=.  The public part contains common mu4e settings, the private parts defines accounts and bookmarks.
+Configuration for mu4e is split between a published part, below, and a private part, tangled from =~/.emacs.d/thblt/mu4e.el=.  The public part contains common mu4e settings, the private parts defines accounts and bookmarks.
 
 First, we /may/ need to update the load-path.  Official Debian build of Emacs don't need that, but self-built versions do:
 
