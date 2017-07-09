@@ -277,3 +277,6 @@
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = git@github.com:joaotavora/yasnippet.git
+[submodule "etc/yasnippet/snippets"]
+	path = etc/yasnippet/snippets
+	url = https://github.com/thblt/yasnippet-snippets
