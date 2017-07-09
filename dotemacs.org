@@ -1780,11 +1780,11 @@ Enable notifications:
   (want-drone mu4e-alert)
 
   (with-eval-after-load 'mu4e
-
-    (setq mu4e-alert-interesting-mail-query (concat "flag:unread AND " (mu4e-get-bookmark-query ?i)))
-    ;;            (mu4e-alert-set-default-style 'libnotify)
-    ;;            (mu4e-alert-enable-notifications)
-    (mu4e-alert-enable-mode-line-display))
+    (with-eval-after-load 'dotemacs-private
+      (setq mu4e-alert-interesting-mail-query (concat "flag:unread AND " (mu4e-get-bookmark-query ?i)))
+      ;;            (mu4e-alert-set-default-style 'libnotify)
+      ;;            (mu4e-alert-enable-notifications)
+      (mu4e-alert-enable-mode-line-display)))
 #+END_SRC
 
 *** Automatic perspective with persp-mode
