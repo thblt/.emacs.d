@@ -1,7 +1,15 @@
 #+TITLE: Emacs configuration
 #+STARTUP: content
 
-This is my Emacs configuration.
+This is my Emacs configuration.  It is pretty much like any other, with maybe a few interesting properties:
+
+ - It uses a [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] style with Org-Mode.  Although the documentation is admittedly scarse, it makes the configuration easy to organize and understand.
+
+ - It uses [[https://github.com/emacscollective/borg][Borg]] instead of =package.el= or =use-package=.  Borg has a lot of interesting properties compared to the alternatives: since packages (“drones”) are Git submodules, they can be modified and contributed back.  Submodules also improve reproducibility, since you manually configure which version of which package you want installed.
+
+ - It has a whole section dedicated to [[#writing-prose][writing prose]].
+
+ - It uses [[https://github.com/abo-abo/swiper][Ivy]] /and/ [[https://github.com/emacs-helm/helm][Helm]].  The bulk of completion is performed through Ivy, but in some rare cases where Helm is still required, or is a better fit for the job, Helm is used instead.
 
 * Contents :TOC:noexport:
 - [[#fundamentals][Fundamentals]]
@@ -45,9 +53,11 @@ This is my Emacs configuration.
 - [[#conclusion][Conclusion]]
   - [[#hidpi-support-kindof][HiDPI support (kindof)]]
 
-* Fundamentals
+* Introduction
 
 This chapter deals with the general use of Emacs, and is limited to general settings and sane defaults.
+
+** General settings
 
 Let's say hello:
 
@@ -62,61 +72,18 @@ Let's say hello:
   ")
 #+END_SRC
 
-** Personal information
+And present ourselves:
 
 #+begin_src emacs-lisp
   (setq user-full-name    "Thibault Polge"
         user-mail-address "thibault@thb.lt")
 #+end_src
 
-** TODO Borg
-
-Borg is initialized from =init.el=.  As with other Emacs' package management systems, we still run the risk of keeping obsoleted packages.  What follows is an attempt to address this issue: a utility function =(=want-drone)= to declare that a package is required (declared in =init.el=), and a few more functions to keep track of what is installed using the dependency tree and the set of explicitly required packages as a base.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'cl-lib)
-  (require 'epkg)
-
-  ;; (defun thblt/borg-why (drone)
-  ;;   "Display a reason for DRONE to be present using epkg database."
-  ;;   (interactive
-  ;;    (list
-  ;;     (completing-read "Drone: " (borg-drones)))))
-
-  (defun thblt/borg-mk-dep-list ()
-    ""
-    (let ((drones (borg-drones)))
-      (cl-pairlis drones
-         (mapcar
-    (lambda (d)
-      (cl-remove-if-not
-       (lambda (p) (member p drones))
-       (mapcar 'car (epkg-required d))))
-    drones))))
-
-  (defun thblt/borg-not-required ()
-    (interactive)
-    (cl-remove-if (lambda (obj) (member obj thblt/required-drones))
-      (borg-drones)
-      ))
-
-  (defun thblt/borg-missing ()
-    (interactive)
-    (let ((drones (borg-drones)))
-      (cl-remove-if (lambda (obj) (member obj drones))
-        thblt/required-drones)))
-  #+END_SRC
-
-** General defaults
-*** System settings
-
 For some reason, the default value of =max-specpdl-size= prevents [[Mu4e][Mu4e]] from correctly rendering some HTML e-mails.  We increase it from 1300 to 5000.
 
 #+BEGIN_SRC emacs-lisp
   (setq max-specpdl-size 5000)
 #+END_SRC
-
-*** Default major mode
 
 Change the default major mode to =text-mode= instead of =fundamental-mode=.  Fundamental has no hooks.
 
@@ -141,8 +108,6 @@ Disable Customize by pointing it to =/dev/null=:
   (load custom-file t)
 #+END_SRC
 
-*** Browser
-
 Use default browser from the system. Using =setsid xdg-open= prevents Emacs from killing xdg-open before it actually opened anything. See [[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
 
 #+begin_src emacs-lisp
@@ -152,15 +117,13 @@ Use default browser from the system. Using =setsid xdg-open= prevents Emacs from
    browse-url-generic-args '("xdg-open"))
 #+end_src
 
-*** Don't lose system clipboard
+Don't lose the contents of system clipboard when killing from Emacs:
 
 #+begin_src emacs-lisp
   (setq save-interprogram-paste-before-kill t)
 #+end_src
 
-** MacOS
-
-Some of this may be outdated, I haven't used Emacs on MacOS for a long time.
+Running Emacs under MacOS requires a few adjustements:
 
 #+begin_src emacs-lisp
   (want-drone exec-path-from-shell)
@@ -179,6 +142,38 @@ Some of this may be outdated, I haven't used Emacs on MacOS for a long time.
     ; Load path from a shell
     (exec-path-from-shell-initialize))
 #+end_src
+
+** TODO Borg
+
+Borg is initialized from =init.el=.  As with other Emacs' package management systems, we still run the risk of keeping obsoleted packages.  What follows is an attempt to address this issue: a utility function =(=want-drone)= to declare that a package is required (declared in =init.el=), and a few more functions to keep track of what is installed using the dependency tree and the set of explicitly required packages as a base.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'cl-lib)
+  (require 'epkg)
+
+  (defun thblt/borg-mk-dep-list ()
+    ""
+    (let ((drones (borg-drones)))
+      (cl-pairlis drones
+         (mapcar
+    (lambda (d)
+      (cl-remove-if-not
+       (lambda (p) (member p drones))
+       (mapcar 'car (epkg-required d))))
+    drones))))
+
+  (defun thblt/borg-not-required ()
+    (interactive)
+    (cl-remove-if (lambda (obj) (member obj thblt/required-drones))
+      (borg-drones)
+      ))
+
+  (defun thblt/borg-missing ()
+    (interactive)
+    (let ((drones (borg-drones)))
+      (cl-remove-if (lambda (obj) (member obj drones))
+        thblt/required-drones)))
+  #+END_SRC
 
 * User interface
 
@@ -362,7 +357,6 @@ Popwin “makes you free from the hell of annoying buffers”:
   (require 'popwin)
   (popwin-mode)
 #+END_SRC
-
 
 *** Return focus to minibuffer
 
@@ -907,7 +901,9 @@ Ignore modification-time-only changes in files, i.e. ones that don't really chan
 #+END_SRC
 
 * Writing prose
-
+:PROPERTIES:
+:CUSTOM_ID: writing-prose
+:END:
 This section deals with two things:
 
  1. Major modes dedicated to writing prose, as opposed to code or configuration.
