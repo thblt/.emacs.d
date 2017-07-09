@@ -59,6 +59,8 @@ This chapter deals with the general use of Emacs, and is limited to general sett
 
 ** General settings
 
+This section sets up the very general Emacs configuration.  It's a bit messy, since it's mostly made up of all the bits that don't fit anywhere.
+
 Let's say hello:
 
 #+BEGIN_SRC emacs-lisp
@@ -90,8 +92,6 @@ Change the default major mode to =text-mode= instead of =fundamental-mode=.  Fun
 #+begin_src emacs-lisp
   (setq-default major-mode 'text-mode)
 #+end_src
-
-*** Backups and keeping filesystem clean
 
 We want numbered backups, because catastrophes happen.  The numbers may be a bit crazy, but better safe than sorry.
 
@@ -155,24 +155,24 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
     ""
     (let ((drones (borg-drones)))
       (cl-pairlis drones
-         (mapcar
-    (lambda (d)
-      (cl-remove-if-not
-       (lambda (p) (member p drones))
-       (mapcar 'car (epkg-required d))))
-    drones))))
+                  (mapcar
+                   (lambda (d)
+                     (cl-remove-if-not
+                      (lambda (p) (member p drones))
+                      (mapcar 'car (epkg-required d))))
+                   drones))))
 
   (defun thblt/borg-not-required ()
     (interactive)
     (cl-remove-if (lambda (obj) (member obj thblt/required-drones))
-      (borg-drones)
-      ))
+                  (borg-drones)
+                  ))
 
   (defun thblt/borg-missing ()
     (interactive)
     (let ((drones (borg-drones)))
       (cl-remove-if (lambda (obj) (member obj drones))
-        thblt/required-drones)))
+                    thblt/required-drones)))
   #+END_SRC
 
 * User interface
@@ -1730,7 +1730,6 @@ We use the =string= syntax, as advised on [[https://www.masteringemacs.org/artic
 #+end_src
 
 * Conclusion
-
 ** HiDPI support (kindof)
 
 This section is made of overrides to improve support for HiDPI monitors.  It must be at the end, to avoid being overriden by default settings.
