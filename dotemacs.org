@@ -1879,11 +1879,11 @@ We should have started (or crashed) by now.  It's time to run the server!
 Some parts of this configuration are private and stored elsewhere.  We now need to load them.  This file will provide a =dotemacs-private= feature, which is used elsewhere to defer configuration until some private bits are available.
 
 #+BEGIN_SRC emacs-lisp
-  (let ((mu4e-private-config (expand-file-name "thblt-mu4e.org" user-emacs-directory)))
+  (let ((mu4e-private-config (expand-file-name "dotemacs-private.org" user-emacs-directory)))
 
     (if (file-exists-p mu4e-private-config)
         (org-babel-load-file mu4e-private-config)
-      (display-warning :warning "Private mu4e configuration missing")))
+      (display-warning :warning "Private configuration missing")))
 #+END_SRC
 
 ** Report success
