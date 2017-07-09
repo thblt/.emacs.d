@@ -1441,6 +1441,12 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
                       (mapcar 'car (epkg-required d))))
                    drones))))
 
+  (defun thblt/borg-clones-strict ()
+    "Return a list of strict clones, ie clones that are not assimimated as submodules."
+    (let ((drones (borg-drones)))
+      (cl-remove-if (lambda (obj) (member obj drones)) (borg-clones))))
+
+
   (defun thblt/borg-not-required ()
     (interactive)
     (cl-remove-if (lambda (obj) (member obj thblt/required-drones))
