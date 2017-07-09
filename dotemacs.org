@@ -55,13 +55,9 @@ This is my Emacs configuration.  It is pretty much like any other, with maybe a 
 
 * Introduction
 
-This chapter deals with the general use of Emacs, and is limited to general settings and sane defaults.
+This chapter deals with the general use of Emacs, and is limited to general settings and sane defaults.  It's a bit messy, since it's mostly made up of all the bits that don't fit anywhere else.
 
-** General settings
-
-This section sets up the very general Emacs configuration.  It's a bit messy, since it's mostly made up of all the bits that don't fit anywhere.
-
-Let's say hello:
+Let's start by saying hello.  Beyond being polite, when starting daemon it helps identifying when the literate configuration has started running.
 
 #+BEGIN_SRC emacs-lisp
   (message "
@@ -74,7 +70,7 @@ Let's say hello:
   ")
 #+END_SRC
 
-And present ourselves:
+And introduce ourselves:
 
 #+begin_src emacs-lisp
   (setq user-full-name    "Thibault Polge"
@@ -143,38 +139,6 @@ Running Emacs under MacOS requires a few adjustements:
     (exec-path-from-shell-initialize))
 #+end_src
 
-** TODO Borg
-
-Borg is initialized from =init.el=.  As with other Emacs' package management systems, we still run the risk of keeping obsoleted packages.  What follows is an attempt to address this issue: a utility function =(=want-drone)= to declare that a package is required (declared in =init.el=), and a few more functions to keep track of what is installed using the dependency tree and the set of explicitly required packages as a base.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'cl-lib)
-  (require 'epkg)
-
-  (defun thblt/borg-mk-dep-list ()
-    ""
-    (let ((drones (borg-drones)))
-      (cl-pairlis drones
-                  (mapcar
-                   (lambda (d)
-                     (cl-remove-if-not
-                      (lambda (p) (member p drones))
-                      (mapcar 'car (epkg-required d))))
-                   drones))))
-
-  (defun thblt/borg-not-required ()
-    (interactive)
-    (cl-remove-if (lambda (obj) (member obj thblt/required-drones))
-                  (borg-drones)
-                  ))
-
-  (defun thblt/borg-missing ()
-    (interactive)
-    (let ((drones (borg-drones)))
-      (cl-remove-if (lambda (obj) (member obj drones))
-                    thblt/required-drones)))
-  #+END_SRC
-
 * User interface
 
 #+begin_src emacs-lisp
@@ -184,7 +148,7 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
                visual-fill-column)
 #+end_src
 
-** Settings
+** Settings and general configuration
 
 #+begin_src emacs-lisp
   (setq-default
@@ -223,8 +187,6 @@ Mouse wheel scrolling makes big jumps by default, let's make it smoother.
         scroll-step 1 ;; keyboard scroll one line at a time
         )
 #+end_src
-
-** Standard keybindings remappings
 
 Rebind =C-x k= to kill the /current/ buffer.
 
@@ -269,37 +231,31 @@ Create some shortcut commands to load both Eziam themes:
 ** Modeline
 
 #+BEGIN_SRC emacs-lisp
-  (want-drones powerline
-               spaceline)
+  (want-drones spaceline)
 
   (require 'spaceline-config)
 
   (spaceline-define-segment thblt-persp-project
-                            "Displays the perspective, if active, or the projectile project"
-                            (projectile-project-name)
-                            :highlight t
-                            )
+    "Displays the perspective, if active, or the projectile project"
+    (projectile-project-name)
+    :highlight t
+    )
 
   (spaceline-compile 'thblt
-                     '(
-                       (persp-name
-                        :face highlight-face)
-                       projectile
-                       major-mode
-                       buffer-id
-                       )
+    '((persp-name
+       :face highlight-face)
+      projectile
+      major-mode
+      buffer-id)
 
-                     '(
-                       flycheck-info
-                       flycheck-warning
-                       flycheck-error
-                       line-column
-                       minor-modes
-                       hud
-                       ))
+    '(flycheck-info
+      flycheck-warning
+      flycheck-error
+      line-column
+      minor-modes
+      hud))
 
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-thblt))))
-
 #+END_SRC
 
 ** Perspectives (persp-mode)
@@ -1374,6 +1330,38 @@ This section deals with tools which don't edit anything.
                dired+)
 #+END_SRC
 
+** TODO Borg
+
+Borg is initialized from =init.el=.  As with other Emacs' package management systems, we still run the risk of keeping obsoleted packages.  What follows is an attempt to address this issue: a utility function =(=want-drone)= to declare that a package is required (declared in =init.el=), and a few more functions to keep track of what is installed using the dependency tree and the set of explicitly required packages as a base.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'cl-lib)
+  (require 'epkg)
+
+  (defun thblt/borg-mk-dep-list ()
+    ""
+    (let ((drones (borg-drones)))
+      (cl-pairlis drones
+                  (mapcar
+                   (lambda (d)
+                     (cl-remove-if-not
+                      (lambda (p) (member p drones))
+                      (mapcar 'car (epkg-required d))))
+                   drones))))
+
+  (defun thblt/borg-not-required ()
+    (interactive)
+    (cl-remove-if (lambda (obj) (member obj thblt/required-drones))
+                  (borg-drones)
+                  ))
+
+  (defun thblt/borg-missing ()
+    (interactive)
+    (let ((drones (borg-drones)))
+      (cl-remove-if (lambda (obj) (member obj drones))
+                    thblt/required-drones)))
+  #+END_SRC
+
 ** Calendars
 
 #+BEGIN_SRC emacs-lisp
@@ -1702,6 +1690,7 @@ Enable notifications:
 
 #+BEGIN_SRC emacs-lisp
   (want-drones auth-password-store
+               pass
                password-store)
   (auth-pass-enable)
 #+END_SRC
@@ -1781,19 +1770,7 @@ We should have started (or crashed) by now.  It's time to run the server!
   )
 #+end_src
 
-We now set the initial contents of the scratch buffer.  This makes it easy to notice that something went wrong (this may not be obvious in daemon mode)
-
-#+begin_src emacs-lisp
-  (setq initial-scratch-message ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n")
-#+end_src
-
-And share SpongeBob's enthusiasm towards the world:
-
-#+begin_src emacs-lisp
-(defun startup-echo-area-message ()
-  "I'm ready!")
-#+end_src
-** Private configuration parts
+** Load private configuration
 
 Some parts of this configuration are private and stored elsewhere.  We now need to load them.  This file will provide a =dotemacs-private= feature, which is used elsewhere to defer configuration until some private bits are available.
 
@@ -1804,3 +1781,15 @@ Some parts of this configuration are private and stored elsewhere.  We now need 
         (org-babel-load-file mu4e-private-config)
       (display-warning :warning "Private mu4e configuration missing")))
 #+END_SRC
+
+** Report success
+
+We finally set the initial contents of the scratch buffer.  This makes it easy to notice when something went wrong (this may not be obvious in daemon mode)
+
+#+begin_src emacs-lisp
+  (setq initial-scratch-message ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n")
+
+  ;; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬
+  ;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤
+  ;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴
+#+end_src
