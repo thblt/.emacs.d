@@ -1659,16 +1659,6 @@ Then the bulk of the config:
                       "c"      'visual-fill-column-mode)
 #+end_src
 
-Load private configuration (we need to do this now, some later steps make use of eg bookmarks):
-
-#+BEGIN_SRC emacs-lisp
-  (let ((mu4e-private-config (expand-file-name "thblt-mu4e.org" user-emacs-directory)))
-
-    (if (file-exists-p mu4e-private-config)
-        (org-babel-load-file mu4e-private-config)
-      (display-warning :warning "Private mu4e configuration missing")))
-#+END_SRC
-
 Compose messages with org-mode tables and lists:
 
 #+begin_src emacs-lisp
@@ -1804,3 +1794,14 @@ And share SpongeBob's enthusiasm towards the world:
 (defun startup-echo-area-message ()
   "I'm ready!")
 #+end_src
+** Private configuration parts
+
+Some parts of this configuration are private and stored elsewhere.  We now need to load them.  This file will provide a =dotemacs-private= feature, which is used elsewhere to defer configuration until some private bits are available.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((mu4e-private-config (expand-file-name "thblt-mu4e.org" user-emacs-directory)))
+
+    (if (file-exists-p mu4e-private-config)
+        (org-babel-load-file mu4e-private-config)
+      (display-warning :warning "Private mu4e configuration missing")))
+#+END_SRC
