@@ -115,6 +115,9 @@
 [submodule "hayoo"]
 	path = lib/hayoo
 	url = git@github.com:benma/hayoo.el.git
+[submodule "helm"]
+	path = lib/helm
+	url = git@github.com:emacs-helm/helm.git
 [submodule "helm-dash"]
 	path = lib/helm-dash
 	url = git@github.com:areina/helm-dash.git
@@ -175,6 +178,9 @@
 [submodule "org-ref"]
 	path = lib/org-ref
 	url = git@github.com:jkitchin/org-ref.git
+[submodule "parsebib"]
+	path = lib/parsebib
+	url = git@github.com:joostkremers/parsebib.git
 [submodule "password-store"]
 	path = lib/password-store
 	url = git@github.com:emacsmirror/password-store.git
