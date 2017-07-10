@@ -73,6 +73,9 @@
 [submodule "erc-hl-nicks"]
 	path = lib/erc-hl-nicks
 	url = git@github.com:leathekd/erc-hl-nicks.git
+[submodule "etc/yasnippet/snippets"]
+	path = etc/yasnippet/snippets
+	url = https://github.com/thblt/yasnippet-snippets
 [submodule "evil-nerd-commenter"]
 	path = lib/evil-nerd-commenter
 	url = git@github.com:redguardtoo/evil-nerd-commenter.git
@@ -247,6 +250,9 @@
 [submodule "spaceline"]
 	path = lib/spaceline
 	url = git@github.com:TheBB/spaceline.git
+[submodule "tablist"]
+	path = lib/tablist
+	url = git@github.com:politza/tablist.git
 [submodule "toc-org"]
 	path = lib/toc-org
 	url = git@github.com:snosov1/toc-org.git
@@ -277,6 +283,3 @@
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = git@github.com:joaotavora/yasnippet.git
-[submodule "etc/yasnippet/snippets"]
-	path = etc/yasnippet/snippets
-	url = https://github.com/thblt/yasnippet-snippets
