@@ -1613,14 +1613,12 @@ An extra feature:  update all remotes.  Probably very dirty.
               (cd (expand-file-name it))
               (magit-fetch-all ())))
 
-
         (when (move-text--at-last-line-p)
           (throw 'done t))
 
         (forward-line)
         (redisplay))
-      ()
-      ))
+      ()))
 
   (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-refresh)
 #+end_src
