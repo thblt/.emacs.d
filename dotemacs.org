@@ -1471,6 +1471,15 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
         cfw:fchar-right-junction ?┤)
 #+END_SRC
 
+** Dired
+
+#+BEGIN_SRC emacs-lisp
+  (persp-def-auto-persp "dired"
+                        :mode-name "^dired.*"
+                        :switch 'frame
+                        )
+#+END_SRC
+
 ** Ebib
 
 #+begin_src emacs-lisp
