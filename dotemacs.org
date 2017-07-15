@@ -259,14 +259,10 @@ Create some shortcut commands to load both Eziam themes:
 
   (setq persp-auto-resume-time -1)
 
+  (general-define-key "C-x b" 'persp-switch-to-buffer)
+
   (persp-mode)
   (diminish 'persp-mode)
-#+END_SRC
-
-Buffer operations should be restricted to the current perspective:
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x b") 'persp-switch-to-buffer)
 #+END_SRC
 
 ** UI Utilities
