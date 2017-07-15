@@ -1806,10 +1806,10 @@ Enable notifications:
 
 #+begin_src emacs-lisp
   (want-drone pdf-tools)
-  ;; TODO merge with block below when retangling it
-#+end_src
 
-#+begin_src emacs-lisp :tangle no
+  (setq pdf-info-epdfinfo-program (expand-file-name "pdf-tools/server/epdfinfo" borg-drone-directory))
+  (pdf-tools-install)
+
   (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
     (add-to-list 'TeX-view-program-list-builtin
                  '("PDF Tools" TeX-pdf-tools-sync-view)))
