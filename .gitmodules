@@ -19,6 +19,9 @@
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
+[submodule "borg-queen"]
+	path = lib/borg-queen
+	url = https://github.com/thblt/borg-queen
 [submodule "calfw"]
 	path = lib/calfw
 	url = git@github.com:kiwanami/emacs-calfw.git
@@ -262,6 +265,9 @@
 [submodule "toml-mode"]
 	path = lib/toml-mode
 	url = git@github.com:dryman/toml-mode.el.git
+[submodule "transmission"]
+	path = lib/transmission
+	url = git@github.com:holomorph/transmission.git
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
