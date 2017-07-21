@@ -907,19 +907,19 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 *** AucTex
 
 #+begin_src emacs-lisp
-  (want-drone company-auctex)
+  (want-drones auctex
+               company-auctex)
 
   (add-hook 'LaTeX-mode-hook (lambda ()
                                 (visual-line-mode t)
                                 (TeX-fold-mode t)
-                                )
-             )
+                                ))
+
    (progn
      (setq-default TeX-save-query nil      ; Autosave
                    TeX-parse-self t
                    TeX-engine 'xetex
-                   TeX-source-correlate-mode t ;; Synctex on
-                   ))
+                   TeX-source-correlate-mode t)) ;; Synctex on
 
    (with-eval-after-load 'reftex-vars
      (progn
@@ -1807,14 +1807,14 @@ Enable notifications:
 #+begin_src emacs-lisp
   (want-drone pdf-tools)
 
-  (setq pdf-info-epdfinfo-program (expand-file-name "pdf-tools/server/epdfinfo" borg-drone-directory))
   (pdf-tools-install)
 
-  (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
-    (add-to-list 'TeX-view-program-list-builtin
-                 '("PDF Tools" TeX-pdf-tools-sync-view)))
-  (add-to-list 'TeX-view-program-selection
-               '(output-pdf "PDF Tools"))
+  (with-eval-after-load 'tex
+    (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
+      (add-to-list 'TeX-view-program-list-builtin
+                   '("PDF Tools" TeX-pdf-tools-sync-view)))
+    (add-to-list 'TeX-view-program-selection
+                 '(output-pdf "PDF Tools")))
 #+end_src
 
 ** Regular expression builder
