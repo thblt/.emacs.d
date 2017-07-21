@@ -911,26 +911,25 @@ TODO validate =:= and ~=~ on all keyboard mappings.
                company-auctex)
 
   (add-hook 'LaTeX-mode-hook (lambda ()
-                                (visual-line-mode t)
-                                (TeX-fold-mode t)
-                                ))
+                               (visual-line-mode t)
+                               (TeX-fold-mode t)))
 
-   (progn
-     (setq-default TeX-save-query nil      ; Autosave
-                   TeX-parse-self t
-                   TeX-engine 'xetex
-                   TeX-source-correlate-mode t)) ;; Synctex on
+  (progn
+    (setq-default TeX-save-query nil      ; Autosave
+                  TeX-parse-self t
+                  TeX-engine 'xetex
+                  TeX-source-correlate-mode t)) ;; Synctex on
 
-   (with-eval-after-load 'reftex-vars
-     (progn
-       ;; (also some other reftex-related customizations)
-       (setq reftex-cite-format
-             '((?\C-m . "\\cite[]{%l}")
-               (?f . "\\footcite[][]{%l}")
-               (?t . "\\textcite[q]{%l}")
-               (?p . "\\parencite[]{%l}")
-               (?o . "\\citepr[]{%l}")
-               (?n . "\\nocite{%l}")))))
+  (with-eval-after-load 'reftex-vars
+    (progn
+      ;; (also some other reftex-related customizations)
+      (setq reftex-cite-format
+            '((?\C-m . "\\cite[]{%l}")
+              (?f . "\\footcite[][]{%l}")
+              (?t . "\\textcite[q]{%l}")
+              (?p . "\\parencite[]{%l}")
+              (?o . "\\citepr[]{%l}")
+              (?n . "\\nocite{%l}")))))
 #+end_src
 
 *** Org-mode
