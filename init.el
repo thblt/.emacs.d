@@ -20,6 +20,17 @@
 ;; This must happen early in the init
 (require 'no-littering)
 
+;; Before we start, if this is a new installation, build all the
+;; drones.
+
+(let ((flag-file (no-littering-expand-var-file-name "borg/.initial-build-done")))
+  (unless (file-exists-p flag-file)
+    (message "Building Borg drones...")
+    (mapcar 'borg-build (borg-drones))
+
+    (make-directory (file-name-directory flag-file))
+    (write-region "" nil flag-file)))
+
 ;; We need to configure and (require) borg.el _before_ requiring org
 ;; and tangling dotemacs.org, or builtin org-mode will be loaded
 ;; instead of Elpa version and updated versions will never be used.
