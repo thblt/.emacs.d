@@ -1241,7 +1241,9 @@ Automatic perspective creation:
                                 (and
                                  projectile-mode
                                  (buffer-live-p buffer)
-                                 (buffer-file-name buffer)
+                                 (or
+                                  (buffer-file-name buffer)
+                                  (string-prefix-p "magit" (symbol-name (buffer-local-value 'major-mode buffer))))
                                  ;; (not git-commit-mode)
                                  (projectile-project-p)
                                  (or state t))))

@@ -7,6 +7,7 @@
 [submodule "async"]
 	path = lib/async
 	url = git@github.com:jwiegley/emacs-async.git
+  signingkey = C144D8F4F19FE630
 [submodule "auctex"]
 	path = lib/auctex
 	url = git@github.com:emacsmirror/auctex.git
@@ -19,6 +20,7 @@
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
+  signingkey = 8F44F72AB931831C
 [submodule "borg-queen"]
 	path = lib/borg-queen
 	url = https://github.com/thblt/borg-queen
@@ -209,6 +211,7 @@
 [submodule "pass"]
 	path = lib/pass
 	url = git@github.com:NicolasPetton/pass.git
+  signingkey = 28D3BED851FDF3AB57FEF93C233587A47C207910
 [submodule "password-store"]
 	path = lib/password-store
 	url = git@github.com:emacsmirror/password-store.git
@@ -277,6 +280,7 @@
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
+  signingkey = 8262BBE54D035960
 [submodule "unfill"]
 	path = lib/unfill
 	url = git@github.com:purcell/unfill.git
