@@ -1584,24 +1584,6 @@ For some reasons, =magit-repolist-column-[unpushed-to|unpulled-from]-upstream= d
         (propertize (number-to-string n) 'face (if (> n 0) 'bold 'shadow)))))
 #+end_src
 
-Then configure the list of repositories:
-
-#+begin_src emacs-lisp
-  (setq magit-repository-directories
-        '(
-          ("~/.dotfiles" . 1)
-          ("~/.emacs.d" . 1)
-          ("~/.dotfiles.private". 1)
-          ("~/.password-store". 1)
-          ("~/Documents/Concours/". 1)
-          ("~/Documents/Philo/". 1)
-          ("~/Documents/Code/eziam-theme-emacs/". 1)
-          ("~/Documents/Code/Docoptc/". 1)
-          ("~/Documents/Code/haskell.thb.lt/". 1)
-          ("~/Documents/Thb.lt/". 1)
-          ))
-#+end_src
-
 An extra feature:  update all remotes.  Probably very dirty.
 
 #+begin_src emacs-lisp
