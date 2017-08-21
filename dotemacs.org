@@ -288,7 +288,8 @@ Create some shortcut commands to load both Eziam themes:
 #+BEGIN_SRC emacs-lisp
   (want-drone persp-mode)
 
-  (setq persp-auto-resume-time -1)
+    (setq persp-auto-resume-time -1
+          persp-kill-foreign-buffer-action 'kill)
 
   (general-define-key
    "C-x p" 'persp-switch
