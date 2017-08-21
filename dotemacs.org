@@ -290,7 +290,9 @@ Create some shortcut commands to load both Eziam themes:
 
   (setq persp-auto-resume-time -1)
 
-  (general-define-key "C-x b" 'persp-switch-to-buffer)
+  (general-define-key
+   "C-x p" 'persp-switch
+   "C-x b" 'persp-switch-to-buffer)
 
   (persp-mode)
   (diminish 'persp-mode)
