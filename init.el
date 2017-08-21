@@ -9,8 +9,7 @@
 (defmacro want-drone (&rest d)
   "Declare drones D as required by the current configuration."
   (mapc (lambda (x) (add-to-list 'thblt/required-drones (symbol-name x))) d)
-  'thblt/required-drones
-  )
+  'thblt/required-drones)
 
 (defalias 'want-drones 'want-drone)
 
