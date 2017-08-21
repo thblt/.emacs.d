@@ -219,7 +219,7 @@
 	path = lib/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
   build-nix-shell-packages = gnumake automake autoconf pkgconfig libpng zlib poppler_gi
-  build-step = make
+  build-step = make ./server
 [submodule "persp-mode"]
 	path = lib/persp-mode
 	url = git@github.com:Bad-ptr/persp-mode.el.git
