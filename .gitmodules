@@ -189,6 +189,9 @@
 [submodule "multiple-cursors"]
 	path = lib/multiple-cursors
 	url = git@github.com:magnars/multiple-cursors.el.git
+[submodule "mwim"]
+	path = lib/mwim
+	url = git@github.com:alezost/mwim.el.git
 [submodule "nix-mode"]
 	path = lib/nix-mode
 	url = git@github.com:emacsmirror/nix-mode.git
@@ -253,9 +256,6 @@
 [submodule "scss-mode"]
 	path = lib/scss-mode
 	url = git@github.com:antonj/scss-mode.git
-[submodule "selected"]
-	path = lib/selected
-	url = git@github.com:Kungsgeten/selected.el.git
 [submodule "skewer-mode"]
 	path = lib/skewer-mode
 	url = git@github.com:skeeto/skewer-mode.git

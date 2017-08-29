@@ -428,20 +428,14 @@ Selected is a package which allows to create specific bindings when region is ac
 
 ** Moving around
 
-*** iy-goto-char
+*** mwim
 
-Emulates Vim's =f=, =F=, =t= and =T=.
-
-#+begin_src emacs-lisp :tangle no
-  (want-drone iy-go-to-char)
-
-  (general-define-key "C-c f"  'iy-go-to-char
-                      "C-c F"  'iy-go-to-char-backward
-                      "C-c t"  'iy-go-up-to-char
-                      "C-c T"  'iy-go-up-to-char-backward
-                      "C-c ;"  'iy-go-to-or-up-to-continue
-                      "C-c ,"  'iy-go-to-or-up-to-continue-backward)
-#+end_src
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-a") 'mwim-beginning-of-code-or-line)
+  (global-set-key (kbd "C-e") 'mwim-end-of-code-or-line)
+  (global-set-key (kbd "<home>") 'mwim-beginning-of-line-or-code)
+  (global-set-key (kbd "<end>") 'mwim-end-of-line-or-code)
+#+END_SRC
 
 ** Replace
 
