@@ -7,7 +7,7 @@
 [submodule "async"]
 	path = lib/async
 	url = git@github.com:jwiegley/emacs-async.git
-  signingkey = C144D8F4F19FE630
+  signingkey = DE55B769FC578A14A5BE5430C144D8F4F19FE630
 [submodule "auctex"]
 	path = lib/auctex
 	url = git@github.com:emacsmirror/auctex.git
@@ -93,6 +93,9 @@
 [submodule "expand-region"]
 	path = lib/expand-region
 	url = git@github.com:magnars/expand-region.el.git
+[submodule "eyebrowse"]
+	path = lib/eyebrowse
+	url = git@github.com:wasamasa/eyebrowse.git
 [submodule "eziam-theme-emacs"]
 	path = lib/eziam-theme-emacs
 	url = https://github.com/thblt/eziam-theme-emacs
