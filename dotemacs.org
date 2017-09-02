@@ -242,8 +242,10 @@ Create some shortcut commands to load both Eziam themes:
         )
 
   (face-spec-set 'mode-line
-                 '((t (:height .9)))
-                 )
+                 '((t (:height .9))))
+  (face-spec-set 'mode-line-inactive
+                 '((t (:height .9))))
+
 
   (spaceline-define-segment thblt/persp-name
     "The current perspective name."
