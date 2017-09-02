@@ -256,6 +256,9 @@
 [submodule "scss-mode"]
 	path = lib/scss-mode
 	url = git@github.com:antonj/scss-mode.git
+[submodule "selected"]
+	path = lib/selected
+	url = git@github.com:Kungsgeten/selected.el.git
 [submodule "skewer-mode"]
 	path = lib/skewer-mode
 	url = git@github.com:skeeto/skewer-mode.git
