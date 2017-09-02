@@ -288,15 +288,176 @@ Create some shortcut commands to load both Eziam themes:
 #+BEGIN_SRC emacs-lisp
   (want-drone persp-mode)
 
-    (setq persp-auto-resume-time -1
-          persp-kill-foreign-buffer-action 'kill)
+  (setq persp-auto-resume-time -1
+        persp-kill-foreign-buffer-action 'kill)
 
   (general-define-key
-   "C-x p" 'persp-switch
    "C-x b" 'persp-switch-to-buffer)
 
   (persp-mode)
-  (diminish 'persp-mode)
+  ;;  (diminish 'persp-mode)
+#+END_SRC
+
+** TODO Project management with Projectile
+
+Let's load Projectile, and:
+
+ - globally ignore undo-files and similar byproducts.
+ - toggle the =C-p p= and =C-p SPC= bindings (I find the latter easier to enter, and thus more adequate for "do what I mean");
+
+TODO:
+
+ - Could Projectile read ignore patterns from =~/.gitignore_global=?
+
+#+begin_src emacs-lisp
+  (want-drones projectile
+               counsel-projectile)
+
+  (projectile-global-mode)
+
+  (setq projectile-globally-ignored-file-suffixes (append '(
+                                                            ".un~"
+                                                            ".~undo-tree~"
+                                                            )
+                                                          projectile-globally-ignored-files))
+
+  (diminish 'projectile-mode)
+#+end_src
+
+*** Projectile and persp-mode
+
+Automatic perspective creation:
+
+#+begin_src emacs-lisp
+  (defun thblt/project-name-to-persp-name (name)
+    "Build a perspective name from project name NAME."
+    (concat "p) " name))
+
+  (defun thblt/project-path-from-persp-name (name)
+    "Retrieve a project path from persp name NAME."
+    (setq name (substring name 3))
+    (car (cl-remove-if-not
+          (lambda (p) (equal (funcall projectile-project-name-function p) name)) projectile-known-projects)))
+
+  -eval-after-load 'persp-mode
+    (defvar persp-mode-projectile-bridge-before-switch-selected-window-buffer nil)
+
+    ;; (setq persp-add-buffer-on-find-file 'if-not-autopersp)
+
+    (persp-def-auto-persp "projectile"
+                          :parameters '((dont-save-to-file . t)
+                                        (persp-mode-projectile-bridge . t))
+                          :hooks '(projectile-before-switch-project-hook
+                                   projectile-after-switch-project-hook
+                                   projectile-find-file-hook
+                                   find-file-hook)
+                          :dyn-env '((after-switch-to-buffer-adv-suspend t))
+                          :switch 'frame
+                          :predicate
+                          #'(lambda (buffer &optional state)
+                              (if (eq 'projectile-before-switch-project-hook
+                                      (alist-get 'hook state))
+                                  state
+                                (and
+                                 projectile-mode
+                                 (buffer-live-p buffer)
+                                 (or
+                                  (buffer-file-name buffer)
+                                  (string-prefix-p "magit" (symbol-name (buffer-local-value 'major-mode buffer))))
+                                 ;; (not git-commit-mode)
+                                 (projectile-project-p)
+                                 (or state t))))
+                          :get-name
+                          #'(lambda (state)
+                              (if (eq 'projectile-before-switch-project-hook
+                                      (alist-get 'hook state))
+                                  state
+                                (push (cons 'persp-name
+                                            (thblt/project-name-to-persp-name
+                                                    (with-current-buffer (alist-get 'buffer state)
+                                                      (projectile-project-name))))
+                                      state)
+                                state))
+                          :on-match
+                          #'(lambda (state)
+                              (let ((hook (alist-get 'hook state))
+                                    (persp (alist-get 'persp state))
+                                    (buffer (alist-get 'buffer state)))
+                                (case hook
+                                  (projectile-before-switch-project-hook
+                                   (let ((win (if (minibuffer-window-active-p (selected-window))
+                                                  (minibuffer-selected-window)
+                                                (selected-window))))
+                                     (when (window-live-p win)
+                                       (setq persp-mode-projectile-bridge-before-switch-selected-window-buffer
+                                             (window-buffer win)))))
+
+                                  (projectile-after-switch-project-hook
+                                   (when (buffer-live-p
+                                          persp-mode-projectile-bridge-before-switch-selected-window-buffer)
+                                     (let ((win (selected-window)))
+                                       (unless (eq (window-buffer win)
+                                                   persp-mode-projectile-bridge-before-switch-selected-window-buffer)
+                                         (set-window-buffer
+                                          win persp-mode-projectile-bridge-before-switch-selected-window-buffer)))))
+
+                                  (find-file-hook
+                                   (setcdr (assq :switch state) nil)))
+                                (if (case hook
+                                      (projectile-before-switch-project-hook nil)
+                                      (t t))
+                                    (persp--auto-persp-default-on-match state)
+                                  (setcdr (assq :after-match state) nil)))
+                              state)
+                          :after-match
+                          #'(lambda (state)
+                              (when (eq 'find-file-hook (alist-get 'hook state))
+                                (run-at-time 0.5 nil
+                                             #'(lambda (buf persp)
+                                                 (when (and (eq persp (get-current-persp))
+                                                            (not (eq buf (window-buffer (selected-window)))))
+                                                   ;; (switch-to-buffer buf)
+                                                   (persp-add-buffer buf persp t nil)))
+                                             (alist-get 'buffer state)
+                                             (get-current-persp)))
+                              (persp--auto-persp-default-after-match state))))
+#+end_src
+
+** Persp + Projectile: context switching
+
+This section provides tightier integration between Persp-Mode and Projectile.
+
+First we create a "context switcher" which allows to switch to an existing perspective, an opened project or a known, but closed, project.  It basically merges ~persp-switch~ and ~counsel-projectile-switch-projectile~.
+
+#+BEGIN_SRC emacs-lisp
+  (defun thblt/context-switch (context)
+    "Switch to CONTEXT."
+    (interactive "i")
+    (let* ((persps (mapcar #'safe-persp-name (persp-persps)))
+           (projects (cl-remove-if
+                      (lambda (p) (member p persps))
+                      (mapcar (lambda (p)
+                                (thblt/project-name-to-persp-name
+                                 (funcall projectile-project-name-function p)))
+                              projectile-known-projects))))
+
+      (unless context
+        (setq context
+              (ivy-completing-read "Switch to context: "
+                                   (append persps projects))))
+      (if (member context persps)
+          (persp-frame-switch context)
+        (projectile-switch-project-by-name (thblt/project-path-from-persp-name context)))))
+#+END_SRC
+
+And now for some bindings:
+
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+   :keymaps 'projectile-mode-map
+   :prefix projectile-keymap-prefix
+   "p" 'thblt/context-switch
+   "Z" 'persp-auto-persps-pickup-buffers)
 #+END_SRC
 
 ** UI Utilities
