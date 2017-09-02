@@ -1917,10 +1917,8 @@ If we're running on a HiDPI machine, we replace the flycheck fringe bitmap with 
 We should have started (or crashed) by now.  It's time to run the server!
 
 #+begin_src emacs-lisp
-(require 'server)
-(unless (server-running-p)
-  (server-start)
-  )
+  (require 'server)
+  (unless (server-running-p) (server-start))
 #+end_src
 
 ** Load private configuration
