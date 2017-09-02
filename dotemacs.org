@@ -530,6 +530,260 @@ A little function to identify the face at point.  Nice to have when writing them
       (if face (message "Face: %s" face) (message "No face at %d" pos))))
 #+end_src
 
+** Settings
+
+*** Basic settings
+
+#+begin_src emacs-lisp
+  (setq-default comment-empty-lines nil
+	        compile-command "wmake"
+	        tab-width 2
+	        c-basic-offset 2
+	        cperl-indent-level 2
+	        indent-tabs-mode nil)
+#+end_src
+
+*** Mappings
+
+Nothing fancy: F5 to compile, F8 to ~ffap~.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "<f5>") 'compile)
+(global-set-key (kbd "<f8>") 'ffap)
+#+end_src
+
+** Minor modes
+
+#+BEGIN_SRC emacs-lisp
+  (want-drones rainbow-delimiters)
+#+END_SRC
+
+*** Company
+
+#+begin_src emacs-lisp
+  (want-drone company)
+
+  (add-hook 'prog-mode-hook 'company-mode)
+  ;;TODO BIND  :bind (:map company-mode-map
+  ;; (("M-TAB" . company-complete-common)))
+  (with-eval-after-load 'company
+    (diminish 'company-mode))
+
+
+#+end_src
+
+*** Helm-dash
+
+#+begin_src emacs-lisp
+  (want-drone helm-dash)
+
+  (setq helm-dash-docsets-path "~/.local/share/DashDocsets")
+
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (setq-local helm-dash-docsets '("C"))
+
+              (add-hook 'c++-mode-hook
+                        (lambda ()
+                          (setq-local helm-dash-docsets '("Boost" "C++" "Qt"))))
+
+              (add-hook 'emacs-lisp-mode-hook
+                        (lambda ()
+                          (setq-local helm-dash-docsets '("Emacs Lisp"))))
+
+              (add-hook 'haskell-mode-hook
+                        (lambda ()
+                          (setq-local helm-dash-docsets '("Haskell"))))
+
+              (add-hook 'html-mode-hook
+                        (lambda ()
+                          (setq-local helm-dash-docsets '("HTML"))))
+
+              (add-hook 'js-mode-hook
+                        (lambda ()
+                          (setq-local helm-dash-docsets '("JavaScript"))))
+
+              (add-hook 'python-mode-hook
+                        (lambda ()
+                          (setq-local helm-dash-docsets '("Python 2" "Python 3"))))
+
+              (add-hook 'rust-mode-hook
+                        (lambda ()
+                          (setq-local helm-dash-docsets '("Rust"))))))
+
+  (general-define-key :keymaps 'prog-mode-map
+                    "<f1>" 'helm-dash-at-point)
+#+end_src
+
+*** Editorconfig
+
+#+begin_src emacs-lisp
+  (want-drone editorconfig)
+
+  (add-hook 'prog-mode-hook (editorconfig-mode 1))
+  (add-hook 'text-mode-hook (editorconfig-mode 1))
+  (with-eval-after-load 'editorconfig
+    (diminish 'editorconfig-mode))
+#+end_src
+
+*** Evil Nerd Commenter
+
+A good replacement for ~comment-dwim~, but unline [[https://github.com/remyferre/comment-dwim-2][~comment-dwim2~]], it can't alternate between commenting and commenting /out/ (adding the comment delimiter at the start or the end of the line).
+
+#+begin_src emacs-lisp
+  (want-drone evil-nerd-commenter)
+  (general-define-key "M-;"   'evilnc-comment-or-uncomment-lines
+                      "C-M-;" 'evilnc-comment-or-uncomment-paragraphs
+                      "C-c l" 'evilnc-quick-comment-or-uncomment-to-the-line
+                      "C-c c" 'evilnc-copy-and-comment-lines
+                      "C-c p" 'evilnc-comment-or-uncomment-paragraphs)
+#+end_src
+
+*** Flycheck
+
+#+begin_src emacs-lisp
+  (want-drones flycheck
+               flycheck-pos-tip pos-tip
+               )
+
+    (add-hook 'prog-mode-hook 'flycheck-mode)
+
+    (with-eval-after-load 'flycheck
+      (diminish 'flycheck-mode))
+#+end_src
+
+Use popups instead of the modeline to display flycheck errors:
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'flycheck
+    (flycheck-pos-tip-mode))
+#+end_src
+
+*** Highlight-indent-guides
+
+#+begin_src emacs-lisp
+  (want-drone highlight-indent-guides)
+
+  (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-character ?┃
+        highlight-indent-guides-auto-character-face-perc 25)
+
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+
+#+end_src
+
+*** Rainbow mode
+
+Rainbow mode is similar to Atom's Pigments plugin or something.
+
+#+begin_src emacs-lisp
+  (want-drones kurecolor
+               rainbow-mode)
+  (add-hook 'prog-mode-hook (rainbow-mode))
+  (add-hook 'css-mode-hook 'rainbow-mode)
+  (add-hook 'scss-mode-hook 'rainbow-mode)
+
+  (with-eval-after-load 'rainbow-mode
+    (diminish 'rainbow-mode))
+#+end_src
+
+** Programming languages
+
+#+BEGIN_SRC emacs-lisp
+  (want-drones lua-mode
+               rust-mode)
+#+END_SRC
+
+*** C/C++
+
+#+begin_src emacs-lisp
+  (want-drones clang-format
+               company-irony
+               company-irony-c-headers
+               flycheck-irony
+               irony)
+#+end_src
+
+#+begin_src emacs-lisp
+  (add-hook 'c-mode-common-hook 'irony-mode)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+  (with-eval-after-load 'flycheck
+    (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-irony))
+
+  (with-eval-after-load 'irony
+    (diminish' irony-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (local-set-key (kbd "C-c o") 'ff-find-other-file)))
+#+end_src
+
+*** Haskell
+
+Intero mode is a “complete interactive development program for Haskell”:
+
+#+begin_src emacs-lisp
+  (want-drones haskell-mode
+               hayoo
+               intero)
+
+  (add-hook 'haskell-mode-hook 'intero-mode-blacklist)
+#+end_src
+
+#+begin_src emacs-lisp
+  (general-define-key :keymaps 'haskell-mode-map
+                      "<f1>" 'hayoo-query)
+#+end_src
+
+*** Web development
+
+#+begin_src emacs-lisp
+  (want-drones emmet-mode
+               haml-mode
+               less-css-mode
+               scss-mode
+               skewer-mode
+               web-mode)
+
+  (setq scss-compile-at-save nil)
+  (add-to-list 'auto-mode-alist '("\\.css\\'" . scss-mode))
+
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+#+end_src
+
+** Misc syntaxes
+
+#+BEGIN_SRC emacs-lisp
+  (want-drones json-mode
+               toml-mode
+               yaml-mode
+
+               cmake-mode)
+#+END_SRC
+
+*** Gettext (PO)
+
+#+BEGIN_SRC emacs-lisp
+  (want-drone po-mode)
+
+  (autoload 'po-mode "po-mode"
+    "Major mode for translators to edit PO files" t)
+  (setq auto-mode-alist (cons '("\\.po\\'\\|\\.po\\." . po-mode)
+                              auto-mode-alist))
+#+END_SRC
+
 * Editing text
 
 This chapter deals with /general/ text editing.  The next two configure prose and code editing, respectively.
@@ -1205,395 +1459,6 @@ Some cool org extensions:
 #+end_src
 
 * Writing code
-
-** Settings
-
-*** Basic settings
-
-#+begin_src emacs-lisp
-  (setq-default comment-empty-lines nil
-	        compile-command "wmake"
-	        tab-width 2
-	        c-basic-offset 2
-	        cperl-indent-level 2
-	        indent-tabs-mode nil)
-#+end_src
-
-*** Mappings
-
-Nothing fancy: F5 to compile, F8 to ~ffap~.
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "<f5>") 'compile)
-(global-set-key (kbd "<f8>") 'ffap)
-#+end_src
-
-** Minor modes
-
-#+BEGIN_SRC emacs-lisp
-  (want-drones rainbow-delimiters)
-#+END_SRC
-
-*** Company
-
-#+begin_src emacs-lisp
-  (want-drone company)
-
-  (add-hook 'prog-mode-hook 'company-mode)
-  ;;TODO BIND  :bind (:map company-mode-map
-  ;; (("M-TAB" . company-complete-common)))
-  (with-eval-after-load 'company
-    (diminish 'company-mode))
-
-
-#+end_src
-
-*** Helm-dash
-
-#+begin_src emacs-lisp
-  (want-drone helm-dash)
-
-  (setq helm-dash-docsets-path "~/.local/share/DashDocsets")
-
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (setq-local helm-dash-docsets '("C"))
-
-              (add-hook 'c++-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Boost" "C++" "Qt"))))
-
-              (add-hook 'emacs-lisp-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Emacs Lisp"))))
-
-              (add-hook 'haskell-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Haskell"))))
-
-              (add-hook 'html-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("HTML"))))
-
-              (add-hook 'js-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("JavaScript"))))
-
-              (add-hook 'python-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Python 2" "Python 3"))))
-
-              (add-hook 'rust-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Rust"))))))
-
-  (general-define-key :keymaps 'prog-mode-map
-                    "<f1>" 'helm-dash-at-point)
-#+end_src
-
-*** Editorconfig
-
-#+begin_src emacs-lisp
-  (want-drone editorconfig)
-
-  (add-hook 'prog-mode-hook (editorconfig-mode 1))
-  (add-hook 'text-mode-hook (editorconfig-mode 1))
-  (with-eval-after-load 'editorconfig
-    (diminish 'editorconfig-mode))
-#+end_src
-
-*** Evil Nerd Commenter
-
-A good replacement for ~comment-dwim~, but unline [[https://github.com/remyferre/comment-dwim-2][~comment-dwim2~]], it can't alternate between commenting and commenting /out/ (adding the comment delimiter at the start or the end of the line).
-
-#+begin_src emacs-lisp
-  (want-drone evil-nerd-commenter)
-  (general-define-key "M-;"   'evilnc-comment-or-uncomment-lines
-                      "C-M-;" 'evilnc-comment-or-uncomment-paragraphs
-                      "C-c l" 'evilnc-quick-comment-or-uncomment-to-the-line
-                      "C-c c" 'evilnc-copy-and-comment-lines
-                      "C-c p" 'evilnc-comment-or-uncomment-paragraphs)
-#+end_src
-
-*** Flycheck
-
-#+begin_src emacs-lisp
-  (want-drones flycheck
-               flycheck-pos-tip pos-tip
-               )
-
-    (add-hook 'prog-mode-hook 'flycheck-mode)
-
-    (with-eval-after-load 'flycheck
-      (diminish 'flycheck-mode))
-#+end_src
-
-Use popups instead of the modeline to display flycheck errors:
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'flycheck
-    (flycheck-pos-tip-mode))
-#+end_src
-
-*** Highlight-indent-guides
-
-#+begin_src emacs-lisp
-  (want-drone highlight-indent-guides)
-
-  (setq highlight-indent-guides-method 'character
-        highlight-indent-guides-character ?┃
-        highlight-indent-guides-auto-character-face-perc 25)
-
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-
-#+end_src
-
-*** Rainbow mode
-
-Rainbow mode is similar to Atom's Pigments plugin or something.
-
-#+begin_src emacs-lisp
-  (want-drones kurecolor
-               rainbow-mode)
-  (add-hook 'prog-mode-hook (rainbow-mode))
-  (add-hook 'css-mode-hook 'rainbow-mode)
-  (add-hook 'scss-mode-hook 'rainbow-mode)
-
-  (with-eval-after-load 'rainbow-mode
-    (diminish 'rainbow-mode))
-#+end_src
-
-** TODO Project management with Projectile
-
-Let's load Projectile, and:
-
- - globally ignore undo-files and similar byproducts.
- - toggle the =C-p p= and =C-p SPC= bindings (I find the latter easier to enter, and thus more adequate for "do what I mean");
-
-TODO:
-
- - Could Projectile read ignore patterns from =~/.gitignore_global=?
-
-#+begin_src emacs-lisp
-  (want-drone projectile)
-  (projectile-global-mode)
-
-  (setq projectile-globally-ignored-file-suffixes (append '(
-                                                            ".un~"
-                                                            ".~undo-tree~"
-                                                            )
-                                                          projectile-globally-ignored-files))
-
-  (diminish 'projectile-mode)
-#+end_src
-
-With Ivy integration:
-
-#+begin_src emacs-lisp
-  (want-drone counsel-projectile)
-
-  (counsel-projectile-on) (define-prefix-command 'thblt/projectile-map)
-
-  (ivy-add-actions
-   ;; Allow to switch projects from counsel-projectile
-   'counsel-projectile
-   '(
-     ("p" (lambda (_) (counsel-projectile-switch-project))
-      "Switch project"
-      )))
-  ;;TODO :bind (
-  ;;          :map projectile-mode-map
-  ;;               ("C-c p p"   . counsel-projectile)
-  ;;               ("C-c p SPC" . counsel-projectile-switch-project))
-#+end_src
-
-Automatic perspective creation:
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'persp-mode
-    (defvar persp-mode-projectile-bridge-before-switch-selected-window-buffer nil)
-
-    ;; (setq persp-add-buffer-on-find-file 'if-not-autopersp)
-
-    (persp-def-auto-persp "projectile"
-                          :parameters '((dont-save-to-file . t)
-                                        (persp-mode-projectile-bridge . t))
-                          :hooks '(projectile-before-switch-project-hook
-                                   projectile-after-switch-project-hook
-                                   projectile-find-file-hook
-                                   find-file-hook)
-                          :dyn-env '((after-switch-to-buffer-adv-suspend t))
-                          :switch 'frame
-                          :predicate
-                          #'(lambda (buffer &optional state)
-                              (if (eq 'projectile-before-switch-project-hook
-                                      (alist-get 'hook state))
-                                  state
-                                (and
-                                 projectile-mode
-                                 (buffer-live-p buffer)
-                                 (or
-                                  (buffer-file-name buffer)
-                                  (string-prefix-p "magit" (symbol-name (buffer-local-value 'major-mode buffer))))
-                                 ;; (not git-commit-mode)
-                                 (projectile-project-p)
-                                 (or state t))))
-                          :get-name
-                          #'(lambda (state)
-                              (if (eq 'projectile-before-switch-project-hook
-                                      (alist-get 'hook state))
-                                  state
-                                (push (cons 'persp-name
-                                            (concat "p) "
-                                                    (with-current-buffer (alist-get 'buffer state)
-                                                      (projectile-project-name))))
-                                      state)
-                                state))
-                          :on-match
-                          #'(lambda (state)
-                              (let ((hook (alist-get 'hook state))
-                                    (persp (alist-get 'persp state))
-                                    (buffer (alist-get 'buffer state)))
-                                (case hook
-                                  (projectile-before-switch-project-hook
-                                   (let ((win (if (minibuffer-window-active-p (selected-window))
-                                                  (minibuffer-selected-window)
-                                                (selected-window))))
-                                     (when (window-live-p win)
-                                       (setq persp-mode-projectile-bridge-before-switch-selected-window-buffer
-                                             (window-buffer win)))))
-
-                                  (projectile-after-switch-project-hook
-                                   (when (buffer-live-p
-                                          persp-mode-projectile-bridge-before-switch-selected-window-buffer)
-                                     (let ((win (selected-window)))
-                                       (unless (eq (window-buffer win)
-                                                   persp-mode-projectile-bridge-before-switch-selected-window-buffer)
-                                         (set-window-buffer
-                                          win persp-mode-projectile-bridge-before-switch-selected-window-buffer)))))
-
-                                  (find-file-hook
-                                   (setcdr (assq :switch state) nil)))
-                                (if (case hook
-                                      (projectile-before-switch-project-hook nil)
-                                      (t t))
-                                    (persp--auto-persp-default-on-match state)
-                                  (setcdr (assq :after-match state) nil)))
-                              state)
-                          :after-match
-                          #'(lambda (state)
-                              (when (eq 'find-file-hook (alist-get 'hook state))
-                                (run-at-time 0.5 nil
-                                             #'(lambda (buf persp)
-                                                 (when (and (eq persp (get-current-persp))
-                                                            (not (eq buf (window-buffer (selected-window)))))
-                                                   ;; (switch-to-buffer buf)
-                                                   (persp-add-buffer buf persp t nil)))
-                                             (alist-get 'buffer state)
-                                             (get-current-persp)))
-                              (persp--auto-persp-default-after-match state)))
-
-    ;; (add-hook 'persp-after  -load-state-functions
-    ;;           #'(lambda (&rest args) (persp-auto-persps-pickup-buffers)) t)
-    )
-#+end_src
-
-** Programming languages
-
-#+BEGIN_SRC emacs-lisp
-  (want-drones lua-mode
-               rust-mode)
-#+END_SRC
-
-*** C/C++
-
-#+begin_src emacs-lisp
-  (want-drones clang-format
-               company-irony
-               company-irony-c-headers
-               flycheck-irony
-               irony)
-#+end_src
-
-#+begin_src emacs-lisp
-  (add-hook 'c-mode-common-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-
-  (with-eval-after-load 'flycheck
-    (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
-
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-irony))
-
-  (with-eval-after-load 'irony
-    (diminish' irony-mode))
-#+end_src
-
-#+begin_src emacs-lisp
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (local-set-key (kbd "C-c o") 'ff-find-other-file)))
-#+end_src
-
-*** Haskell
-
-Intero mode is a “complete interactive development program for Haskell”:
-
-#+begin_src emacs-lisp
-  (want-drones haskell-mode
-               hayoo
-               intero)
-
-  (add-hook 'haskell-mode-hook 'intero-mode-blacklist)
-#+end_src
-
-#+begin_src emacs-lisp
-  (general-define-key :keymaps 'haskell-mode-map
-                      "<f1>" 'hayoo-query)
-#+end_src
-
-*** Web development
-
-#+begin_src emacs-lisp
-  (want-drones emmet-mode
-               haml-mode
-               less-css-mode
-               scss-mode
-               skewer-mode
-               web-mode)
-
-  (setq scss-compile-at-save nil)
-  (add-to-list 'auto-mode-alist '("\\.css\\'" . scss-mode))
-
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-#+end_src
-
-** Misc syntaxes
-
-#+BEGIN_SRC emacs-lisp
-  (want-drones json-mode
-               toml-mode
-               yaml-mode
-
-               cmake-mode)
-#+END_SRC
-
-*** Gettext (PO)
-
-#+BEGIN_SRC emacs-lisp
-  (want-drone po-mode)
-
-  (autoload 'po-mode "po-mode"
-    "Major mode for translators to edit PO files" t)
-  (setq auto-mode-alist (cons '("\\.po\\'\\|\\.po\\." . po-mode)
-                              auto-mode-alist))
-#+END_SRC
 
 * Tools
 
