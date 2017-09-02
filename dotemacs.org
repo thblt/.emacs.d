@@ -152,7 +152,7 @@ Running Emacs under MacOS requires a few adjustements:
 
 #+begin_src emacs-lisp
   (setq-default
-   cursor-type 'bar
+   cursor-type t
    enable-recursive-minibuffers t
    inhibit-startup-screen t
    use-dialog-box nil
