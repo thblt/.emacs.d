@@ -1469,9 +1469,11 @@ This section deals with tools which don't edit anything.
                dired+)
 #+END_SRC
 
-** TODO Borg
+** TODO Borg and their Queen
 
-Borg is initialized from =init.el=.  As with other Emacs' package management systems, we still run the risk of keeping obsoleted packages.  What follows is an attempt to address this issue: a utility function =(=want-drone)= to declare that a package is required (declared in =init.el=), and a few more functions to keep track of what is installed using the dependency tree and the set of explicitly required packages as a base.
+*** Borg
+
+Borg is initialized from =init.el=.  As with other Emacs' package management systems, we still run the risk of keeping unneeded packages.  What follows is an attempt to address this issue: a utility function =(=want-drone)= to declare that a package is required (declared in =init.el=), and a few more functions to keep track of what is installed using the dependency tree and the set of explicitly required packages as a base.
 
 #+BEGIN_SRC emacs-lisp
   (require 'cl-lib)
@@ -1492,20 +1494,13 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
     "Return a list of strict clones, ie clones that are not assimimated as submodules."
     (let ((drones (borg-drones)))
       (cl-remove-if (lambda (obj) (member obj drones)) (borg-clones))))
-
-
-  (defun thblt/borg-not-required ()
-    (interactive)
-    (cl-remove-if (lambda (obj) (member obj thblt/required-drones))
-                  (borg-drones)
-                  ))
-
-  (defun thblt/borg-missing ()
-    (interactive)
-    (let ((drones (borg-drones)))
-      (cl-remove-if (lambda (obj) (member obj drones))
-                    thblt/required-drones)))
   #+END_SRC
+
+*** Borg-Queen
+
+#+BEGIN_SRC emacs-lisp
+  (setq borg-queen-pgp-global-keys '("1B1336171A0B9064"))
+#+END_SRC
 
 ** Calendars
 
