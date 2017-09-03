@@ -464,6 +464,44 @@ And now for some bindings:
 
 ** UI Utilities
 
+*** Ace-window
+
+#+BEGIN_SRC emacs-lisp
+  (want-drone ace-window)
+
+  (setq aw-scope 'frame
+        aw-background nil
+
+        aw-ignore-on t
+
+        aw-ignored-buffers (append aw-ignored-buffers
+                                   (mapcar (lambda (n) (format " *Minibuf-%s*" n))
+                                           (number-sequence 0 20))))
+
+  (defun thblt/aw-switch-to-numbered-window (number)
+    (aw-switch-to-window (nth (- number 1) (aw-window-list))))
+
+  (defun thblt/switch-to-minibuffer ()
+    "Switch to minibuffer window."
+    (interactive)
+    (if (active-minibuffer-window)
+        (select-window (active-minibuffer-window))
+      (error "Minibuffer is not active")))
+
+  (general-define-key "C-x o" 'ace-window
+                      ;; Emulate window-numbering
+                      "M-0" 'thblt/switch-to-minibuffer
+                      "M-1" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 1))
+                      "M-2" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 2))
+                      "M-3" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 3))
+                      "M-4" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 4))
+                      "M-5" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 5))
+                      "M-6" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 6))
+                      "M-7" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 7))
+                      "M-8" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 8))
+                      "M-9" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 9)))
+#+END_SRC
+
 *** TODO Buffer management (ibuffer)
 
 TODO Is this still needed with Persp?
@@ -502,21 +540,6 @@ Popwin “makes you free from the hell of annoying buffers”:
   (require 'popwin)
   (popwin-mode)
 #+END_SRC
-
-*** Return focus to minibuffer
-
-=C-c o= gives focus back to the minibuffer, if it's active.  Code from the Emacs Wiki.
-
-#+begin_src emacs-lisp
-  (defun switch-to-minibuffer ()
-    "Switch to minibuffer window."
-    (interactive)
-    (if (active-minibuffer-window)
-        (select-window (active-minibuffer-window))
-      (error "Minibuffer is not active")))
-
-  (global-set-key (kbd "C-c o") 'switch-to-minibuffer) ;; Bind to `C-c o'
-#+end_src
 
 *** Customization helper
 
