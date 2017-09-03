@@ -1,3 +1,6 @@
+[submodule "ace-window"]
+	path = lib/ace-window
+	url = git@github.com:abo-abo/ace-window.git
 [submodule "alert"]
 	path = lib/alert
 	url = git@github.com:jwiegley/alert.git
@@ -17,6 +20,9 @@
 [submodule "auto-dictionary"]
 	path = lib/auto-dictionary
 	url = git@github.com:nschum/auto-dictionary-mode.git
+[submodule "avy"]
+	path = lib/avy
+	url = git@github.com:abo-abo/avy.git
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
