@@ -231,56 +231,79 @@ Create some shortcut commands to load both Eziam themes:
 ** Modeline
 
 #+BEGIN_SRC emacs-lisp
-  (want-drones spaceline)
+  (want-drone spaceline)
 
   (require 'spaceline-config)
 
   (setq powerline-default-separator 'wave
         spaceline-separator-dir-left nil
 
-        spaceline-flycheck-bullet "▲%s"
-        )
+        spaceline-flycheck-bullet "▲%s")
 
   (face-spec-set 'mode-line
-                 '((t (:height .9))))
+                 `((t (:height 1.0))))
   (face-spec-set 'mode-line-inactive
-                 '((t (:height .9))))
+                 `((t (:height 1.0))))
 
+  (defface thblt/spaceline-window-information-face
+    '((t :foreground "orange" :background "black" :weight bold))
+    "")
+
+  (defface thblt/spaceline-window-information-face-active
+    '((t :inherit thblt/spaceline-window-information-face :inverse-video t))
+    "")
+
+  (defface thblt/spaceline-persp-face
+    '((t :background "DarkViolet" :foreground "white" :weight bold))
+    "")
+
+  (defface thblt/spaceline-persp-face-buffer-not-in-persp
+    '((t :background "red" :foreground "white" :weight bold))
+    "")
+
+  (defface thblt/spaceline-buffer-id-face
+    '((t :background "DeepSkyBlue" :foreground "#444444"))
+    "")
+
+  (spaceline-define-segment thblt/window-information
+    ""
+    (progn
+      (aw-update)
+      (window-parameter (selected-window) 'ace-window-path))
+
+    :face thblt/spaceline-window-information-face-active)
 
   (spaceline-define-segment thblt/persp-name
     "The current perspective name."
-    (when (and (bound-and-true-p persp-mode)
-               ;; There are multiple implementations of
-               ;; persp-mode with different APIs
-               (fboundp 'safe-persp-name)
-               (fboundp 'get-frame-persp)
-               ;; Display the nil persp only if specified
-               (or (not (string= persp-nil-name (safe-persp-name (get-frame-persp))))
-                   spaceline-display-default-perspective))
-      (propertize
-       (safe-persp-name (get-frame-persp))
-       'face (if (persp-contain-buffer-p) 'bold 'italic))))
+    (when (or (not (string= persp-nil-name (safe-persp-name (get-frame-persp))))
+              spaceline-display-default-perspective)
 
-  (spaceline-define-segment thblt/flycheck
-    "Number of Flycheck errors, warnings and notices."
-    (let flycheck
+      (safe-persp-name (get-frame-persp)))
+    :face      thblt/spaceline-persp-face)
+  ;; @FIXME
+  ;; (if t
+  ;;             thblt/spaceline-persp-face
+  ;;           thblt/spaceline-persp-face-buffer-not-in-persp))
 
-        )
-    )
+  (spaceline-define-segment thblt/buffer-id
+    ""
+    (buffer-name)
+    :face thblt/spaceline-buffer-id-face)
 
   (spaceline-compile 'thblt
-    '(
+    '(thblt/window-information
       thblt/persp-name
-      major-mode
-      buffer-id)
+      thblt/buffer-id
+      (flycheck-error :tight-left t)
+      (flycheck-warning :tight-left t)
+      (flycheck-info :tight-left t)
+      ;; :face thblt/spaceline-buffer-id-face)
+      )
 
     '(
-      flycheck-error
-      flycheck-warning
-      flycheck-info
       line-column
       minor-modes
-      hud))
+      ))
 
   (setq-default mode-line-format '("%e" (:eval (spaceline-ml-thblt))))
 #+END_SRC
