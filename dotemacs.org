@@ -364,7 +364,7 @@ Automatic perspective creation:
     (car (cl-remove-if-not
           (lambda (p) (equal (funcall projectile-project-name-function p) name)) projectile-known-projects)))
 
-  -eval-after-load 'persp-mode
+  (with-eval-after-load 'persp-mode
     (defvar persp-mode-projectile-bridge-before-switch-selected-window-buffer nil)
 
     ;; (setq persp-add-buffer-on-find-file 'if-not-autopersp)
@@ -399,8 +399,8 @@ Automatic perspective creation:
                                   state
                                 (push (cons 'persp-name
                                             (thblt/project-name-to-persp-name
-                                                    (with-current-buffer (alist-get 'buffer state)
-                                                      (projectile-project-name))))
+                                             (with-current-buffer (alist-get 'buffer state)
+                                               (projectile-project-name))))
                                       state)
                                 state))
                           :on-match
