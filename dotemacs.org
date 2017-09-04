@@ -522,6 +522,10 @@ And now for some bindings:
 
 ** UI Utilities
 
+#+BEGIN_SRC emacs-lisp
+  (eyebrowse-mode)
+#+END_SRC
+
 *** Ace-window
 
 #+BEGIN_SRC emacs-lisp
