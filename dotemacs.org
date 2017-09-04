@@ -531,14 +531,16 @@ And now for some bindings:
 #+BEGIN_SRC emacs-lisp
   (want-drone ace-window)
 
-  (setq aw-scope 'frame
-        aw-background nil
+  (with-eval-after-load 'ace-window
+    ;; We make use of aw-ignored-buffers, so we need the eval-after-load
+    (setq aw-scope 'frame
+          aw-background nil
 
-        aw-ignore-on t
+          aw-ignore-on t
 
-        aw-ignored-buffers (append aw-ignored-buffers
-                                   (mapcar (lambda (n) (format " *Minibuf-%s*" n))
-                                           (number-sequence 0 20))))
+          aw-ignored-buffers (append aw-ignored-buffers
+                                     (mapcar (lambda (n) (format " *Minibuf-%s*" n))
+                                             (number-sequence 0 20)))))
 
   (defun thblt/aw-switch-to-numbered-window (number)
     (aw-switch-to-window (nth (- number 1) (aw-window-list))))
