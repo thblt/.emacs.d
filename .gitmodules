@@ -274,9 +274,6 @@
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = git@github.com:Fuco1/smartparens.git
-[submodule "spaceline"]
-	path = lib/spaceline
-	url = git@github.com:TheBB/spaceline.git
 [submodule "tablist"]
 	path = lib/tablist
 	url = git@github.com:politza/tablist.git
