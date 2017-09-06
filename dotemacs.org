@@ -1816,22 +1816,25 @@ Configuration for mu4e is split between a published part, below, and a private p
 First, we /may/ need to update the load-path.  Official Debian build of Emacs don't need that, but self-built versions do:
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+  (eval-and-compile (let ((mu4epath "/usr/share/emacs/site-lisp/mu4e"))
+                      (when (file-directory-p mu4epath)
+                        (add-to-list 'load-path mu4epath))))
 #+END_SRC
 
 On NixOS, this is a bit more tricky.  We need to find the mu binary, dereference it (since it will be a symlink), and find the path from this.
 
 #+BEGIN_SRC emacs-lisp
-  (let ((mu4epath
-         (concat
-          (file-name-directory
-           (file-truename
-            (executable-find "mu")))
-          "../share/emacs/site-lisp/mu4e")))
-    (when (and
-           (string-prefix-p "/nix/store/" mu4epath)
-           (file-directory-p mu4epath))
-      (add-to-list 'load-path (file-truename mu4epath))))
+  (eval-and-compile (let ((mu4epath
+                            (concat
+                             (file-name-directory
+                              (file-truename
+                               (executable-find "mu")))
+                             "../share/emacs/site-lisp/mu4e")))
+                       (when (and
+                              (string-prefix-p "/nix/store/" mu4epath)
+                              (file-directory-p mu4epath))
+                         (message "Adding %s to load-path" (file-truename mu4epath))
+                         (add-to-list 'load-path (file-truename mu4epath)))))
 #+END_SRC
 
 Each of my accounts is synced (by =mbsync=) to a folder at the root of the Maildir (eg, =~/.Mail/Academic/=).  We then need a function to switch contexts based on a regular expression on the current Maildir path.   For some reason, this doesn't come included with mu4e, so here it is, and it probably comes [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from here]].
