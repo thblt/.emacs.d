@@ -1,7 +1,14 @@
-(add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
+(setq load-prefer-newer t) ;; Let's do that early.
 
+(add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
 (require 'borg)
 (borg-initialize)
+
+(require 'no-littering)
+(require 'auto-compile)
+
+(auto-compile-on-load-mode)
+(auto-compile-on-save-mode)
 
 ;; A utility macro to declare that a drone is actually required.
 (defvar thblt/required-drones '())
