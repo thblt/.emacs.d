@@ -654,7 +654,9 @@ Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
            "M-x"     'counsel-M-x
            "C-x C-f" 'counsel-find-file
 
-           "C-S-s"   'swiper)
+           "C-S-s"   'swiper
+
+           "C-x 8 RET" 'counsel-unicode-char)
 #+end_src
 
 *** Popwin
