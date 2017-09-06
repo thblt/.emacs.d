@@ -1786,7 +1786,7 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
   (want-drone erc-hl-nicks)
 
   (setq erc-server "irc.freenode.net"
-        erc-port 7001
+        erc-port 7000
         erc-nick "thblt"
         erc-nick-uniquifier  "`"
 
@@ -1799,8 +1799,6 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
         erc-lurker-threshold-time 900 ; 15mn
 
         erc-header-line-format nil)
-
-
 
   (add-hook 'erc-mode-hook 'erc-hl-nicks-mode)
 #+END_SRC
