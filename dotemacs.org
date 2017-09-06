@@ -1079,6 +1079,7 @@ Move lines of text with =M-<up>= and =M-<down>=.
 
 #+begin_src emacs-lisp
   (want-drone smartparens)
+  (require 'smartparens-config) ;; Load default config
 
   (smartparens-global-mode)
   (show-smartparens-global-mode)
@@ -1091,7 +1092,7 @@ Move lines of text with =M-<up>= and =M-<down>=.
 
 I'm stealing smartparens' author config:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (add-hook 'minibuffer-setup-hook 'turn-on-smartparens-strict-mode)
 
       ;;;;;;;;;;;;;;;;;;;;;;;;
