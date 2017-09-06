@@ -1771,42 +1771,12 @@ First, let's configure the view.
           ("Branch"     10  magit-repolist-column-branch)
           ;; ("Version" 25  magit-repolist-column-version nil)
           ("Upstream"   15  magit-repolist-column-upstream)
-          ("↓U"         5   thblt/magit-repolist-column-unpulled-from-upstream)
-          ("↑U"         5   thblt/magit-repolist-column-unpushed-to-upstream)
-          ("↓P"         5   thblt/magit-repolist-column-unpulled-from-pushremote)
-          ("↑P"         5   thblt/magit-repolist-column-unpushed-to-pushremote)
+          ("↓U"         5   magit-repolist-column-unpulled-from-upstream)
+          ("↑U"         5   magit-repolist-column-unpushed-to-upstream)
+          ("↓P"         5   magit-repolist-column-unpulled-from-pushremote)
+          ("↑P"         5   magit-repolist-column-unpushed-to-pushremote)
           (""           6   magit-repolist-column-dirty)
           ("Path"       99  magit-repolist-column-path nil)))
-#+end_src
-
-For some reasons, =magit-repolist-column-[unpushed-to|unpulled-from]-upstream= doesn't work.  Here's my own version.
-
-[@TODO:  This has been [[https://github.com/magit/magit/issues/2960][fixed in magit]].  Untangle when the fix made it to a released version]
-
-#+begin_src emacs-lisp
-  (defun thblt/magit-repolist-column-unpushed-to-upstream (_id)
-    "Insert number of commits in the current branch but not its upstream."
-    (--when-let (magit-get-upstream-branch)
-      (let ((n (car (magit-rev-diff-count "HEAD" it))))
-        (propertize (number-to-string n) 'face (if (> n 0) 'bold 'shadow)))))
-
-  (defun thblt/magit-repolist-column-unpulled-from-upstream (_id)
-    "Insert number of upstream commits not in the current branch."
-    (--when-let (magit-get-upstream-branch)
-      (let ((n (cadr (magit-rev-diff-count "HEAD" it))))
-        (propertize (number-to-string n) 'face (if (> n 0) 'bold 'shadow)))))
-
-  (defun thblt/magit-repolist-column-unpushed-to-pushremote (_id)
-    "Insert number of commits in the current branch but not its upstream."
-    (--when-let (magit-get-push-branch)
-      (let ((n (car (magit-rev-diff-count "HEAD" it))))
-        (propertize (number-to-string n) 'face (if (> n 0) 'bold 'shadow)))))
-
-  (defun thblt/magit-repolist-column-unpulled-from-pushremote (_id)
-    "Insert number of upstream commits not in the current branch."
-    (--when-let (magit-get-push-branch)
-      (let ((n (cadr (magit-rev-diff-count "HEAD" it))))
-        (propertize (number-to-string n) 'face (if (> n 0) 'bold 'shadow)))))
 #+end_src
 
 An extra feature:  update all remotes.  Probably very dirty.
