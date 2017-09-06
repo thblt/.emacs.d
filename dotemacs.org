@@ -1551,8 +1551,7 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 #+begin_src emacs-lisp
   (want-drone org
               org-download
-              org-ref
-              toc-org)
+              org-ref)
 
   (setq org-catch-invisible-edits t ; Avoid editing folded contents
         org-hide-leading-stars t
@@ -1581,7 +1580,7 @@ Some cool org extensions:
 
  - =toc-org= provides, guess what, automatic TOC generation for org-mode.  This is better [[https://github.com/snosov1/toc-org/issues/20#issuecomment-276407541][pinned to melpa-stable]].
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (want-drone toc-org)
   (add-hook 'org-mode-hook 'toc-org-enable)
 #+END_SRC
