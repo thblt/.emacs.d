@@ -135,9 +135,9 @@
 [submodule "ghub+"]
 	path = lib/ghub+
 	url = git@github.com:vermiculus/ghub-plus.git
-[submodule "git-time-machine"]
-	path = lib/git-time-machine
-	url = git@github.com:psanford/git-time-machine-el.git
+[submodule "git-timemachine"]
+	path = lib/git-timemachine
+	url = git@github.com:pidu/git-timemachine.git
 [submodule "haml-mode"]
 	path = lib/haml-mode
 	url = git@github.com:nex3/haml-mode.git
