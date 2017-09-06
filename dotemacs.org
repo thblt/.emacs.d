@@ -1682,7 +1682,7 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
            (file-truename default-directory)
            (file-truename user-emacs-directory))
 
-      (cl-flet ((plural (verb count &optional nosubject)
+      (cl-flet ((plural (verb count)
                         (if (zerop count)
                             ""
                           (format "%s %s%s"
@@ -1690,43 +1690,49 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
                                   count
                                   (if nosubject
                                       ""
-                                    (if (= 1 count) " drone" " drones")))))
+                                    (progn
+                                      (setq nosubject
+                                            (if (= 1 count) " drone" " drones")))))))
                 (relpath (path) (file-relative-name path borg-drone-directory)))
 
         (let* ((status
-                (cl-remove-if-not (lambda (p) (file-directory-p (cadr p)))
+                (cl-remove-if-not (lambda (p)
+                                    (string-prefix-p "lib/" (cadr p)))
                                   (mapcar (lambda (s) (split-string s " " t))
                                           (magit-git-lines "status" "--porcelain"))))
                (assimilated (mapcar 'cadr (remove-if-not (lambda (i) (equal "A" (car i))) status)))
                (modified (mapcar 'cadr (remove-if-not (lambda (i) (equal "M" (car i))) status)))
+               (removed (mapcar 'cadr (remove-if-not (lambda (i) (equal "D" (car i))) status)))
                (assimilated-c (length assimilated))
                (modified-c (length modified))
-               (count (+ assimilated-c modified-c)))
+               (removed-c (length removed))
+               (count (+ assimilated-c modified-c))
+               (nosubject))
+
           (unless (zerop count)
             (concat
              (when (> count 1)
                (s-capitalize
-                (concat
-                 (plural "assimilate" assimilated-c)
-                 (when (and assimilated modified) ", ")
-                 (plural "upgrade" modified-c (not (zerop assimilated-c)))
-                 "\n\n"
+                (concat (mapconcat 'identity
+                                   `(
+                                     ,(plural "remove" removed-c)
+                                     ,(plural "assimilate" assimilated-c)
+                                     ,(plural "upgrade" modified-c))
+                                   ", ") "\n\n")))
 
-                 )))
+             (mapconcat 'identity
+                        `(
+                          ,(mapconcat (lambda (d) (format "Remove %s" (relpath d)))
+                                      removed "\n")
 
-             (when assimilated
-               (mapconcat (lambda (d) (format "Assimilate %s" (relpath d)))
-                          assimilated "\n"))
+                          ,(mapconcat (lambda (d) (format "Assimilate %s" (relpath d)))
+                                      assimilated "\n")
 
-             (when assimilated "\n")
-
-             (when modified
-               (mapconcat (lambda (d) (format "Upgrade %s to %s"
-                                              (relpath d)
-                                              (let ((default-directory (expand-file-name d default-directory)))
-                                                (car (magit-git-lines "describe" "--always" "--tags"))
-                                                )))
-                          modified "\n"))))))))
+                          ,(mapconcat (lambda (d) (format "Upgrade %s to %s"
+                                                          (relpath d)
+                                                          (let ((default-directory (expand-file-name d default-directory)))
+                                                            (car (magit-git-lines "describe" "--always" "--tags")))))
+                                      modified "\n")) "\n"))))))
 
   (with-eval-after-load 'magit
     (add-to-list 'thblt/git-electric-commit-message-functions 'thblt/borg-git-electric-commit-message))
