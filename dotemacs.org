@@ -1768,6 +1768,8 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
                         :mode-name "^dired.*"
                         :switch 'frame
                         )
+
+  (add-to-list 'thblt/context-starters '("dired" . (lambda () (call-interactively 'dired))))
 #+END_SRC
 
 ** Ebib
