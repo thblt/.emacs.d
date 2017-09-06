@@ -17,6 +17,9 @@
 [submodule "auth-password-store"]
 	path = lib/auth-password-store
 	url = git@github.com:DamienCassou/auth-password-store.git
+[submodule "auto-compile"]
+	path = lib/auto-compile
+	url = git@github.com:tarsius/auto-compile.git
 [submodule "auto-dictionary"]
 	path = lib/auto-dictionary
 	url = git@github.com:nschum/auto-dictionary-mode.git
@@ -223,6 +226,9 @@
 [submodule "outshine"]
 	path = lib/outshine
 	url = git@github.com:alphapapa/outshine.git
+[submodule "packed"]
+	path = lib/packed
+	url = git@github.com:tarsius/packed.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
