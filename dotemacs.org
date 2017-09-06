@@ -1673,6 +1673,65 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
       (cl-remove-if (lambda (obj) (member obj drones)) (borg-clones))))
   #+END_SRC
 
+*** Automatic commit messages
+
+#+BEGIN_SRC emacs-lisp
+  (defun thblt/borg-git-electric-commit-message ()
+    "Generate a commit message describing changes in Borg drones."
+    (when (equal
+           (file-truename default-directory)
+           (file-truename user-emacs-directory))
+
+      (cl-flet ((plural (verb count &optional nosubject)
+                        (if (zerop count)
+                            ""
+                          (format "%s %s%s"
+                                  verb
+                                  count
+                                  (if nosubject
+                                      ""
+                                    (if (= 1 count) " drone" " drones")))))
+                (relpath (path) (file-relative-name path borg-drone-directory)))
+
+        (let* ((status
+                (cl-remove-if-not (lambda (p) (file-directory-p (cadr p)))
+                                  (mapcar (lambda (s) (split-string s " " t))
+                                          (magit-git-lines "status" "--porcelain"))))
+               (assimilated (mapcar 'cadr (remove-if-not (lambda (i) (equal "A" (car i))) status)))
+               (modified (mapcar 'cadr (remove-if-not (lambda (i) (equal "M" (car i))) status)))
+               (assimilated-c (length assimilated))
+               (modified-c (length modified))
+               (count (+ assimilated-c modified-c)))
+          (unless (zerop count)
+            (concat
+             (when (> count 1)
+               (s-capitalize
+                (concat
+                 (plural "assimilate" assimilated-c)
+                 (when (and assimilated modified) ", ")
+                 (plural "upgrade" modified-c (not (zerop assimilated-c)))
+                 "\n\n"
+
+                 )))
+
+             (when assimilated
+               (mapconcat (lambda (d) (format "Assimilate %s" (relpath d)))
+                          assimilated "\n"))
+
+             (when assimilated "\n")
+
+             (when modified
+               (mapconcat (lambda (d) (format "Upgrade %s to %s"
+                                              (relpath d)
+                                              (let ((default-directory (expand-file-name d default-directory)))
+                                                (car (magit-git-lines "describe" "--always" "--tags"))
+                                                )))
+                          modified "\n"))))))))
+
+  (with-eval-after-load 'magit
+    (add-to-list 'thblt/git-electric-commit-message-functions 'thblt/borg-git-electric-commit-message))
+#+END_SRC
+
 *** Borg-Queen
 
 #+BEGIN_SRC emacs-lisp
@@ -1814,6 +1873,35 @@ An extra feature:  update all remotes.  Probably very dirty.
 
   (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-refresh)
 #+end_src
+
+*** Electric commit messages
+
+We create a small function hooked to =git-commit-mode= to automatically fill commit message when applicable.  This function simply runs each function in a list, in turn, and insert the return value of the first one returning non-nil.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar thblt/git-electric-commit-message-functions
+    nil
+    "A list of functions returning either nil or a commit message.
+    These functions get called with `default-directory' set at the
+    repository's.")
+
+  (defun thblt/git-electric-commit-message-hook ()
+    "Run every function in ‘thblt/git-electric-commit-functions’
+    and insert the return value of the first one returning non-nil.
+
+  This function is meant to be run as a hook in `git-commit-mode'."
+
+    (let ((default-directory (vc-git-root default-directory)))
+      (--when-let (cl-some 'funcall thblt/git-electric-commit-message-functions)
+        (insert it))))
+#+END_SRC
+
+Then plug everything together:
+
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'git-commit
+    (add-hook 'git-commit-mode-hook 'thblt/git-electric-commit-message-hook))
+#+END_SRC
 
 ** Mu4e
 
