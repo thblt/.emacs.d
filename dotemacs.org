@@ -1140,6 +1140,12 @@ TODO: Stolen this list from xah-fly-keys:
 
 ** Misc customizations
 
+*** Use C-h as backspace
+
+#+BEGIN_SRC emacs-lisp
+  (general-define-key "C-h" 'delete-backward-char)
+#+END_SRC
+
 *** TODO Autosave when losing focus
 
 This is the initial version, which works perfectly well:
@@ -1298,8 +1304,6 @@ TODO validate =:= and ~=~ on all keyboard mappings.
                              (org-indent-mode t)
                              (visual-line-mode t)
                              (which-function-mode t)))
-  ;; BIND (:map org-mode-map
-  ;; ("<f1>" . org-where-am-i)))
 
   (with-eval-after-load 'org-indent
     (diminish 'org-indent-mode)
@@ -1331,7 +1335,7 @@ Some cool org extensions:
   (message (mapconcat #'identity headers " > "))))
 
   (general-define-key :keymaps 'org-mode-map
-                      "<f1>" 'thblt/org-where-am-i)
+                      "<f1> <f1>" 'thblt/org-where-am-i)
 #+END_SRC
 
 **** TODO Hydras and selected bindings
@@ -1475,7 +1479,7 @@ Use popups instead of the modeline to display flycheck errors:
                           (setq-local helm-dash-docsets '("Rust"))))))
 
   (general-define-key :keymaps 'prog-mode-map
-                    "<f1>" 'helm-dash-at-point)
+                    "<f1> <f1>" 'helm-dash-at-point)
 #+end_src
 
 *** Highlight-indent-guides
@@ -1584,7 +1588,7 @@ Intero mode is a “complete interactive development program for Haskell”:
 
 #+begin_src emacs-lisp
   (general-define-key :keymaps 'haskell-mode-map
-                      "<f1>" 'hayoo-query)
+                      "<f1> <f1>" 'hayoo-query)
 #+end_src
 
 *** Lisps
