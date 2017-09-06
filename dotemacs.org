@@ -683,7 +683,6 @@ A little function to identify the face at point.  Nice to have when writing them
 
 #+begin_src emacs-lisp
   (setq-default comment-empty-lines nil
-	        compile-command "wmake"
 	        tab-width 2
 	        c-basic-offset 2
 	        cperl-indent-level 2
@@ -692,10 +691,7 @@ A little function to identify the face at point.  Nice to have when writing them
 
 *** Mappings
 
-Nothing fancy: F5 to compile, F8 to ~ffap~.
-
 #+begin_src emacs-lisp
-(global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "<f8>") 'ffap)
 #+end_src
 
