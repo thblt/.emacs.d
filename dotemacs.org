@@ -1738,7 +1738,7 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
                                                           (relpath d)
                                                           (let ((default-directory (expand-file-name d default-directory)))
                                                             (car (magit-git-lines "describe" "--always" "--tags")))))
-                                      modified "\n")) "\n"))))))
+                                      modified "\n")) "\n")))))))
 
   (with-eval-after-load 'magit
     (add-to-list 'thblt/git-electric-commit-message-functions 'thblt/borg-git-electric-commit-message))
