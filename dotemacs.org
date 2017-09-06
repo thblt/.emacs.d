@@ -782,6 +782,15 @@ Use popups instead of the modeline to display flycheck errors:
 
 #+end_src
 
+*** Outline and outshine
+
+#+BEGIN_SRC emacs-lisp
+  (want-drone outshine)
+
+  (add-hook 'prog-mode-hook 'outline-minor-mode)
+  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+#+END_SRC
+
 *** Rainbow mode
 
 Rainbow mode is similar to Atom's Pigments plugin or something.
@@ -850,6 +859,22 @@ Intero mode is a “complete interactive development program for Haskell”:
   (general-define-key :keymaps 'haskell-mode-map
                       "<f1>" 'hayoo-query)
 #+end_src
+
+*** Lisps
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'lisp-mode-hook
+            (lambda ()
+              (setq outline-heading-alist '((";;; " . 1)
+                                            (";;;; " . 2)
+                                            (";;;;; " .3)
+                                            (";;;;;; " .4)
+                                            (";;;;; " .5)
+                                            (";;;;; " .6)
+                                            (";;;;; " .7)
+                                            (";;;;; " .8)))))
+
+#+END_SRC
 
 *** Web development
 

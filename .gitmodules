@@ -217,6 +217,12 @@
 [submodule "org-ref"]
 	path = lib/org-ref
 	url = git@github.com:jkitchin/org-ref.git
+[submodule "outorg"]
+	path = lib/outorg
+	url = git@github.com:alphapapa/outorg.git
+[submodule "outshine"]
+	path = lib/outshine
+	url = git@github.com:alphapapa/outshine.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
