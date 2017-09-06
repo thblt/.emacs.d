@@ -91,7 +91,7 @@
 	path = lib/erc-hl-nicks
 	url = git@github.com:leathekd/erc-hl-nicks.git
 [submodule "etc/yasnippet/snippets"]
-	path = etc/yasnippet/snippets
+	path = etc/yasnippet
 	url = https://github.com/thblt/yasnippet-snippets
 [submodule "evil-nerd-commenter"]
 	path = lib/evil-nerd-commenter
