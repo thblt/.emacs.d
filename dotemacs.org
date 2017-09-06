@@ -241,6 +241,9 @@ Create some shortcut commands to load both Eziam themes:
       (face-spec-set 'mode-line
                      '((t :inherit default)))
 
+      (face-spec-set 'thblt/powerline-transparent-face
+                     `((t :background ,default-bg :foreground ,default-fg)))
+
       (face-spec-set 'thblt/powerline-window-information-active-face
                      `((t :background "orange" :foreground "black" :weight bold)))
       (face-spec-set 'thblt/powerline-window-information-face
@@ -258,12 +261,12 @@ Create some shortcut commands to load both Eziam themes:
       (face-spec-set 'thblt/powerline-buffer-id-active-face
                      `((t :background ,default-fg :foreground ,default-bg :weight bold)))
       (face-spec-set 'thblt/powerline-buffer-id-face
-                     `((t :background ,default-bg :foreground ,default-fg))))
+                     `((t :background ,default-bg :foreground ,default-fg)))
 
-    (face-spec-set 'thblt/powerline-buffer-read-only-face
-                   `((t :inherit thblt/powerline-buffer-id-face :foreground "red")))
-    (face-spec-set 'thblt/powerline-buffer-read-only-active-face
-                   `((t :inherit thblt/powerline-buffer-id-active-face :foreground "red"))))
+      (face-spec-set 'thblt/powerline-buffer-read-only-face
+                     `((t :inherit thblt/powerline-buffer-id-face :foreground "red")))
+      (face-spec-set 'thblt/powerline-buffer-read-only-active-face
+                     `((t :inherit thblt/powerline-buffer-id-active-face :foreground "red")))))
 
   (thblt/powerline-set-faces)
   (advice-add 'load-theme :after 'thblt/powerline-set-faces)
@@ -283,20 +286,28 @@ Create some shortcut commands to load both Eziam themes:
         '((emacs-lisp-mode . "EL")
           (erc-mode . nil)))
 
+  (defvar thblt/languages-reprs
+    `(("fr" ,(concat
+              (propertize " " 'face '(:background "blue"))
+              (propertize " " 'face '(:background "white"))
+              (propertize " " 'face '(:background "red")))))
+    "An Alist of language IDs and representations"
+    )
+
   (require 'ace-window) ;; We call (aw-update) when updating the
   ;; mode-line.
 
   (setq-default mode-line-format
                 '("%e"
                   (:eval
-                   (cl-flet ((w (str) (concat " " str " ")))
+                   (cl-flet ((w (str) (if str (concat " " str " ") "")))
                      (let* ((active (powerline-selected-window-active))
                             (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
                             (mode-line (if active 'mode-line 'mode-line-inactive))
                             (face1 (if active 'powerline-active1 'powerline-inactive1))
                             (face2 (if active 'powerline-active2 'powerline-inactive2))
-                            (standard-separator "arrow")
-                            (special-separator "chamfer")
+                            (standard-separator "chamfer")
+                            (special-separator "butt")
                             (separator-left (intern (format "powerline-%s-%s"
                                                             standard-separator
                                                             (car powerline-default-separator-dir))))
@@ -304,11 +315,11 @@ Create some shortcut commands to load both Eziam themes:
                                                              standard-separator
                                                              (cdr powerline-default-separator-dir))))
                             (special-separator-left (intern (format "powerline-%s-%s"
-                                                             special-separator
-                                                             (car powerline-default-separator-dir))))
+                                                                    special-separator
+                                                                    (car powerline-default-separator-dir))))
                             (special-separator-right (intern (format "powerline-%s-%s"
-                                                             special-separator
-                                                             (cdr powerline-default-separator-dir))))
+                                                                     special-separator
+                                                                     (cdr powerline-default-separator-dir))))
 
                             (face)
                             (lhs (list
@@ -329,6 +340,9 @@ Create some shortcut commands to load both Eziam themes:
                                    face)
                                   ;;
                                   ;; Buffer ID
+                                  (funcall separator-left face (setq face 'thblt/powerline-transparent-face))
+                                  (powerline-raw " " face)
+
                                   (funcall special-separator-right face
                                            (setq face (thblt/powerline-get-face "buffer-id")))
                                   (when buffer-read-only
@@ -336,31 +350,40 @@ Create some shortcut commands to load both Eziam themes:
                                   (powerline-raw
                                    (w (buffer-name)) face)
                                   ;;
-                                  ;; Major mode
+                                  ;; Modes
+                                  (funcall special-separator-left face (setq face 'thblt/powerline-transparent-face))
+                                  (powerline-raw " " face)
                                   (funcall special-separator-left face face1)
 
-                                  (powerline-raw
-                                   (w (if (assoc major-mode thblt/diminished-major-modes)
-                                       (alist-get major-mode thblt/diminished-major-modes)
-                                     mode-name)) 'bold)
+                                  (let ((major-mode-repr (if (assoc major-mode thblt/diminished-major-modes)
+                                                             (alist-get major-mode thblt/diminished-major-modes)
+                                                           mode-name))
+                                        (minor-modes-repr (format-mode-line minor-mode-alist)))
+
+                                    (when (or major-mode-repr minor-modes-repr)
+                                      (powerline-raw
+                                       (concat
+                                        major-mode-repr
+                                        minor-modes-repr))))
+
+
                                   (powerline-process face1)
-                                  (powerline-minor-modes face1 'l)
+                                  ;;(powerline-minor-modes face1 'l)
                                   (powerline-narrow face1 'l)
-                                  (powerline-raw " " face1)
                                   (funcall separator-left face1 face2)
                                   ))
 
                             (rhs (list
                                   (powerline-raw global-mode-string face2)
-                                       (funcall separator-right face2 face1)
-                                       (unless window-system
-                                         (powerline-raw (char-to-string #xe0a1) face1 'l))
-                                       (powerline-raw "%3l" face1 'l)
-                                       (powerline-raw ":" face1)
-                                       (powerline-raw "%2c" face1 'r)
-                                       (funcall separator-right face1 mode-line)
-                                       (powerline-raw " ")
-                                       )))
+                                  (funcall separator-right face2 face1)
+                                  (unless window-system
+                                    (powerline-raw (char-to-string #xe0a1) face1 'l))
+                                  (powerline-raw "%3l" face1 'l)
+                                  (powerline-raw ":" face1)
+                                  (powerline-raw "%2c" face1 'r)
+                                  (funcall separator-right face1 mode-line)
+                                  (powerline-raw " ")
+                                  )))
                        (concat (powerline-render lhs)
                                (powerline-fill mode-line (powerline-width rhs))
                                (powerline-render rhs)))))))
