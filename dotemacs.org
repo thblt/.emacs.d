@@ -1905,6 +1905,8 @@ We create a small function hooked to =git-commit-mode= to automatically fill com
     (let ((default-directory (vc-git-root default-directory)))
       (--when-let (cl-some 'funcall thblt/git-electric-commit-message-functions)
         (insert it))))
+
+  (autoload 'vc-git-root "vc-git")
 #+END_SRC
 
 Then plug everything together:
