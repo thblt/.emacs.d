@@ -13,11 +13,9 @@
 
 (defalias 'want-drones 'want-drone)
 
-(want-drones borg
+(want-drones auto-compile
+             borg
              no-littering)
-
-;; This must happen early in the init
-(require 'no-littering)
 
 ;; Before we start, if this is a new installation, build all the
 ;; drones.
@@ -25,7 +23,7 @@
 (let ((flag-file (no-littering-expand-var-file-name "borg/.initial-build-done")))
   (unless (file-exists-p flag-file)
     (message "Building Borg drones...")
-    (mapcar 'borg-build (borg-drones))
+    (mapc 'borg-build (borg-drones))
 
     (make-directory (file-name-directory flag-file))
     (write-region "" nil flag-file)))
