@@ -576,6 +576,7 @@ And now for some bindings:
   (general-define-key
    :keymaps 'projectile-mode-map
    :prefix projectile-keymap-prefix
+   "A" (lambda () (interactive) (persp-add-buffer (current-buffer)))
    "p" 'thblt/context-switch
    "Z" 'persp-auto-persps-pickup-buffers)
 #+END_SRC
