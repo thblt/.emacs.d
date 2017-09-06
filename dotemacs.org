@@ -513,6 +513,13 @@ This section provides tightier integration between Persp-Mode and Projectile.
 First we create a "context switcher" which allows to switch to an existing perspective, an opened project or a known, but closed, project.  It basically merges ~persp-switch~ and ~counsel-projectile-switch-projectile~.
 
 #+BEGIN_SRC emacs-lisp
+  (defvar thblt/context-starters
+    nil
+    "A list of (CONTEXT-NAME . COMMAND).
+
+  CONTEXT-NAME is the name of an automatic perspective.
+  COMMAND is the command used to start this perspective.")
+
   (defun thblt/context-switch (context)
     "Switch to CONTEXT."
     (interactive "i")
@@ -522,15 +529,22 @@ First we create a "context switcher" which allows to switch to an existing persp
                       (mapcar (lambda (p)
                                 (thblt/project-name-to-persp-name
                                  (funcall projectile-project-name-function p)))
-                              projectile-known-projects))))
+                              projectile-known-projects)))
+           (starters (cl-remove-if
+                      (lambda (p) (member p persps))
+                      (mapcar 'car thblt/context-starters))))
 
       (unless context
         (setq context
               (ivy-completing-read "Switch to context: "
-                                   (append persps projects))))
-      (if (member context persps)
-          (persp-frame-switch context)
-        (projectile-switch-project-by-name (thblt/project-path-from-persp-name context)))))
+                                   (append persps projects starters))))
+      (cond ((member context persps)
+             (persp-frame-switch context))
+            ((member context projects)
+             (projectile-switch-project-by-name (thblt/project-path-from-persp-name context)))
+            ((member context starters)
+             (funcall (cdr (assoc context thblt/context-starters))))
+            (t (error "No such perspective, project or context starter %s." context)))))
 #+END_SRC
 
 And now for some bindings:
@@ -1703,6 +1717,8 @@ Automatic perspective:
                         :mode-name "^erc.*"
                         :switch 'frame
                         )
+
+  (add-to-list 'thblt/context-starters '("erc" . erc-tls))
 #+end_src
 
 ** TODO Magit and Git
@@ -1964,6 +1980,8 @@ Enable notifications:
                         :mode-name "^mu4e.*"
                         :switch 'frame
                         )
+
+  (add-to-list 'thblt/context-starters '("mu4e" . mu4e))
 #+END_SRC
 
 ** Password management (password-store)
