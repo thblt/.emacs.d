@@ -1497,6 +1497,25 @@ Use popups instead of the modeline to display flycheck errors:
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
 #+END_SRC
 
+We provide a function to easily create =outline-heading-alist=:
+
+#+BEGIN_SRC emacs-lisp
+  (defun thblt/mk-outline-heading-alist (before character after &optional start end)
+    "Make an alist of (HEADING . LEVEL) usable as `outline-heading-alist.
+
+  For level n, BEFORE is concatenated with n times CHARACTER followed by AFTER.
+
+  Sequences start at START and end at END, default is 1--_."
+    (unless start (setq start 1))
+    (unless end (setq end 8))
+    (mapcar (lambda (n) (cons (concat
+                               before
+                               (make-string n character)
+                               after)
+                              n))
+            (number-sequence start end)))
+#+END_SRC
+
 *** Rainbow mode
 
 Rainbow mode is similar to Atom's Pigments plugin or something.
@@ -1569,15 +1588,10 @@ Intero mode is a “complete interactive development program for Haskell”:
 *** Lisps
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'lisp-mode-hook
-            (lambda ()
-              (setq outline-heading-alist '((";;; " . 1)
-                                            (";;;; " . 2)
-                                            (";;;;; " .3)
-                                            (";;;;;; " .4)
-                                            (";;;;; " .5)
-                                            (";;;;; " .6)
-                                            (";;;;; " .7)
+    (add-hook 'lisp-mode-hook
+              (lambda ()
+                (setq outline-heading-alist
+                      (thblt/mk-outline-heading-alist ";;" ?\; " "))))
 #+END_SRC
 
 *** Web development
