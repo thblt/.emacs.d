@@ -26,6 +26,9 @@
 [submodule "avy"]
 	path = lib/avy
 	url = git@github.com:abo-abo/avy.git
+[submodule "beginend"]
+	path = lib/beginend
+	url = git@github.com:DamienCassou/beginend.git
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg

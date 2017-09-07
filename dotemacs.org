@@ -742,6 +742,10 @@ Selected is a package which allows to create specific bindings when region is ac
 
 ** Moving around
 
+*** beginend
+
+(beginend-global-mode)
+
 *** mwim
 
 #+BEGIN_SRC emacs-lisp
