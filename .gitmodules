@@ -33,6 +33,9 @@
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
   signingkey = 8F44F72AB931831C
+[submodule "borg-nix-shell"]
+	path = lib/borg-nix-shell
+	url = https://github.com/thblt/borg-nix-shell
 [submodule "borg-queen"]
 	path = lib/borg-queen
 	url = https://github.com/thblt/borg-queen
@@ -217,7 +220,7 @@
 	path = lib/org
 	url = ssh://git@repo.or.cz/org-mode.git
 	build-step = make
-[submodule "org-download"]
+  [submodule "org-download"]
 	path = lib/org-download
 	url = git@github.com:abo-abo/org-download.git
 [submodule "org-ref"]
