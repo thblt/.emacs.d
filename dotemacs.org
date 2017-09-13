@@ -1521,7 +1521,7 @@ We provide a function to easily create =outline-heading-alist=:
 
   For level n, BEFORE is concatenated with n times CHARACTER followed by AFTER.
 
-  Sequences start at START and end at END, default is 1--_."
+  Sequences start at START and end at END, default is 1--8."
     (unless start (setq start 1))
     (unless end (setq end 8))
     (mapcar (lambda (n) (cons (concat
