@@ -171,6 +171,7 @@
 [submodule "intero"]
 	path = lib/intero
 	url = git@github.com:commercialhaskell/intero.git
+	load-path = elisp
 [submodule "irony"]
 	path = lib/irony
 	url = git@github.com:Sarcasm/irony-mode.git
@@ -220,6 +221,9 @@
 	path = lib/org
 	url = ssh://git@repo.or.cz/org-mode.git
 	build-step = make
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
   [submodule "org-download"]
 	path = lib/org-download
 	url = git@github.com:abo-abo/org-download.git
@@ -248,8 +252,13 @@
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
+	load-path = lisp
   build-nix-shell-packages = gnumake automake autoconf pkgconfig libpng zlib poppler_gi
   build-step = make ./server
+  	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
+  
 [submodule "persp-mode"]
 	path = lib/persp-mode
 	url = git@github.com:Bad-ptr/persp-mode.el.git
