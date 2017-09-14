@@ -236,10 +236,16 @@ Create some shortcut commands to load both Eziam themes:
   (defun thblt/powerline-set-faces (&rest args)
     (let* ((default-bg (face-attribute 'default :background))
            (default-fg (face-attribute 'default :foreground))
+
+           ;; FIXME This is NOT a way to compute brightness.  Average the three components.
            (dark (< (string-to-number (substring default-bg 1) 16) #x7FFFFF)))
 
       (face-spec-set 'mode-line
-                     '((t :inherit default)))
+                     `((t :background ,default-bg :foreground ,default-fg)))
+
+      (face-spec-set 'mode-line-inactive
+                     `((t :background ,default-fg :foreground ,default-bg)))
+
 
       (face-spec-set 'thblt/powerline-transparent-face
                      `((t :background ,default-bg :foreground ,default-fg)))
