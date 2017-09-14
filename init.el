@@ -39,5 +39,6 @@
 ;; and tangling dotemacs.org, or builtin org-mode will be loaded
 ;; instead of Elpa version and updated versions will never be used.
 
-(require 'org)
-(org-babel-load-file (expand-file-name "dotemacs.org" user-emacs-directory))
+(unless noninteractive
+  (require 'org)
+  (org-babel-load-file (expand-file-name "dotemacs.org" user-emacs-directory)))
