@@ -193,9 +193,6 @@
 [submodule "magit"]
 	path = lib/magit
 	url = git@github.com:magit/magit.git
-[submodule "magithub"]
-	path = lib/magithub
-	url = git@github.com:vermiculus/magithub.git
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = git@github.com:jrblevin/markdown-mode.git

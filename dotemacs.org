@@ -1840,12 +1840,8 @@ Automatic perspective:
 
 #+begin_src emacs-lisp
   (want-drones magit
-               magithub
                git-timemachine)
 
-  (with-eval-after-load 'magit
-    (require 'magithub)
-    (magithub-feature-autoinject t))
 
   (general-define-key
    "C-x g s" 'magit-status
