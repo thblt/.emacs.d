@@ -255,7 +255,7 @@
   	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
-  
+
 [submodule "persp-mode"]
 	path = lib/persp-mode
 	url = git@github.com:Bad-ptr/persp-mode.el.git
@@ -274,6 +274,9 @@
 [submodule "projectile"]
 	path = lib/projectile
 	url = git@github.com:bbatsov/projectile.git
+[submodule "racket-mode"]
+	path = lib/racket-mode
+	url = git@github.com:greghendershott/racket-mode.git
 [submodule "rainbow-delimiters"]
 	path = lib/rainbow-delimiters
 	url = git@github.com:Fanael/rainbow-delimiters.git
