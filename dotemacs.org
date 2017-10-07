@@ -2133,6 +2133,9 @@ Enable notifications:
                    '("PDF Tools" TeX-pdf-tools-sync-view)))
     (add-to-list 'TeX-view-program-selection
                  '(output-pdf "PDF Tools")))
+
+  (general-define-key :keymaps 'pdf-view-mode-map
+                      "s a" 'pdf-view-auto-slice-minor-mode)
 #+end_src
 
 ** Regular expression builder
