@@ -710,6 +710,12 @@ Don't ask before saving custom dict:
   (setq ispell-silently-savep t)
 #+end_src
 
+Also, disable horrible and confusing "duplicate" marks.  These are easily confused with actually misspelled words, but M-$ won't work on them, and would "correct" another word, possibly off-screen.
+
+#+BEGIN_SRC emacs-lisp
+  (setq flyspell-duplicate-distance 0)
+#+END_SRC
+
 On the fly spellchecking with Flyspell:
 
 #+begin_src emacs-lisp
@@ -718,14 +724,21 @@ On the fly spellchecking with Flyspell:
   (diminish 'flyspell-mode "Fly")
 #+end_src
 
+Disable horrible and confusing Flyspell "duplicate" marks.  These are easily confused with actually misspelled words, but M-$ won't work on them, and would "correct" another word, possibly off-screen.
+
+#+BEGIN_SRC emacs-lisp
+  (setq flyspell-duplicate-distance 0)
+#+END_SRC
+
 Correct words using Ivy instead of default method:
 
 #+begin_src emacs-lisp
-    (want-drone flyspell-correct)
+  (want-drone flyspell-correct)
+  (require 'flyspell-correct-ivy)
 
-    (general-define-key :keymaps 'flyspell-mode-map
-                        "M-$" 'flyspell-auto-correct-previous-word
-                        "C-;" 'flyspell-correct-previous-word-generic)
+  (general-define-key :keymaps 'flyspell-mode-map
+                      "M-$" 'flyspell-auto-correct-previous-word
+                      "C-;" 'flyspell-correct-previous-word-generic)
 #+end_src
 
 Auto-dictionary mode.  Disabled for now, as it seems to slow everything down + doesn't work with org-mode.
