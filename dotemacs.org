@@ -710,13 +710,7 @@ Don't ask before saving custom dict:
   (setq ispell-silently-savep t)
 #+end_src
 
-Also, disable horrible and confusing "duplicate" marks.  These are easily confused with actually misspelled words, but M-$ won't work on them, and would "correct" another word, possibly off-screen.
-
-#+BEGIN_SRC emacs-lisp
-  (setq flyspell-duplicate-distance 0)
-#+END_SRC
-
-On the fly spellchecking with Flyspell:
+And enable Flyspell:
 
 #+begin_src emacs-lisp
   (add-hook 'text-mode-hook (lambda () (flyspell-mode t)))
