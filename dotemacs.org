@@ -1385,6 +1385,13 @@ Some cool org extensions:
         org-default-notes-file "~/Documents/LOG.org")
 #+end_src
 
+**** Org-ref
+
+#+BEGIN_SRC emacs-lisp
+  (want-drone org-ref)
+
+  (setq org-ref-completion-library 'org-ref-ivy-cite)
+#+END_SRC
 * Writing code
 ** Settings
 
