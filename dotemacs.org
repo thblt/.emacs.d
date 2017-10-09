@@ -1317,6 +1317,9 @@ TODO validate =:= and ~=~ on all keyboard mappings.
   (want-drone org
               org-download
               org-ref)
+  (want-drone htmlize
+              org
+              org-download)
 
   (setq org-catch-invisible-edits t ; Avoid editing folded contents
         org-hide-leading-stars t
