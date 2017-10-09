@@ -426,6 +426,7 @@ TODO:
                counsel-projectile)
 
   (projectile-global-mode)
+  (counsel-projectile-on)
 
   (setq projectile-globally-ignored-file-suffixes (append '(
                                                             ".un~"
