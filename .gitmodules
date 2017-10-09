@@ -184,6 +184,12 @@
 [submodule "json-mode"]
 	path = lib/json-mode
 	url = git@github.com:joshwnj/json-mode.git
+[submodule "json-reformat"]
+	path = lib/json-reformat
+	url = git@github.com:gongo/json-reformat.git
+[submodule "json-snatcher"]
+	path = lib/json-snatcher
+	url = git@github.com:Sterlingg/json-snatcher.git
 [submodule "kurecolor"]
 	path = lib/kurecolor
 	url = git@github.com:emacsfodder/kurecolor.git
@@ -242,6 +248,7 @@
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
+
 [submodule "pass"]
 	path = lib/pass
 	url = git@github.com:NicolasPetton/pass.git
@@ -249,7 +256,6 @@
 [submodule "password-store"]
 	path = lib/password-store
 	url = git@github.com:emacsmirror/password-store.git
-
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
