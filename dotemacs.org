@@ -784,6 +784,16 @@ Selected is a package which allows to create specific bindings when region is ac
   (global-set-key (kbd "<end>") 'mwim-end-of-line-or-code)
 #+END_SRC
 
+*** nav-flash (don't get lost)
+
+#+BEGIN_SRC emacs-lisp
+  (require 'nav-flash)
+
+  (face-spec-set 'nav-flash-face '((t (:inherit pulse-highlight-face))))
+
+  (advice-add 'recenter-top-bottom :after (lambda (x) (nav-flash-show)))
+#+END_SRC
+
 ** Replace
 
 #+BEGIN_SRC emacs-lisp
