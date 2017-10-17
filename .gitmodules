@@ -42,9 +42,15 @@
 [submodule "calfw"]
 	path = lib/calfw
 	url = git@github.com:kiwanami/emacs-calfw.git
+[submodule "cider"]
+	path = lib/cider
+	url = git@github.com:clojure-emacs/cider.git
 [submodule "clang-format"]
 	path = lib/clang-format
 	url = git@github.com:emacsmirror/clang-format.git
+[submodule "clojure-mode"]
+	path = lib/clojure-mode
+	url = git@github.com:clojure-emacs/clojure-mode.git
 [submodule "closql"]
 	path = lib/closql
 	url = https://github.com/emacscollective/closql
@@ -245,6 +251,7 @@
   [submodule "org-download"]
 	path = lib/org-download
 	url = git@github.com:abo-abo/org-download.git
+
 [submodule "org-ref"]
 	path = lib/org-ref
 	url = git@github.com:jkitchin/org-ref.git
@@ -295,9 +302,9 @@
 [submodule "projectile"]
 	path = lib/projectile
 	url = git@github.com:bbatsov/projectile.git
-[submodule "racket-mode"]
-	path = lib/racket-mode
-	url = git@github.com:greghendershott/racket-mode.git
+[submodule "queue"]
+	path = lib/queue
+	url = git@github.com:emacsmirror/queue.git
 [submodule "rainbow-delimiters"]
 	path = lib/rainbow-delimiters
 	url = git@github.com:Fanael/rainbow-delimiters.git
@@ -322,6 +329,9 @@
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = git@github.com:Fuco1/smartparens.git
+[submodule "spinner"]
+	path = lib/spinner
+	url = git@github.com:Malabarba/spinner.el.git
 [submodule "tablist"]
 	path = lib/tablist
 	url = git@github.com:politza/tablist.git
