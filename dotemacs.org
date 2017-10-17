@@ -272,7 +272,9 @@ Create some shortcut commands to load both Eziam themes:
       (face-spec-set 'thblt/powerline-buffer-read-only-face
                      `((t :inherit thblt/powerline-buffer-id-face :foreground "red")))
       (face-spec-set 'thblt/powerline-buffer-read-only-active-face
-                     `((t :inherit thblt/powerline-buffer-id-active-face :foreground "red")))))
+                     `((t :inherit thblt/powerline-buffer-id-active-face :foreground "red"))))
+
+    (when (fboundp 'powerline-reset) (powerline-reset)))
 
   (thblt/powerline-set-faces)
   (advice-add 'load-theme :after 'thblt/powerline-set-faces)
