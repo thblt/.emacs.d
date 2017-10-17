@@ -1271,15 +1271,18 @@ This section deals with two things:
 TODO validate =:= and ~=~ on all keyboard mappings.
 
 #+BEGIN_SRC emacs-lisp
-    (defhydra hydra-text-mode ()
-      "text-mode switches"
-      ("f" flyspell-mode "Flyspell")
-      ("d" ispell-change-dictionary "Language")
-      ("w" writeroom-mode "Writeroom")
-      ("," text-scale-decrease "Decrease font size")
-      (";" text-scale-increase "Increase font size")
-      (":" writeroom-decrease-width "Decrease width")
-      ("=" writeroom-increase-width "Increase width"))
+  (setq visual-fill-column-width fill-column)
+
+  (defhydra hydra-text-mode ()
+    "text-mode switches"
+    ("f" flyspell-mode "Flyspell")
+    ("d" ispell-change-dictionary "Language")
+    ("w" visual-fill-column-mode "Visual fill column")
+    ("," text-scale-decrease "Decrease font size")
+    (";" text-scale-increase "Increase font size")
+    (":" (lambda () (interactive) (setq-local visual-fill-column-width (- visual-fill-column-width 5))) "Decrease width")
+    ("!" (lambda () (interactive) (setq-local visual-fill-column-width (+ visual-fill-column-width 5))) "Decrease width"))
+
 
   (general-define-key :keymaps 'text-mode-map
                       "C-x w" 'hydra-text-mode/body)
@@ -1300,12 +1303,17 @@ TODO validate =:= and ~=~ on all keyboard mappings.
   (general-define-key "M-Q" 'unfill-paragraph)
 #+end_src
 
-*** Wordwrap/visual line
+*** Wordwrap/visual line/visual-fill-column
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'simple
-    (diminish 'visual-line-mode)
-    )
+    (diminish 'visual-line-mode))
+
+  (want-drone visual-fill-column)
+  (require 'visual-fill-column)
+
+  (dolist (hook '(markdown-mode-hook org-mode-hook))
+    (add-hook hook (lambda () (setq visual-fill-column-center-text t))))
 #+end_src
 
 ** Major modes
