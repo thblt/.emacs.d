@@ -144,6 +144,9 @@
 [submodule "git-timemachine"]
 	path = lib/git-timemachine
 	url = git@github.com:pidu/git-timemachine.git
+[submodule "graphviz-dot-mode"]
+	path = lib/graphviz-dot-mode
+	url = git@github.com:ppareit/graphviz-dot-mode.git
 [submodule "haml-mode"]
 	path = lib/haml-mode
 	url = git@github.com:nex3/haml-mode.git
@@ -217,6 +220,9 @@
 [submodule "mwim"]
 	path = lib/mwim
 	url = git@github.com:alezost/mwim.el.git
+[submodule "nav-flash"]
+	path = lib/nav-flash
+	url = git@github.com:rolandwalker/nav-flash.git
 [submodule "nix-mode"]
 	path = lib/nix-mode
 	url = git@github.com:emacsmirror/nix-mode.git
@@ -242,13 +248,13 @@
 [submodule "outshine"]
 	path = lib/outshine
 	url = git@github.com:alphapapa/outshine.git
+
 [submodule "packed"]
 	path = lib/packed
 	url = git@github.com:tarsius/packed.git
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
-
 [submodule "pass"]
 	path = lib/pass
 	url = git@github.com:NicolasPetton/pass.git
