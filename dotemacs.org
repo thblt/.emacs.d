@@ -403,7 +403,8 @@ Create some shortcut commands to load both Eziam themes:
   (want-drone persp-mode)
 
   (setq persp-auto-resume-time -1
-        persp-kill-foreign-buffer-action 'kill)
+        persp-kill-foreign-buffer-action 'kill
+        persp-autokill-persp-when-removed-last-buffer 'kill)
 
   (general-define-key
    "C-x b" 'persp-switch-to-buffer)
