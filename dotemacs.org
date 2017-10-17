@@ -1426,25 +1426,28 @@ Some cool org extensions:
                       "<f1> <f1>" 'thblt/org-where-am-i)
 #+END_SRC
 
-**** TODO Hydras and selected bindings
-
- 1. The *emphasize selected* bindings:
-
-    Since use-package doesn't support binding to functions with arguments,and writing a defun for each possible emphasis is a bit overkill, we use =define-key= rather than =:bind=.
+The *emphasize selected* bindings:
 
 #+BEGIN_SRC emacs-lisp
   (define-key selected-org-mode-map (kbd "b") (lambda () (interactive) (org-emphasize ?*)))
   (define-key selected-org-mode-map (kbd "i") (lambda () (interactive) (org-emphasize ?/)))
 #+END_SRC
 
- 2. The *visibility* hydra, which toggles contents visibility. @TODO
-
-**** TODOs, calendar, notes
+**** Org-agenda:
 
 #+begin_src emacs-lisp
   (setq org-agenda-files (list "~/Documents/LOG.org")
         org-default-notes-file "~/Documents/LOG.org")
 #+end_src
+
+**** Org-babel
+
+#+BEGIN_SRC emacs-lisp
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((dot . t)
+       (shell . t)))
+#+END_SRC
 
 **** Org-ref
 
