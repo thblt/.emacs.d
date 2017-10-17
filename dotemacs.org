@@ -1353,9 +1353,6 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 *** Org-mode
 
 #+begin_src emacs-lisp
-  (want-drone org
-              org-download
-              org-ref)
   (want-drone htmlize
               org
               org-download)
@@ -1407,7 +1404,7 @@ Some cool org extensions:
   (add-hook 'org-mode-hook 'toc-org-enable)
 #+END_SRC
 
- - We use =which-function-mode= to identify our position in Org buffers:
+Identify position in buffer:
 
 #+BEGIN_SRC emacs-lisp
   (defun thblt/org-where-am-i ()
@@ -1456,6 +1453,8 @@ The *emphasize selected* bindings:
 
   (setq org-ref-completion-library 'org-ref-ivy-cite)
 #+END_SRC
+
+
 * Writing code
 ** Settings
 
