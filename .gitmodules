@@ -42,9 +42,15 @@
 [submodule "calfw"]
 	path = lib/calfw
 	url = git@github.com:kiwanami/emacs-calfw.git
+[submodule "cider"]
+	path = lib/cider
+	url = git@github.com:clojure-emacs/cider.git
 [submodule "clang-format"]
 	path = lib/clang-format
 	url = git@github.com:emacsmirror/clang-format.git
+[submodule "clojure-mode"]
+	path = lib/clojure-mode
+	url = git@github.com:clojure-emacs/clojure-mode.git
 [submodule "closql"]
 	path = lib/closql
 	url = https://github.com/emacscollective/closql
@@ -144,6 +150,9 @@
 [submodule "git-timemachine"]
 	path = lib/git-timemachine
 	url = git@github.com:pidu/git-timemachine.git
+[submodule "graphviz-dot-mode"]
+	path = lib/graphviz-dot-mode
+	url = git@github.com:ppareit/graphviz-dot-mode.git
 [submodule "haml-mode"]
 	path = lib/haml-mode
 	url = git@github.com:nex3/haml-mode.git
@@ -217,6 +226,9 @@
 [submodule "mwim"]
 	path = lib/mwim
 	url = git@github.com:alezost/mwim.el.git
+[submodule "nav-flash"]
+	path = lib/nav-flash
+	url = git@github.com:rolandwalker/nav-flash.git
 [submodule "nix-mode"]
 	path = lib/nix-mode
 	url = git@github.com:emacsmirror/nix-mode.git
@@ -233,6 +245,7 @@
   [submodule "org-download"]
 	path = lib/org-download
 	url = git@github.com:abo-abo/org-download.git
+
 [submodule "org-ref"]
 	path = lib/org-ref
 	url = git@github.com:jkitchin/org-ref.git
@@ -248,7 +261,6 @@
 [submodule "parsebib"]
 	path = lib/parsebib
 	url = git@github.com:joostkremers/parsebib.git
-
 [submodule "pass"]
 	path = lib/pass
 	url = git@github.com:NicolasPetton/pass.git
@@ -283,9 +295,6 @@
 [submodule "projectile"]
 	path = lib/projectile
 	url = git@github.com:bbatsov/projectile.git
-[submodule "racket-mode"]
-	path = lib/racket-mode
-	url = git@github.com:greghendershott/racket-mode.git
 [submodule "rainbow-delimiters"]
 	path = lib/rainbow-delimiters
 	url = git@github.com:Fanael/rainbow-delimiters.git
