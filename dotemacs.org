@@ -1895,15 +1895,16 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
 
         erc-server-auto-reconnect t
 
-        erc-fill-prefix "    "
-        erc-fill-column 60
+        erc-fill-mode nil
 
         erc-lurker-hide-list '("JOIN" "PART" "QUIT")
         erc-lurker-threshold-time 900 ; 15mn
 
         erc-header-line-format nil)
 
-  (add-hook 'erc-mode-hook 'erc-hl-nicks-mode)
+  (add-hook 'erc-mode-hook (lambda ()
+                             (visual-line-mode)
+                             (erc-hl-nicks-mode)))
 #+END_SRC
 
 Automatic perspective:
