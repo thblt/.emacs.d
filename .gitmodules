@@ -96,6 +96,9 @@
 [submodule "erc-hl-nicks"]
 	path = lib/erc-hl-nicks
 	url = git@github.com:leathekd/erc-hl-nicks.git
+[submodule "esxml"]
+	path = lib/esxml
+	url = git@github.com:tali713/esxml.git
 [submodule "etc/yasnippet/snippets"]
 	path = etc/yasnippet
 	url = https://github.com/thblt/yasnippet-snippets
@@ -229,6 +232,9 @@
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = git@github.com:tarsius/no-littering.git
+[submodule "nov"]
+	path = lib/nov
+	url = git@github.com:wasamasa/nov.el.git
 [submodule "org"]
 	path = lib/org
 	url = ssh://git@repo.or.cz/org-mode.git
@@ -242,13 +248,13 @@
 [submodule "org-ref"]
 	path = lib/org-ref
 	url = git@github.com:jkitchin/org-ref.git
+
 [submodule "outorg"]
 	path = lib/outorg
 	url = git@github.com:alphapapa/outorg.git
 [submodule "outshine"]
 	path = lib/outshine
 	url = git@github.com:alphapapa/outshine.git
-
 [submodule "packed"]
 	path = lib/packed
 	url = git@github.com:tarsius/packed.git
