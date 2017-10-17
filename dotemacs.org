@@ -440,6 +440,12 @@ TODO:
   (diminish 'projectile-mode)
 #+end_src
 
+I consider submodules to be separate projects, so don't include then in the main file listing:
+
+#+BEGIN_SRC emacs-lisp
+  (setq projectile-git-submodule-command nil)
+#+END_SRC
+
 *** Projectile and persp-mode
 
 Automatic perspective creation:
