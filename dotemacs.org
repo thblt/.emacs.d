@@ -1173,9 +1173,7 @@ TODO: Stolen this list from xah-fly-keys:
   (want-drone undo-tree)
 
   (setq undo-tree-auto-save-history t
-        undo-tree-visualizer-diff t
-        ;; undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "/undo-forest" (number-to-string emacs-major-version))))
-        )
+        undo-tree-visualizer-diff t)
 
   (global-undo-tree-mode)
   (diminish 'undo-tree-mode)
@@ -2216,6 +2214,7 @@ We use the =string= syntax, as advised on [[https://www.masteringemacs.org/artic
 #+end_src
 
 * Conclusion
+
 ** HiDPI support (kindof)
 
 This section is made of overrides to improve support for HiDPI monitors.  It must be at the end, to avoid being overriden by default settings.
@@ -2256,7 +2255,6 @@ If we're running on a HiDPI machine, we replace the flycheck fringe bitmap with 
            #b1000000000)
           20 10 'center)))
 #+END_SRC
-
 
 We should have started (or crashed) by now.  It's time to run the server!
 
