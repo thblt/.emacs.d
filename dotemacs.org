@@ -48,6 +48,7 @@ This is my Emacs configuration.  It is pretty much like any other, with maybe a 
   - [[#password-management-password-store][Password management (password-store)]]
   - [[#pdf-tools][PDF Tools]]
   - [[#regular-expression-builder][Regular expression builder]]
+  - [[#scpaste][scpaste]]
 - [[#conclusion][Conclusion]]
   - [[#hidpi-support-kindof][HiDPI support (kindof)]]
   - [[#load-private-configuration][Load private configuration]]
@@ -2212,6 +2213,18 @@ We use the =string= syntax, as advised on [[https://www.masteringemacs.org/artic
 #+begin_src emacs-lisp
   (setq reb-re-syntax 'string)
 #+end_src
+
+** scpaste
+
+Technomancy's =scpaste= is a replacement for pastebin, paste.lisp.org, and similar services.  It generates a HTML page out of a buffer or region and moves it over to a server using scp.
+
+#+BEGIN_SRC emacs-lisp
+  (setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
+        scpaste-http-destination "https://paste.thb.lt"
+        scpaste-user-address "https://thb.lt"
+
+        scpaste-make-name-function 'scpaste-make-name-from-timestamp)
+#+END_SRC
 
 * Conclusion
 
