@@ -45,9 +45,6 @@
 [submodule "cider"]
 	path = lib/cider
 	url = https://github.com/clojure-emacs/cider
-[submodule "clang-format"]
-	path = lib/clang-format
-	url = https://github.com/emacsmirror/clang-format
 [submodule "clojure-mode"]
 	path = lib/clojure-mode
 	url = https://github.com/clojure-emacs/clojure-mode
