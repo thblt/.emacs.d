@@ -686,6 +686,15 @@ Popwin “makes you free from the hell of annoying buffers”:
   (popwin-mode)
 #+END_SRC
 
+*** Which-key
+
+#+begin_src emacs-lisp
+  (want-drone which-key)
+
+  (which-key-mode)
+  (diminish 'which-key-mode)
+#+end_src
+
 *** Customization helper
 
 A little function to identify the face at point.  Nice to have when writing themes, and faster than =C-u C-x ==.
