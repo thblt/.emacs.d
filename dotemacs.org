@@ -1922,11 +1922,20 @@ Automatic perspective:
   (want-drones magit
                git-timemachine)
 
-
   (general-define-key
    "C-x g s" 'magit-status
    "C-x g r" 'magit-list-repositories
    "C-x g t" 'git-timemachine)
+#+end_src
+
+Use Projectile projects as a source of repositories:
+
+#+begin_src emacs-lisp
+  (defun thblt/update-magit-repository-directories (&rest _)
+    (setq magit-repository-directories (mapcar (lambda (x) `(,x . 0)) projectile-known-projects)))
+
+  (advice-add 'magit-status :before 'thblt/update-magit-repository-directories)
+  (advice-add 'magit-list-repositories :before 'thblt/update-magit-repository-directories)
 #+end_src
 
 *** magit-list-repositories
