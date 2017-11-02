@@ -3,6 +3,9 @@
 (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
 (require 'borg)
 (borg-initialize)
+(require 'borg-nix-shell)
+(setq borg-build-shell-command 'borg-nix-shell-build-command)
+
 
 (require 'no-littering)
 (require 'auto-compile)
