@@ -202,8 +202,7 @@ Configure the default font:
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono"))
   (set-face-attribute 'default nil
-  ;;                  :font "DejaVu Sans Mono" ;; This breaks when Emacs is started as a daemon
-                      :height 100
+                      :height 60
                       )
 #+end_src
 
