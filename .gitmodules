@@ -75,9 +75,6 @@
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
-[submodule "debian-bug"]
-	path = lib/debian-bug
-	url = git@github.com:emacsmirror/debian-bug.git
 [submodule "diminish"]
 	path = lib/diminish
 	url = git@github.com:myrjola/diminish.el.git
@@ -317,6 +314,9 @@
 [submodule "s"]
 	path = lib/s
 	url = git@github.com:magnars/s.el.git
+[submodule "scpaste"]
+	path = lib/scpaste
+	url = git@github.com:technomancy/scpaste.git
 [submodule "scss-mode"]
 	path = lib/scss-mode
 	url = git@github.com:antonj/scss-mode.git
@@ -360,6 +360,9 @@
 [submodule "web-mode"]
 	path = lib/web-mode
 	url = git@github.com:fxbois/web-mode.git
+[submodule "which-key"]
+	path = lib/which-key
+	url = git@github.com:justbur/emacs-which-key.git
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = git@github.com:magit/with-editor.git
