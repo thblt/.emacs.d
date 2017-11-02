@@ -10,7 +10,7 @@
 [submodule "async"]
 	path = lib/async
 	url = https://github.com/jwiegley/emacs-async
-  signingkey = DE55B769FC578A14A5BE5430C144D8F4F19FE630
+	signingkey = DE55B769FC578A14A5BE5430C144D8F4F19FE630
 [submodule "auctex"]
 	path = lib/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
@@ -32,7 +32,7 @@
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
-  signingkey = 8F44F72AB931831C
+	signingkey = 8F44F72AB931831C
 [submodule "borg-nix-shell"]
 	path = lib/borg-nix-shell
 	url = https://github.com/thblt/borg-nix-shell
@@ -245,14 +245,12 @@
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
-  [submodule "org-download"]
+[submodule "org-download"]
 	path = lib/org-download
 	url = https://github.com/abo-abo/org-download
-
 [submodule "org-ref"]
 	path = lib/org-ref
 	url = https://github.com/jkitchin/org-ref
-
 [submodule "outorg"]
 	path = lib/outorg
 	url = https://github.com/alphapapa/outorg
@@ -268,7 +266,7 @@
 [submodule "pass"]
 	path = lib/pass
 	url = https://github.com/NicolasPetton/pass
-  signingkey = 28D3BED851FDF3AB57FEF93C233587A47C207910
+	signingkey = 28D3BED851FDF3AB57FEF93C233587A47C207910
 [submodule "password-store"]
 	path = lib/password-store
 	url = https://github.com/emacsmirror/password-store
@@ -276,9 +274,9 @@
 	path = lib/pdf-tools
 	url = https://github.com/politza/pdf-tools
 	load-path = lisp
-  build-nix-shell-packages = gnumake automake autoconf pkgconfig libpng zlib poppler_gi
-  build-step = make ./server
-  	build-step = borg-update-autoloads
+	build-nix-shell-packages = gnumake automake autoconf pkgconfig libpng zlib poppler_gi
+	build-step = make ./server
+	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
 [submodule "persp-mode"]
@@ -347,7 +345,7 @@
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
-  signingkey = 8262BBE54D035960
+	signingkey = 8262BBE54D035960
 [submodule "unfill"]
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
