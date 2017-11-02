@@ -6,7 +6,6 @@
 (require 'borg-nix-shell)
 (setq borg-build-shell-command 'borg-nix-shell-build-command)
 
-
 (require 'no-littering)
 (require 'auto-compile)
 
@@ -17,9 +16,23 @@
 (defvar thblt/required-drones '())
 
 (defmacro want-drone (&rest d)
-  "Declare drones D as required by the current configuration."
-  (mapc (lambda (x) (add-to-list 'thblt/required-drones (symbol-name x))) d)
-  'thblt/required-drones)
+  "Declare required drones and their dependencies.
+
+This macro takes a list of symbols D and treats it as a list of
+drone names, optionnally followed by the list of their
+dependencies.  For example:
+
+(want-drone borg-queen (borg))
+
+Multiple drones may be declared in a single declaration:
+
+(want-drone drone1 (depA depB)
+            drone2
+            drone3 (depC depB))
+
+For that purpose, this macro is aliased to `want-drones'.
+
+At some point, the Queen will use this to identify orphans.")
 
 (defalias 'want-drones 'want-drone)
 
