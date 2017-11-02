@@ -2207,7 +2207,9 @@ Enable notifications:
 ** PDF Tools
 
 #+begin_src emacs-lisp
-  (want-drone pdf-tools)
+  (want-drone pdf-tools (tablist))
+
+  (setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
 
   (pdf-tools-install)
 
