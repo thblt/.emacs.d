@@ -1949,7 +1949,7 @@ First, let's configure the view.
         '(
           ("Name"       25  magit-repolist-column-ident nil)
           ("Branch"     10  magit-repolist-column-branch)
-          ;; ("Version" 25  magit-repolist-column-version nil)
+          ("Version" 25  magit-repolist-column-version nil)
           ("Upstream"   15  magit-repolist-column-upstream)
           ("↓U"         5   magit-repolist-column-unpulled-from-upstream)
           ("↑U"         5   magit-repolist-column-unpushed-to-upstream)
