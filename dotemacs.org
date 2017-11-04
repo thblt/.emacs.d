@@ -864,11 +864,10 @@ Move lines of text with =M-<up>= and =M-<down>=.
   (smartparens-global-mode)
   (show-smartparens-global-mode)
 
-  (sp-pair "“" "”")
-  (sp-pair "«" "»")
-
   (diminish 'smartparens-mode)
 #+end_src
+
+**** Bindings
 
 I'm stealing and modifying smartparens' author config:
 
@@ -1086,9 +1085,11 @@ I'm stealing and modifying smartparens' author config:
   ;;       (indent-region (overlay-start o) (overlay-end o)))))
 #+END_SRC
 
-TODO: Stolen this list from xah-fly-keys:
+**** Extra pairs
 
-#+BEGIN_EXAMPLE emacs-lisp
+Stolen this list from xah-fly-keys:
+
+#+BEGIN_SRC emacs-lisp
   (sp-pair "(" ")")
   (sp-pair "[" "]")
   (sp-pair "{" "}")
@@ -1099,10 +1100,10 @@ TODO: Stolen this list from xah-fly-keys:
   (sp-pair "⦅" "⦆")
   (sp-pair "〚" "〛")
   (sp-pair "⦃" "⦄")
-  (sp-pair "“""" "”")
-  (sp-pair "‘""" "’")
-  (sp-pair "‹""" "›")
-  (sp-pair "«""" "»")
+  (sp-pair "“" "”")
+  (sp-pair "‘" "’")
+  (sp-pair "‹" "›")
+  (sp-pair "«" "»")
   (sp-pair "「" "」")
   (sp-pair "〈" "〉")
   (sp-pair "《" "》")
@@ -1116,19 +1117,19 @@ TODO: Stolen this list from xah-fly-keys:
   (sp-pair "⟦" "⟧")
   (sp-pair "⟨" "⟩")
   (sp-pair "⟪" "⟫")
-  (sp-pair "⟮""" "⟯")
-  (sp-pair "⟬""" "⟭")
-  (sp-pair "⌈""" "⌉")
-  (sp-pair "⌊""" "⌋")
+  (sp-pair "⟮" "⟯")
+  (sp-pair "⟬" "⟭")
+  (sp-pair "⌈" "⌉")
+  (sp-pair "⌊" "⌋")
   (sp-pair "⦇" "⦈")
   (sp-pair "⦉" "⦊")
-  (sp-pair "❛""" "❜")
-  (sp-pair "❝""" "❞")
+  (sp-pair "❛" "❜")
+  (sp-pair "❝" "❞")
   (sp-pair "❨" "❩")
   (sp-pair "❪" "❫")
   (sp-pair "❴" "❵")
   (sp-pair "❬" "❭")
-  (sp-pair "❮""" "❯")
+  (sp-pair "❮" "❯")
   (sp-pair "❰" "❱")
   (sp-pair "❲" "❳")
   (sp-pair "〈" "〉")
@@ -1143,28 +1144,28 @@ TODO: Stolen this list from xah-fly-keys:
   (sp-pair "⦍" "⦎")
   (sp-pair "⦏" "⦐")
   (sp-pair "⁅" "⁆")
-  (sp-pair "⸢""" "⸣")
-  (sp-pair "⸤""" "⸥")
-  (sp-pair "⟅""" "⟆")
+  (sp-pair "⸢" "⸣")
+  (sp-pair "⸤" "⸥")
+  (sp-pair "⟅" "⟆")
   (sp-pair "⦓" "⦔")
   (sp-pair "⦕" "⦖")
-  (sp-pair "⸦""" "⸧")
-  (sp-pair "⸨""" "⸩")
+  (sp-pair "⸦" "⸧")
+  (sp-pair "⸨" "⸩")
   (sp-pair "｟" "｠")
-  (sp-pair "⧘""" "⧙")
-  (sp-pair "⧚""" "⧛")
-  (sp-pair "⸜""" "⸝")
-  (sp-pair "⸌""" "⸍")
-  (sp-pair "⸂""" "⸃")
-  (sp-pair "⸄""" "⸅")
-  (sp-pair "⸉""" "⸊")
-  (sp-pair "᚛""" "᚜")
-  (sp-pair "༺""" "༻")
-  (sp-pair "༼""" "༽")
-  (sp-pair "⏜""" "⏝")
+  (sp-pair "⧘" "⧙")
+  (sp-pair "⧚" "⧛")
+  (sp-pair "⸜" "⸝")
+  (sp-pair "⸌" "⸍")
+  (sp-pair "⸂" "⸃")
+  (sp-pair "⸄" "⸅")
+  (sp-pair "⸉" "⸊")
+  (sp-pair "᚛" "᚜")
+  (sp-pair "༺" "༻")
+  (sp-pair "༼" "༽")
+  (sp-pair "⏜" "⏝")
   (sp-pair "⎴" "⎵")
-  (sp-pair "⏞""" "⏟")
-  (sp-pair "⏠""" "⏡")
+  (sp-pair "⏞" "⏟")
+  (sp-pair "⏠" "⏡")
   (sp-pair "﹁" "﹂")
   (sp-pair "﹃" "﹄")
   (sp-pair "︹" "︺")
@@ -1172,9 +1173,9 @@ TODO: Stolen this list from xah-fly-keys:
   (sp-pair "︗" "︘")
   (sp-pair "︿" "﹀")
   (sp-pair "︽" "︾")
-  (sp-pair "﹇""" "﹈")
+  (sp-pair "﹇" "﹈")
   (sp-pair "︷" "︸")
-#+END_EXAMPLE
+#+END_SRC
 
 *** Undo-tree
 
