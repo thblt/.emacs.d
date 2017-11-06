@@ -271,8 +271,7 @@
 	path = lib/pdf-tools
 	url = https://github.com/politza/pdf-tools
 	load-path = lisp
-	build-nix-shell-packages = gnumake automake autoconf pkgconfig libpng zlib poppler_gi
-	build-step = make ./server
+	build-step = server/autobuild
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
