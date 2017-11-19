@@ -18,13 +18,6 @@
 (want-drone auto-compile)
 (auto-compile-on-load-mode)
 
-;;; No littering
-
-;; We're going to need this at the next step, so it can't be loaded later.
-
-(want-drone no-littering)
-(require 'no-littering)
-
 ;;; Load configuration
 
 (unless noninteractive

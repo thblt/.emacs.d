@@ -44,6 +44,13 @@ And introduce ourselves:
         user-mail-address "thibault@thb.lt")
 #+end_src
 
+Before we do anything serious, we run =no-littering= to prevent packages putting their configuration in random places:
+
+#+begin_src emacs-lisp
+  (want-drone no-littering)
+  (require 'no-littering)
+#+end_src
+
 For some reason, the default value of =max-specpdl-size= prevents [[Mu4e][Mu4e]] from correctly rendering some HTML e-mails.  We increase it from 1300 to 5000.
 
 #+BEGIN_SRC emacs-lisp
