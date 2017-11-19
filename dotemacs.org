@@ -2018,7 +2018,6 @@ On NixOS, this is a bit more tricky.  We need to find the mu binary, dereference
                        (when (and
                               (string-prefix-p "/nix/store/" mu4epath)
                               (file-directory-p mu4epath))
-                         (message "Adding %s to load-path" (file-truename mu4epath))
                          (add-to-list 'load-path (file-truename mu4epath)))))
 #+END_SRC
 
