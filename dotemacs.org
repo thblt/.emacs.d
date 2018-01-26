@@ -347,9 +347,8 @@ Create some shortcut commands to load both Eziam themes:
                                         major-mode-repr
                                         minor-modes-repr))))
 
-
                                   (powerline-process face1)
-                                  ;;(powerline-minor-modes face1 'l)
+
                                   (powerline-narrow face1 'l)
                                   (funcall separator-left face1 face2)
                                   ))
