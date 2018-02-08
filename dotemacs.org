@@ -54,16 +54,7 @@ Before we do anything serious, we run =no-littering= to prevent packages putting
 For some reason, the default value of =max-specpdl-size= prevents [[Mu4e][Mu4e]] from correctly rendering some HTML e-mails.  We increase it from 1300 to 5000.
 
 #+BEGIN_SRC emacs-lisp
-  (setq max-specpdl-size 50000)
-#+END_SRC
-
-Garbage collection happens waaaay too early, and causes noticeable lags.  We set the threshold to the higher possible value, but trigger the GC automatically each time a frame loses focus.
-
-#+BEGIN_SRC emacs-lisp
-  (setq gc-cons-threshold most-positive-fixnum
-        garbage-collection-messages t)
-  (add-hook 'focus-out-hook
-            'garbage-collect)
+  (setq max-specpdl-size 5000)
 #+END_SRC
 
 Change the default major mode to =text-mode= instead of =fundamental-mode=.  Fundamental has no hooks.
