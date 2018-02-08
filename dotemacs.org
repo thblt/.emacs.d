@@ -397,11 +397,9 @@ TODO:
  - Could Projectile read ignore patterns from =~/.gitignore_global=?
 
 #+begin_src emacs-lisp
-  (want-drones projectile
-               counsel-projectile)
+  (want-drones projectile)
 
   (projectile-global-mode)
-  (counsel-projectile-mode)
 
   (setq projectile-globally-ignored-file-suffixes (append '(
                                                             ".un~"
@@ -547,7 +545,7 @@ First we create a "context switcher" which allows to switch to an existing persp
 
       (unless context
         (setq context
-              (ivy-completing-read "Switch to context: "
+              (completing-read "Switch to context: "
                                    (append persps projects starters))))
       (cond ((member context persps)
              (persp-frame-switch context))
@@ -627,24 +625,13 @@ Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
   (eyebrowse-mode)
 #+END_SRC
 
-*** Ivy
+*** Helm
 
 #+begin_src emacs-lisp
-  (want-drone ivy)
+  (want-drone helm)
 
-  (setq ivy-use-virtual-buffers t)
-
-  (ivy-mode)
-  (diminish 'ivy-mode)
-
-  (general-define-key
-           "M-i"     'counsel-imenu
-           "M-x"     'counsel-M-x
-           "C-x C-f" 'counsel-find-file
-
-           "C-S-s"   'swiper
-
-           "C-x 8 RET" 'counsel-unicode-char)
+  (helm-mode)
+  (diminish 'helm-mode)
 #+end_src
 
 *** Popwin
@@ -715,11 +702,11 @@ Disable horrible and confusing Flyspell "duplicate" marks.  These are easily con
   (setq flyspell-duplicate-distance 0)
 #+END_SRC
 
-Correct words using Ivy instead of default method:
+Correct words using Helm instead of default method:
 
 #+begin_src emacs-lisp
   (want-drone flyspell-correct)
-  (require 'flyspell-correct-ivy)
+  (require 'flyspell-correct-helm)
 
   (general-define-key :keymaps 'flyspell-mode-map
                       "M-$" 'flyspell-auto-correct-previous-word
@@ -1430,8 +1417,6 @@ The *emphasize selected* bindings:
 
 #+BEGIN_SRC emacs-lisp
   (want-drone org-ref)
-
-  (setq org-ref-completion-library 'org-ref-ivy-cite)
 #+END_SRC
 
 
@@ -1573,7 +1558,7 @@ Use popups instead of the modeline to display flycheck errors:
 
 *** Outline and outshine
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (want-drone outshine)
 
   (add-hook 'prog-mode-hook 'outline-minor-mode)
@@ -1582,7 +1567,7 @@ Use popups instead of the modeline to display flycheck errors:
 
 We provide a function to easily create =outline-heading-alist=:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (defun thblt/mk-outline-heading-alist (before character after &optional start end)
     "Make an alist of (HEADING . LEVEL) usable as `outline-heading-alist.
 
@@ -2047,7 +2032,7 @@ Then the bulk of the config:
 
   (setq
    ;; Use ivy
-   mu4e-completing-read-function 'ivy-completing-read
+   mu4e-completing-read-function 'helm-completing-read
 
    ;; General settings
    message-send-mail-function 'smtpmail-send-it
