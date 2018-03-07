@@ -1709,35 +1709,30 @@ An extra feature:  update all remotes.  Probably very dirty.
   (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-refresh)
 #+end_src
 
-*** Electric commit messages
+*** "Magic" commit messages
 
 We create a small function hooked to =git-commit-mode= to automatically fill commit message when applicable.  This function simply runs each function in a list, in turn, and insert the return value of the first one returning non-nil.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar thblt/git-electric-commit-message-functions
+  (defvar thblt/git-auto-commit-message-functions
     nil
     "A list of functions returning either nil or a commit message.
     These functions get called with `default-directory' set at the
     repository's.")
 
-  (defun thblt/git-electric-commit-message-hook ()
+  (defun thblt/insert-auto-commit-message ()
     "Run every function in ‘thblt/git-electric-commit-functions’
     and insert the return value of the first one returning non-nil.
 
   This function is meant to be run as a hook in `git-commit-mode'."
+    (interactive)
 
     (let ((default-directory (vc-git-root default-directory)))
-      (--when-let (cl-some 'funcall thblt/git-electric-commit-message-functions)
+      (--when-let (cl-some 'funcall thblt/git-auto-commit-message-functions)
+        ;; (insert it))))
         (insert it))))
 
   (autoload 'vc-git-root "vc-git")
-#+END_SRC
-
-Then plug everything together:
-
-#+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'git-commit
-    (add-hook 'git-commit-mode-hook 'thblt/git-electric-commit-message-hook))
 #+END_SRC
 
 ** TODO Borg and their Queen
@@ -1770,7 +1765,7 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
 *** Automatic commit messages
 
 #+BEGIN_SRC emacs-lisp
-  (defun thblt/borg-git-electric-commit-message ()
+  (defun thblt/borg-git-auto-commit-message ()
     "Generate a commit message describing changes in Borg drones."
     (when (equal
            (file-truename default-directory)
@@ -1829,7 +1824,7 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
                                       modified "\n")) "\n")))))))
 
   (with-eval-after-load 'magit
-    (add-to-list 'thblt/git-electric-commit-message-functions 'thblt/borg-git-electric-commit-message))
+    (add-to-list 'thblt/git-auto-commit-message-functions 'thblt/borg-git-auto-commit-message))
 #+END_SRC
 
 *** Borg-Queen
