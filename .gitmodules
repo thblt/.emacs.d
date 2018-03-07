@@ -138,7 +138,7 @@
 [submodule "geiser"]
 	path = lib/geiser
 	url = https://github.com/jaor/geiser.git
-	load-path = elisp
+load-path = elisp
 [submodule "general"]
 	path = lib/general
 	url = https://github.com/noctuid/general.el
@@ -184,13 +184,14 @@
 [submodule "intero"]
 	path = lib/intero
 	url = https://github.com/commercialhaskell/intero
-	load-path = elisp
+load-path = elisp
 [submodule "irony"]
 	path = lib/irony
 	url = https://github.com/Sarcasm/irony-mode
-  build-nix-shell-packages = cmake llvmPackages.clang.cc
-  build-step = cmake ./server
-  build-step = make ./server
+	build-nix-shell-packages = cmake llvmPackages.clang.cc
+	build-step = which cmake > log
+	build-step = cmake ./server
+	build-step = make ./server
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
@@ -280,7 +281,7 @@
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
 	url = https://github.com/politza/pdf-tools
-	load-path = lisp
+load-path = lisp
 	build-step = server/autobuild
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
