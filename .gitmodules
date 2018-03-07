@@ -188,6 +188,12 @@
 [submodule "irony"]
 	path = lib/irony
 	url = https://github.com/Sarcasm/irony-mode
+  build-nix-shell-packages = cmake llvmPackages.clang.cc
+  build-step = cmake ./server
+  build-step = make ./server
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "ivy"]
 	path = lib/ivy
 	url = https://github.com/abo-abo/swiper

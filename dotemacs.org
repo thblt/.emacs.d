@@ -1543,6 +1543,8 @@ Rainbow mode is similar to Atom's Pigments plugin or something.
   (add-hook 'c-mode-common-hook 'irony-mode)
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
+  (setq irony-server-install-prefix (borg-worktree "irony"))
+
   (with-eval-after-load 'flycheck
     (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 
