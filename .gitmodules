@@ -54,6 +54,9 @@
 [submodule "cmake-mode"]
 	path = lib/cmake-mode
 	url = https://github.com/emacsmirror/cmake-mode
+[submodule "color-identifiers-mode"]
+	path = lib/color-identifiers-mode
+	url = https://github.com/ankurdave/color-identifiers-mode
 [submodule "company"]
 	path = lib/company
 	url = https://github.com/company-mode/company-mode
