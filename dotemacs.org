@@ -667,6 +667,16 @@ Popwin “makes you free from the hell of annoying buffers”:
   (diminish 'which-key-mode)
 #+end_src
 
+*** Windmove
+
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+   "S-<up>" 'windmove-up
+   "S-<left>" 'windmove-left
+   "S-<right>" 'windmove-right
+   "S-<down>" 'windmove-down)
+#+END_SRC
+
 *** Customization helper
 
 A little function to identify the face at point.  Nice to have when writing themes, and faster than =C-u C-x ==.
