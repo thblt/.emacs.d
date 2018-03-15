@@ -1366,10 +1366,11 @@ Some basic settings...
 	        indent-tabs-mode nil)
 #+end_src
 
-and a small mapping.
+and a few mappings.
 
 #+begin_src emacs-lisp
   (global-set-key (kbd "<f8>") 'ffap)
+  (global-set-key (kbd "<f5>") 'recompile)
 #+end_src
 
 ** Minor modes
