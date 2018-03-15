@@ -1915,6 +1915,9 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
                              (visual-line-mode)
                              (erc-hl-nicks-mode)
                              (erc-fill-disable)))
+
+  (advice-add 'load-theme :after (lambda (&rest _) (when (functionp 'erc-hl-nicks-reset-face-table)
+                                                     (erc-hl-nicks-reset-face-table))))
 #+END_SRC
 
 Automatic perspective:
