@@ -1379,6 +1379,20 @@ and a few mappings.
   (want-drones rainbow-delimiters)
 #+END_SRC
 
+*** Color-identifiers
+
+#+begin_src emacs-lisp
+  (want-drone color-identifiers-mode)
+
+  (add-hook 'prog-mode-hook 'color-identifiers-mode)
+  (advice-add 'load-theme :after (lambda (&rest _)
+                                   (color-identifiers:regenerate-colors)
+                                   (color-identifiers:refresh)))
+
+  (with-eval-after-load 'color-identifiers-mode
+    (diminish 'color-identifiers-mode))
+#+end_src
+
 *** Company
 
 #+begin_src emacs-lisp
