@@ -288,9 +288,6 @@ load-path = lisp
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
-[submodule "persp-mode"]
-	path = lib/persp-mode
-	url = https://github.com/Bad-ptr/persp-mode.el
 [submodule "po-mode"]
 	path = lib/po-mode
 	url = https://github.com/emacsmirror/po-mode
