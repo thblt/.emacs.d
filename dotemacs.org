@@ -3,13 +3,13 @@
 
 This is my Emacs configuration.  It is pretty much like any other, with maybe a few interesting properties:
 
- - It uses a [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] style with Org-Mode.  Although the documentation is admittedly scarse, it makes the configuration easy to organize and understand.
+ + It uses a [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] style with Org-Mode.  Although the documentation is admittedly scarce, it makes the configuration easy to organize and understand.
 
- - It uses [[https://github.com/emacscollective/borg][Borg]] instead of =package.el= or =use-package=.  Borg has a lot of interesting properties compared to the alternatives: since packages (“drones”) are Git submodules, they can be modified and contributed back.  Submodules also improve reproducibility, since you manually configure which version of which package you want installed.
+ + It uses the excellent [[https://github.com/emacscollective/borg][Borg]] package manager instead of anything based on =package.el=, including =use-package=.  Borg has a lot of interesting properties compared to the alternatives: since packages (“drones”) are Git submodules, they can be modified and contributed back.  Submodules also guarantee excellent configureation reproducibility, since you manually configure which version of which package you want installed, and version here means a /commit/ --- you don't get finer-grained than that.
 
- - It has a whole section dedicated to [[#writing-prose][writing prose]].
+ + It has a whole section dedicated to [[#writing-prose][writing prose]].
 
- - It uses [[https://github.com/abo-abo/swiper][Ivy]] /and/ [[https://github.com/emacs-helm/helm][Helm]].  The bulk of completion is performed through Ivy, but in some rare cases where Helm is still required, or is a better fit for the job, Helm is used instead.
+ + It uses [[https://github.com/abo-abo/swiper][Ivy]] /and/ (a bit of) [[https://github.com/emacs-helm/helm][Helm]].  The bulk of completion is performed through Ivy, but in some rare cases where Helm is still required, or is a better fit for the job, Helm is used instead.
 
 * Contents :TOC_1:noexport:
 - [[#introduction][Introduction]]
@@ -861,7 +861,7 @@ Move lines of text with =M-<up>= and =M-<down>=.
 
 **** Bindings
 
-I'm stealing and modifying smartparens' author config:
+Since the author of Smartparens released [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][his own config]], here it is, copy-pasted and slightly modified to suit my needs:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'minibuffer-setup-hook 'turn-on-smartparens-strict-mode)
