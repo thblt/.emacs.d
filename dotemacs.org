@@ -757,6 +757,14 @@ Selected is a package which allows to create specific bindings when region is ac
 #+end_src
 
 ** Moving around
+*** avy
+
+#+BEGIN_SRC emacs-lisp
+  (want-drone avy)
+
+  (general-define-key "C-:" 'avy-goto-char-timer
+                      "M-g f" 'avy-goto-line)
+#+END_SRC
 
 *** beginend
 
