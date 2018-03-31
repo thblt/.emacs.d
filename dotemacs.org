@@ -670,6 +670,8 @@ Popwin “makes you free from the hell of annoying buffers”:
 *** Windmove
 
 #+BEGIN_SRC emacs-lisp
+  (setq windmove-wrap-around t)
+
   (general-define-key
    "S-<up>" 'windmove-up
    "S-<left>" 'windmove-left
