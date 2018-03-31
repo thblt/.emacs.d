@@ -2015,6 +2015,15 @@ Some parts of this configuration are private and stored elsewhere.  We now need 
       (display-warning :warning "Private configuration missing")))
 #+END_SRC
 
+** Server configuration
+
+#+BEGIN_SRC emacs-lisp
+  (defun thblt/server-start (name)
+    (interactive "sDaemon name? ")
+    (setq server-name name)
+    (server-start))
+#+END_SRC
+
 ** Report success
 
 We finally set the initial contents of the scratch buffer.  This makes it easy to notice when something went wrong (this may not be obvious in daemon mode)
