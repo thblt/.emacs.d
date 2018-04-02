@@ -204,50 +204,51 @@ Create some shortcut commands to load both Eziam themes:
 ** Modeline
 
 #+BEGIN_SRC emacs-lisp
-  (want-drone powerline)
+  (want-drone kurecolor
+              moody)
 
+  (require 'kurecolor)
+  (require 'moody)
+#+END_SRC
+
+*** Faces
+
+#+BEGIN_SRC emacs-lisp
   (defun thblt/powerline-set-faces (&rest args)
     (let* ((default-bg (face-attribute 'default :background))
-           (default-fg (face-attribute 'default :foreground))
+     (default-fg (face-attribute 'default :foreground))
 
-           ;; FIXME This is NOT a way to compute brightness.  Average the three components.
-           (dark (< (string-to-number (substring default-bg 1) 16) #x7FFFFF)))
+     ;; @FIXME This is NOT a good way to compute brightnesqs.  Average the three components.
+     (dark (< (kurecolor-hex-get-brightness default-bg) .5))
+     (brightness-step (if dark .05 -.05))
+     (bg-down1 (kurecolor-adjust-brightness default-bg (* 1 (- brightness-step))))
+     (bg-down2 (kurecolor-adjust-brightness default-bg (* 2 (- brightness-step))))
+     (bg-down4 (kurecolor-adjust-brightness default-bg (* 6 (- brightness-step))))
+     (bg-up1 (kurecolor-adjust-brightness default-bg (* 1 brightness-step)))
+     (bg-up2 (kurecolor-adjust-brightness default-bg (* 2 brightness-step)))
+     (bg-up3 (kurecolor-adjust-brightness default-bg (* 6 brightness-step))))
 
       (face-spec-set 'mode-line
-                     `((t :background ,default-bg :foreground ,default-fg)))
+         `((t :background ,bg-up3
+        :foreground ,default-fg
+        :underline ,bg-up3
+        :overline ,bg-up3)))
 
       (face-spec-set 'mode-line-inactive
-                     `((t :background ,default-fg :foreground ,default-bg)))
+                     `((t
+                        :background ,default-bg
+                        :foreground ,bg-up2
+                        :underline ,bg-up1
+                        :overline ,bg-up1)))
 
+      (face-spec-set 'thblt/mode-line-server-name-face
+                     `((t
+                        :background "BlueViolet"
+                        :foreground "white"
+                        :overline "#550055"
+                        :underline "#550055")))
 
-      (face-spec-set 'thblt/powerline-transparent-face
-                     `((t :background ,default-bg :foreground ,default-fg)))
-
-      (face-spec-set 'thblt/powerline-window-information-active-face
-                     `((t :background "orange" :foreground "black" :weight bold)))
-      (face-spec-set 'thblt/powerline-window-information-face
-                     `((t :background ,default-bg :foreground "DarkOrange" :weight bold)))
-
-      (face-spec-set 'thblt/powerline-persp-active-face
-                     `((t :background "DarkViolet" :foreground "white")))
-      (face-spec-set 'thblt/powerline-persp-face
-                     `((t :background ,default-bg :foreground "DarkViolet")))
-      (face-spec-set 'thblt/powerline-persp-active-bad-face
-                     `((t :background "red")))
-      (face-spec-set 'thblt/powerline-persp-bad-face
-                     `((t :background ,default-bg :foreground "red")))
-
-      (face-spec-set 'thblt/powerline-buffer-id-active-face
-                     `((t :background ,default-fg :foreground ,default-bg :weight bold)))
-      (face-spec-set 'thblt/powerline-buffer-id-face
-                     `((t :background ,default-bg :foreground ,default-fg)))
-
-      (face-spec-set 'thblt/powerline-buffer-read-only-face
-                     `((t :inherit thblt/powerline-buffer-id-face :foreground "red")))
-      (face-spec-set 'thblt/powerline-buffer-read-only-active-face
-                     `((t :inherit thblt/powerline-buffer-id-active-face :foreground "red"))))
-
-    (when (fboundp 'powerline-reset) (powerline-reset)))
+    (when (fboundp 'powerline-reset) (powerline-reset))))
 
   (thblt/powerline-set-faces)
   (advice-add 'load-theme :after 'thblt/powerline-set-faces)
@@ -255,123 +256,91 @@ Create some shortcut commands to load both Eziam themes:
   (defun thblt/powerline-get-face (base &optional variant)
     "Select a face for the mode-line."
     (intern (format "thblt/powerline-%s%s%s-face"
-                    base
-                    (if active "-active" "")
-                    (if variant (concat "-" variant) ""))))
+        base
+        (if active "-active" "")
+        (if variant (concat "-" variant) ""))))
+#+END_SRC
 
-  (defvar thblt/diminished-major-modes
-    nil
-    "A list of (MAJOR-MODE . REPR)")
+*** Track window position
 
-  (setq thblt/diminished-major-modes
-        '((emacs-lisp-mode . "EL")
-          (erc-mode . nil)))
+The modelines of the windows at the bottom left and the bottom right of the frame display special information:
 
-  (defvar thblt/languages-reprs
-    `(("fr" ,(concat
-              (propertize " " 'face '(:background "blue"))
-              (propertize " " 'face '(:background "white"))
-              (propertize " " 'face '(:background "red")))))
-    "An Alist of language IDs and representations"
-    )
+ - At the *bottom left*, the name of the current [[https://github.com/wasamasa/eyebrowse][Eyebrowse]] perspective;
+ - At the *bottom right*, the name of the server.
 
-  (require 'ace-window) ;; We call (aw-update) when updating the
-  ;; mode-line.
+There's no /fast/ way to determine a window's position when rendering the mode-line, so we need to store them statically in the window parameters, and update on ~window-configuration-change-hook~:
 
-  (setq-default mode-line-format
-                '("%e"
-                  (:eval
-                   (cl-flet ((w (str) (if str (concat " " str " ") "")))
-                     (let* ((active (powerline-selected-window-active))
-                            (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
-                            (mode-line (if active 'mode-line 'mode-line-inactive))
-                            (face1 (if active 'powerline-active1 'powerline-inactive1))
-                            (face2 (if active 'powerline-active2 'powerline-inactive2))
-                            (standard-separator "chamfer")
-                            (special-separator "butt")
-                            (separator-left (intern (format "powerline-%s-%s"
-                                                            standard-separator
-                                                            (car powerline-default-separator-dir))))
-                            (separator-right (intern (format "powerline-%s-%s"
-                                                             standard-separator
-                                                             (cdr powerline-default-separator-dir))))
-                            (special-separator-left (intern (format "powerline-%s-%s"
-                                                                    special-separator
-                                                                    (car powerline-default-separator-dir))))
-                            (special-separator-right (intern (format "powerline-%s-%s"
-                                                                     special-separator
-                                                                     (cdr powerline-default-separator-dir))))
+#+BEGIN_SRC emacs-lisp
+  (defun thblt/window-at-bottom-left-p (win)
+    "Return non-nil if WIN is at the bottom left of the frame."
+    (not (or
+          (window-in-direction 'below win)
+          (window-in-direction 'left win))))
 
-                            (face)
-                            (lhs (list
-                                  ;; Window ID
-                                  (powerline-raw
-                                   (w (progn
-                                        (aw-update)
-                                        (let ((path (window-parameter (selected-window) 'ace-window-path)))
-                                          (set-text-properties 0 1 nil path)
-                                          path)))
-                                   (setq face (thblt/powerline-get-face "window-information")))
+  (defun thblt/window-at-bottom-right-p (win)
+    "Return non-nil if WIN is at the bottom right of the frame."
+    (not (or
+          (window-in-direction 'below win)
+          (window-in-direction 'right win))))
 
-                                  ;; Server name
-                                  (funcall separator-left face
-                                           (setq face (thblt/powerline-get-face "persp" (unless t "bad"))))
-                                  ;; Look here =======================================> ^@FIXME
-                                  ;; (this used to be useful when using
-                                  ;; persp-mode to indicate that current
-                                  ;; buffer wasn't in perspctive.  It's
-                                  ;; now pointless.)
-                                  (powerline-raw
-                                   (w server-name)
-                                   face)
-                                  ;;
-                                  ;; Buffer ID
-                                  (funcall separator-left face (setq face 'thblt/powerline-transparent-face))
-                                  (powerline-raw " " face)
+  (defun thblt/update-window-position-parameters ()
+    (mapc (lambda (win)
+            (set-window-parameter win 'thblt/window-at-bottom-left (thblt/window-at-bottom-left-p win))
+            (set-window-parameter win 'thblt/window-at-bottom-right (thblt/window-at-bottom-right-p win)))
+          (window-list (selected-frame) nil)))
 
-                                  (funcall special-separator-right face
-                                           (setq face (thblt/powerline-get-face "buffer-id")))
-                                  (when buffer-read-only
-                                    (powerline-raw " " (thblt/powerline-get-face "buffer-read-only")))
-                                  (powerline-raw
-                                   (w (buffer-name)) face)
-                                  ;;
-                                  ;; Modes
-                                  (funcall special-separator-left face (setq face 'thblt/powerline-transparent-face))
-                                  (powerline-raw " " face)
-                                  (funcall special-separator-left face face1)
+  (add-hook 'window-configuration-change-hook 'thblt/update-window-position-parameters)
+#+END_SRC
 
-                                  (let ((major-mode-repr (if (assoc major-mode thblt/diminished-major-modes)
-                                                             (alist-get major-mode thblt/diminished-major-modes)
-                                                           mode-name))
-                                        (minor-modes-repr (format-mode-line minor-mode-alist)))
+*** Putting it all together
 
-                                    (when (or major-mode-repr minor-modes-repr)
-                                      (powerline-raw
-                                       (concat
-                                        major-mode-repr
-                                        minor-modes-repr))))
+#+BEGIN_SRC emacs-lisp
+  (defun thblt/modeline-wrap (str)
+    (if str (concat " " str " ") ""))
 
-                                  (powerline-process face1)
+  (setq moody-mode-line-height 35
+        x-underline-at-descent-line t)
 
-                                  (powerline-narrow face1 'l)
-                                  (funcall separator-left face1 face2)
-                                  ))
+  (setq-default
+   mode-line-format
+   '((:eval
+      (when (and (bound-and-true-p eyebrowse-mode) ;; Eyebrowse is bound and on
+                 (< 1 (length (eyebrowse--get 'window-configs))) ;; We have configs
+                 (window-parameter (selected-window) 'thblt/window-at-bottom-left)) ;;
+        (let* ((num (eyebrowse--get 'current-slot))
+               (tag (when num (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
+               (str (if (and tag (< 0 (length tag)))
+                        tag
+                      (when num (int-to-string num)))))
+          (propertize (thblt/modeline-wrap str) 'face '(:weight bold :background "#FFCC33" :foreground "black" :box t)))))
 
-                            (rhs (list
-                                  (powerline-raw global-mode-string face2)
-                                  (funcall separator-right face2 face1)
-                                  (unless window-system
-                                    (powerline-raw (char-to-string #xe0a1) face1 'l))
-                                  (powerline-raw "%3l" face1 'l)
-                                  (powerline-raw ":" face1)
-                                  (powerline-raw "%2c" face1 'r)
-                                  (funcall separator-right face1 mode-line)
-                                  (powerline-raw " ")
-                                  )))
-                       (concat (powerline-render lhs)
-                               (powerline-fill mode-line (powerline-width rhs))
-                               (powerline-render rhs)))))))
+     " "
+
+     (:eval
+      (moody-tab
+       (concat
+        (when buffer-read-only
+          (propertize " "))
+        (when (buffer-modified-p)
+          (propertize "💾 " 'face '(:foreground "red")))
+        (buffer-name))))
+
+     " "
+     "%3l:%2c"
+
+     " ["
+     (:eval (propertize mode-name 'face 'bold))
+     minor-mode-alist
+     "] "
+
+     (:eval (when vc-mode (moody-tab (substring vc-mode 1) nil 'up)))
+     " "
+     (:eval
+      (when (and t ;; @FIXME
+                 (window-parameter (selected-window) 'thblt/window-at-bottom-right))
+        (moody-wrap server-name 1 'up 'ribbon
+                    'thblt/mode-line-server-name-face
+                    'thblt/mode-line-server-name-face)))))
 #+END_SRC
 
 ** TODO Project management with Projectile
@@ -460,6 +429,8 @@ Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 *** Eyebrowse
 
 #+BEGIN_SRC emacs-lisp
+  (want-drone eyebrowse)
+
   (eyebrowse-mode)
 #+END_SRC
 
@@ -648,7 +619,7 @@ Selected is a package which allows to create specific bindings when region is ac
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'autorevert
-    (diminish 'auto-revert-mode "↺"))
+    (diminish 'auto-revert-mode "🔃"))
 #+end_src
 
 *** TODO Expand-region
@@ -1974,7 +1945,6 @@ If we're running on a HiDPI machine, we replace the flycheck fringe bitmap with 
 #+BEGIN_SRC emacs-lisp
   (if (string-prefix-p  "maladict" system-name)
       (progn
-
         (set-face-attribute 'default nil
                             :height 070)
 

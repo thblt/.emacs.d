@@ -224,6 +224,9 @@ load-path = elisp
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
+[submodule "moody"]
+	path = lib/moody
+	url = https://github.com/tarsius/moody/
 [submodule "move-text"]
 	path = lib/move-text
 	url = https://github.com/emacsfodder/move-text
@@ -280,14 +283,14 @@ load-path = elisp
 [submodule "password-store"]
 	path = lib/password-store
 	url = https://github.com/emacsmirror/password-store
-[submodule "pdf-tools"]
-	path = lib/pdf-tools
-	url = https://github.com/politza/pdf-tools
 load-path = lisp
 	build-step = server/autobuild
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
+[submodule "pdf-tools"]
+	path = lib/pdf-tools
+	url = https://github.com/politza/pdf-tools
 [submodule "po-mode"]
 	path = lib/po-mode
 	url = https://github.com/emacsmirror/po-mode
