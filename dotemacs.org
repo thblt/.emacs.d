@@ -213,7 +213,7 @@ Create some shortcut commands to load both Eziam themes:
   (defun eziam-light () (interactive) (load-theme 'eziam-light t))
 #+END_SRC
 
-** Modeline
+** Mode line
 
 #+BEGIN_SRC emacs-lisp
   (want-drone kurecolor
@@ -226,7 +226,7 @@ Create some shortcut commands to load both Eziam themes:
 *** Faces
 
 #+BEGIN_SRC emacs-lisp
-  (defun thblt/powerline-set-faces (&rest args)
+  (defun thblt/mode-line-set-faces (&rest args)
     (let* ((default-bg (face-attribute 'default :background))
      (default-fg (face-attribute 'default :foreground))
 
@@ -241,33 +241,49 @@ Create some shortcut commands to load both Eziam themes:
      (bg-up3 (kurecolor-adjust-brightness default-bg (* 6 brightness-step))))
 
       (face-spec-set 'mode-line
-         `((t :background ,bg-up3
-        :foreground ,default-fg
-        :underline ,bg-up3
-        :overline ,bg-up3)))
+                     `((t
+                        :background ,bg-up3
+                        :foreground ,default-fg
+                        :underline ,bg-up3
+                        :overline ,bg-up3)))
 
       (face-spec-set 'mode-line-inactive
                      `((t
                         :background ,default-bg
                         :foreground ,bg-up2
                         :underline ,bg-up1
-                        :overline ,bg-up1)))
+                        :overline "black")))
 
       (face-spec-set 'thblt/mode-line-server-name-face
                      `((t
-                        :background "BlueViolet"
                         :foreground "white"
-                        :overline "#550055"
-                        :underline "#550055")))
+                        :background ,(kurecolor-hsv-to-hex
+                                     .85
+                                     .95
+                                     (kurecolor-hex-get-brightness bg-up3))
+                        :box ,default-fg)))
 
-    (when (fboundp 'powerline-reset) (powerline-reset))))
+      ;; This is for Moody, which needs underline and overline.
+      (face-spec-set 'thblt/mode-line-invisible
+                     `((t
+                        :foreground ,default-bg
+                        :background ,bg-up3
+                        :underline ,default-bg
+                        :overline ,default-bg)))
 
-  (thblt/powerline-set-faces)
-  (advice-add 'load-theme :after 'thblt/powerline-set-faces)
+      (face-spec-set 'thblt/mode-line-inactive-invisible
+                     `((t
+                        :foreground ,default-bg
+                        :background ,default-bg
+                        :underline ,default-bg
+                        :overline ,default-bg)))))
 
-  (defun thblt/powerline-get-face (base &optional variant)
+  (thblt/mode-line-set-faces)
+  (advice-add 'load-theme :after 'thblt/mode-line-set-faces)
+
+  (defun thblt/mode-line-get-face (base &optional variant)
     "Select a face for the mode-line."
-    (intern (format "thblt/powerline-%s%s%s-face"
+    (intern (format "thblt/mode-line-%s%s%s-face"
         base
         (if active "-active" "")
         (if variant (concat "-" variant) ""))))
@@ -275,7 +291,7 @@ Create some shortcut commands to load both Eziam themes:
 
 *** Track window position
 
-The modelines of the windows at the bottom left and the bottom right of the frame display special information:
+The mode-lines of the windows at the bottom left and the bottom right of the frame display special information:
 
  - At the *bottom left*, the name of the current [[https://github.com/wasamasa/eyebrowse][Eyebrowse]] perspective;
  - At the *bottom right*, the name of the server.
@@ -307,8 +323,11 @@ There's no /fast/ way to determine a window's position when rendering the mode-l
 *** Putting it all together
 
 #+BEGIN_SRC emacs-lisp
-  (defun thblt/modeline-wrap (str)
+  (defun thblt/mode-line-wrap (str)
     (if str (concat " " str " ") ""))
+
+  (defun thblt/mode-line-sep (str)
+    (if str (concat str " ") ""))
 
   (setq moody-mode-line-height 35
         x-underline-at-descent-line t)
@@ -317,14 +336,13 @@ There's no /fast/ way to determine a window's position when rendering the mode-l
    mode-line-format
    '((:eval
       (when (and (bound-and-true-p eyebrowse-mode) ;; Eyebrowse is bound and on
-                 (< 1 (length (eyebrowse--get 'window-configs))) ;; We have configs
                  (window-parameter (selected-window) 'thblt/window-at-bottom-left)) ;;
         (let* ((num (eyebrowse--get 'current-slot))
                (tag (when num (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
                (str (if (and tag (< 0 (length tag)))
                         tag
                       (when num (int-to-string num)))))
-          (propertize (thblt/modeline-wrap str) 'face '(:weight bold :background "#FFCC33" :foreground "black" :box t)))))
+          (propertize (thblt/mode-line-wrap str) 'face '(:weight bold :background "#FFCC33" :foreground "black" :box t)))))
 
      " "
 
@@ -337,22 +355,24 @@ There's no /fast/ way to determine a window's position when rendering the mode-l
           (propertize "💾 " 'face '(:foreground "red")))
         (buffer-name))))
 
-     " "
-     "%3l:%2c"
+     "  %3l:%2c "
 
-     " ["
-     (:eval (propertize mode-name 'face 'bold))
+     "  ["
+        (:eval (propertize mode-name 'face 'bold))
      minor-mode-alist
-     "] "
+     "]   "
 
-     (:eval (when vc-mode (moody-tab (substring vc-mode 1) nil 'up)))
-     " "
      (:eval
-      (when (and t ;; @FIXME
-                 (window-parameter (selected-window) 'thblt/window-at-bottom-right))
-        (moody-wrap server-name 1 'up 'ribbon
-                    'thblt/mode-line-server-name-face
-                    'thblt/mode-line-server-name-face)))))
+      (when vc-mode
+        (moody-tab (substring vc-mode 1) nil 'up)))
+
+     (:eval (when vc-mode "   ")) ;; Not the cleanest way to add a conditional separator...
+
+     (:eval (thblt/mode-line-sep
+             (when (and t ;; @FIXME Detect if server is started.
+                        (window-parameter (selected-window) 'thblt/window-at-bottom-right))
+
+               (propertize (thblt/mode-line-wrap server-name) 'face 'thblt/mode-line-server-name-face))))))
 #+END_SRC
 
 ** TODO Project management with Projectile
@@ -1271,7 +1291,7 @@ A good replacement for ~comment-dwim~, but unline [[https://github.com/remyferre
       (diminish 'flycheck-mode))
 #+end_src
 
-Use popups instead of the modeline to display flycheck errors:
+Use popups instead of the mode-line to display flycheck errors:
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'flycheck

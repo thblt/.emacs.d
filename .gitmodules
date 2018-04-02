@@ -298,9 +298,6 @@ load-path = elisp
 [submodule "pos-tip"]
 	path = lib/pos-tip
 	url = https://github.com/pitkali/pos-tip
-[submodule "powerline"]
-	path = lib/powerline
-	url = https://github.com/milkypostman/powerline
 [submodule "projectile"]
 	path = lib/projectile
 	url = https://github.com/bbatsov/projectile
