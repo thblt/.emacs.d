@@ -286,11 +286,6 @@ load-path = elisp
 [submodule "password-store"]
 	path = lib/password-store
 	url = https://github.com/emacsmirror/password-store
-load-path = lisp
-	build-step = server/autobuild
-	build-step = borg-update-autoloads
-	build-step = borg-byte-compile
-	build-step = borg-makeinfo
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
 	url = https://github.com/politza/pdf-tools
