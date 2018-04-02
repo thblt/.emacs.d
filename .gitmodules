@@ -221,6 +221,9 @@ load-path = elisp
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit
+[submodule "magit-popup"]
+	path = lib/magit-popup
+	url = https://github.com/magit/magit-popup.git
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
