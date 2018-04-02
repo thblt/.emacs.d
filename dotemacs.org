@@ -1966,6 +1966,28 @@ Technomancy's =scpaste= is a replacement for pastebin, paste.lisp.org, and simil
         scpaste-make-name-function 'scpaste-make-name-from-timestamp)
 #+END_SRC
 
+A lot of packages add overlays which are useful when editing, noisy when reading.  We advise scpaste so a few minor modes get disabled before it runs, and restored afterwards.
+
+#+BEGIN_SRC emacs-lisp
+  (defun thblt/scpaste-without-noise (f &rest args)
+    (let ((hig highlight-indent-guides-mode)
+          (flyc flycheck-mode)
+          (flys flyspell-mode))
+      (highlight-indent-guides-mode -1)
+      (flycheck-mode -1)
+      (flyspell-mode -1)
+      (apply f args)
+      (when hig
+        (highlight-indent-guides-mode 1))
+      (when flyc
+        (flycheck-mode 1))
+      (when flys
+        (flyspell-mode 1))))
+
+  (advice-add 'scpaste :around 'thblt/scpaste-without-noise)
+  (advice-add 'scpaste-region :around 'thblt/scpaste-without-noise)
+#+END_SRC
+
 * Conclusion
 
 ** HiDPI support (kindof)
