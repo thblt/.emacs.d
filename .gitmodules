@@ -147,10 +147,7 @@ load-path = elisp
 	url = https://github.com/noctuid/general.el
 [submodule "ghub"]
 	path = lib/ghub
-	url = https://github.com/tarsius/ghub
-[submodule "ghub+"]
-	path = lib/ghub+
-	url = https://github.com/vermiculus/ghub-plus
+	url = https://github.com/magit/ghub
 [submodule "git-timemachine"]
 	path = lib/git-timemachine
 	url = https://github.com/pidu/git-timemachine
@@ -187,7 +184,7 @@ load-path = elisp
 [submodule "intero"]
 	path = lib/intero
 	url = https://github.com/commercialhaskell/intero
-load-path = elisp
+	load-path = elisp
 [submodule "irony"]
 	path = lib/irony
 	url = https://github.com/Sarcasm/irony-mode

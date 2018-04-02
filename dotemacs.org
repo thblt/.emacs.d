@@ -1923,7 +1923,7 @@ Enable notifications:
   (want-drones auth-password-store
                pass
                password-store)
-  (auth-pass-enable)
+  (auth-source-pass-enable)
 #+END_SRC
 
 ** PDF Tools
