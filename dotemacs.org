@@ -12,7 +12,7 @@ with maybe a few interesting properties:
    based on =package.el=, including =use-package=.  Borg has a lot of
    interesting properties compared to the alternatives: since packages
    (“drones”) are Git submodules, they can be modified and contributed
-   back.  Submodules also guarantee excellent configureation
+   back.  Submodules also guarantee excellent configuration
    reproducibility, since you manually configure which version of
    which package you want installed, and version here means a /commit/
    --- you don't get finer-grained than that.
