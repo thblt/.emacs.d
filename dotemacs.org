@@ -355,7 +355,8 @@ parameters, and update on ~window-configuration-change-hook~:
        (concat
         (if buffer-read-only
           (propertize " ")
-          (when (buffer-modified-p)
+          (when (and (buffer-file-name)
+                     (buffer-modified-p))
             (propertize "💾 " 'face '(:foreground "red"))))
         (propertize (buffer-name) 'face 'bold))))
 
