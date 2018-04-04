@@ -262,14 +262,6 @@ Create some shortcut commands to load both Eziam themes:
                                      (kurecolor-hex-get-brightness bg-up3))
                         :box ,default-fg)))
 
-      ;; This is for Moody, which needs underline and overline.
-      (face-spec-set 'thblt/mode-line-invisible
-                     `((t
-                        :foreground ,default-bg
-                        :background ,bg-up3
-                        :underline ,default-bg
-                        :overline ,default-bg)))
-
       (face-spec-set 'thblt/mode-line-inactive-invisible
                      `((t
                         :foreground ,default-bg
@@ -357,13 +349,21 @@ There's no /fast/ way to determine a window's position when rendering the mode-l
      "  %3l:%2c "
 
      "  ["
-        (:eval (propertize mode-name 'face 'bold))
+     (:eval (propertize mode-name 'face 'bold))
      minor-mode-alist
      "]   "
 
+     (:eval (--when-let
+       (moody-tab (format "⯒ %s" (projectile-project-name)) nil 'up)))
+
      (:eval
-      (when vc-mode
-        (moody-tab (substring vc-mode 1) nil 'up)))
+      (when (or (projectile-project-name)
+                (vc-mode))
+        (moody-tab
+         (concat
+          (format "%s " (projectile-project-name))
+          (format " %s"(substring vc-mode 1))
+          ) nil 'up)))
 
      (:eval (when vc-mode "   ")) ;; Not the cleanest way to add a conditional separator...
 
