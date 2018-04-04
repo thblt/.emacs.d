@@ -34,9 +34,13 @@ with maybe a few interesting properties:
 
 * Introduction
 
-This chapter deals with the general use of Emacs, and is limited to general settings and sane defaults.  It's a bit messy, since it's mostly made up of all the bits that don't fit anywhere else.
+This chapter deals with the general use of Emacs, and is limited to
+general settings and sane defaults.  It's a bit messy, since it's
+mostly made up of all the bits that don't fit anywhere else.
 
-Let's start by saying hello.  Beyond being polite, when starting daemon it helps identifying when the literate configuration has started running.
+Let's start by saying hello.  Beyond being polite, when starting
+daemon it helps identifying when the literate configuration has
+started running.
 
 #+BEGIN_SRC emacs-lisp
   (message "
@@ -56,26 +60,31 @@ And introduce ourselves:
         user-mail-address "thibault@thb.lt")
 #+end_src
 
-Before we do anything serious, we run =no-littering= to prevent packages putting their configuration in random places:
+Before we do anything serious, we run =no-littering= to prevent packages
+putting their configuration in random places:
 
 #+begin_src emacs-lisp
   (want-drone no-littering)
   (require 'no-littering)
 #+end_src
 
-For some reason, the default value of =max-specpdl-size= prevents [[Mu4e][Mu4e]] from correctly rendering some HTML e-mails.  We increase it from 1300 to 5000.
+For some reason, the default value of =max-specpdl-size= prevents [[Mu4e][Mu4e]]
+from correctly rendering some HTML e-mails.  We increase it from 1300
+to 5000.
 
 #+BEGIN_SRC emacs-lisp
   (setq max-specpdl-size 5000)
 #+END_SRC
 
-Change the default major mode to =text-mode= instead of =fundamental-mode=.  Fundamental has no hooks.
+Change the default major mode to =text-mode= instead of
+=fundamental-mode=.  Fundamental has no hooks.
 
 #+begin_src emacs-lisp
   (setq-default major-mode 'text-mode)
 #+end_src
 
-We want numbered backups, because catastrophes happen.  The numbers may be a bit crazy, but better safe than sorry.
+We want numbered backups, because catastrophes happen.  The numbers
+may be a bit crazy, but better safe than sorry.
 
 #+BEGIN_SRC emacs-lisp
   (setq version-control t
@@ -90,7 +99,9 @@ Disable Customize by pointing it to =/dev/null=:
   (load custom-file t)
 #+END_SRC
 
-Use default browser from the system. Using =setsid xdg-open= prevents Emacs from killing xdg-open before it actually opened anything. See [[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
+Use default browser from the system. Using =setsid xdg-open= prevents
+Emacs from killing xdg-open before it actually opened anything. See
+[[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
 
 #+begin_src emacs-lisp
   (setq-default
@@ -155,7 +166,8 @@ Never use the "safe" ~yes-or-no~ function:
   (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
-Don't show the menu bar, unless this is MacOS.  Never show toolbar or scrollbars.
+Don't show the menu bar, unless this is MacOS.  Never show toolbar or
+scrollbars.
 
 #+begin_src emacs-lisp
   (unless (string= 'system-type 'darwin) (menu-bar-mode -1))
@@ -198,7 +210,8 @@ And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]
   (load-theme 'eziam-light t)
 #+end_src
 
-By default, multiple themes can be loaded at the same time.  Nobody wants this (although it's required by =smart-mode-line=)
+By default, multiple themes can be loaded at the same time.  Nobody
+wants this (although it's required by =smart-mode-line=)
 
 #+begin_src emacs-lisp
   (defadvice load-theme (before theme-dont-propagate activate)
@@ -282,12 +295,15 @@ Create some shortcut commands to load both Eziam themes:
 
 *** Track window position
 
-The mode-lines of the windows at the bottom left and the bottom right of the frame display special information:
+The mode-lines of the windows at the bottom left and the bottom right
+of the frame display special information:
 
  - At the *bottom left*, the name of the current [[https://github.com/wasamasa/eyebrowse][Eyebrowse]] perspective;
  - At the *bottom right*, the name of the server.
 
-There's no /fast/ way to determine a window's position when rendering the mode-line, so we need to store them statically in the window parameters, and update on ~window-configuration-change-hook~:
+There's no /fast/ way to determine a window's position when rendering
+the mode-line, so we need to store them statically in the window
+parameters, and update on ~window-configuration-change-hook~:
 
 #+BEGIN_SRC emacs-lisp
   (defun thblt/window-at-bottom-left-p (win)
@@ -379,7 +395,8 @@ There's no /fast/ way to determine a window's position when rendering the mode-l
 Let's load Projectile, and:
 
  - globally ignore undo-files and similar byproducts.
- - toggle the =C-p p= and =C-p SPC= bindings (I find the latter easier to enter, and thus more adequate for "do what I mean");
+ - toggle the =C-p p= and =C-p SPC= bindings (I find the latter easier to
+   enter, and thus more adequate for "do what I mean");
 
 TODO:
 
@@ -401,7 +418,8 @@ TODO:
   (diminish 'projectile-mode)
 #+end_src
 
-I consider submodules to be separate projects, so don't include then in the main file listing:
+I consider submodules to be separate projects, so don't include then
+in the main file listing:
 
 #+BEGIN_SRC emacs-lisp
   (setq projectile-git-submodule-command nil)
@@ -519,7 +537,8 @@ Popwin “makes you free from the hell of annoying buffers”:
 
 *** Customization helper
 
-A little function to identify the face at point.  Nice to have when writing themes, and faster than =C-u C-x ==.
+A little function to identify the face at point.  Nice to have when
+writing themes, and faster than =C-u C-x ==.
 
 #+begin_src emacs-lisp
   (defun what-face (pos)
@@ -531,7 +550,8 @@ A little function to identify the face at point.  Nice to have when writing them
 
 * Editing text
 
-This chapter deals with /general/ text editing.  The next two configure prose and code editing, respectively.
+This chapter deals with /general/ text editing.  The next two configure
+prose and code editing, respectively.
 
 ** Spell checking
 
@@ -559,7 +579,9 @@ And enable Flyspell:
   (diminish 'flyspell-mode "Fly")
 #+end_src
 
-Disable horrible and confusing Flyspell "duplicate" marks.  These are easily confused with actually misspelled words, but M-$ won't work on them, and would "correct" another word, possibly off-screen.
+Disable horrible and confusing Flyspell "duplicate" marks.  These are
+easily confused with actually misspelled words, but M-$ won't work on
+them, and would "correct" another word, possibly off-screen.
 
 #+BEGIN_SRC emacs-lisp
   (setq flyspell-duplicate-distance 0)
@@ -584,7 +606,8 @@ Auto-dictionary mode.  Disabled for now, as it seems to slow everything down + d
 
 ** “Modal” editing
 
-Selected is a package which allows to create specific bindings when region is active:
+Selected is a package which allows to create specific bindings when
+region is active:
 
 #+begin_src emacs-lisp
   (want-drone selected)
@@ -595,6 +618,7 @@ Selected is a package which allows to create specific bindings when region is ac
 #+end_src
 
 ** Moving around
+
 *** avy
 
 #+BEGIN_SRC emacs-lisp
@@ -699,7 +723,8 @@ Move lines of text with =M-<up>= and =M-<down>=.
 
 **** Bindings
 
-Since the author of Smartparens released [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][his own config]], here it is, copy-pasted and slightly modified to suit my needs:
+Since the author of Smartparens released [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][his own config]], here it is,
+copy-pasted and slightly modified to suit my needs:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'minibuffer-setup-hook 'turn-on-smartparens-strict-mode)
@@ -970,7 +995,9 @@ This is the initial version, which works perfectly well:
 
 *** Diff files before marking a buffer modified
 
-Ignore modification-time-only changes in files, i.e. ones that don't really change the contents.  This happens often with switching between different VC buffers.  Code comes from [[http://stackoverflow.com/a/29556894][this StackOverflow question]].
+Ignore modification-time-only changes in files, i.e. ones that don't
+really change the contents.  This happens often with switching between
+different VC buffers.  Code comes from [[http://stackoverflow.com/a/29556894][this StackOverflow question]].
 
 #+begin_src emacs-lisp
   (defun update-buffer-modtime-if-byte-identical ()
@@ -1009,8 +1036,10 @@ Ignore modification-time-only changes in files, i.e. ones that don't really chan
 
 This section deals with two things:
 
- 1. Major modes dedicated to writing prose, as opposed to code or configuration.
- 2. Non-code bits in code/configuration files: comments and integrated documentation.
+ 1. Major modes dedicated to writing prose, as opposed to code or
+    configuration.
+ 2. Non-code bits in code/configuration files: comments and integrated
+    documentation.
 
 ** The text-mode hydra
 
@@ -1143,7 +1172,8 @@ Configure smartparens:
 
 Some cool org extensions:
 
- - =toc-org= provides, guess what, automatic TOC generation for org-mode.  This is better [[https://github.com/snosov1/toc-org/issues/20#issuecomment-276407541][pinned to melpa-stable]].
+ - =toc-org= provides, guess what, automatic TOC generation for
+   org-mode.  This is better [[https://github.com/snosov1/toc-org/issues/20#issuecomment-276407541][pinned to melpa-stable]].
 
 #+BEGIN_SRC emacs-lisp
   (want-drone toc-org)
@@ -1266,7 +1296,9 @@ and a few mappings.
 
 *** Evil Nerd Commenter
 
-A good replacement for ~comment-dwim~, but unline [[https://github.com/remyferre/comment-dwim-2][~comment-dwim2~]], it can't alternate between commenting and commenting /out/ (adding the comment delimiter at the start or the end of the line).
+A good replacement for ~comment-dwim~, but unline [[https://github.com/remyferre/comment-dwim-2][~comment-dwim2~]], it
+can't alternate between commenting and commenting /out/ (adding the
+comment delimiter at the start or the end of the line).
 
 #+begin_src emacs-lisp
   (want-drone evil-nerd-commenter)
@@ -1436,7 +1468,8 @@ Rainbow mode is similar to Atom's Pigments plugin or something.
 
 *** Haskell
 
-Intero mode is a “complete interactive development program for Haskell”:
+Intero mode is a “complete interactive development program for
+Haskell”:
 
 #+begin_src emacs-lisp
   (want-drones haskell-mode
@@ -1536,7 +1569,8 @@ Use Projectile projects as a source of repositories:
 
 *** magit-list-repositories
 
-=magit-list-repositories= provides a summary view of multiple repositories.
+=magit-list-repositories= provides a summary view of multiple
+repositories.
 
 First, let's configure the view.
 
@@ -1555,7 +1589,7 @@ First, let's configure the view.
           ("Path"       99  magit-repolist-column-path nil)))
 #+end_src
 
-An extra feature:  update all remotes.  Probably very dirty.
+An extra feature: update all remotes.  Probably very dirty.
 
 #+begin_src emacs-lisp
   (require 'cl)
@@ -1584,7 +1618,8 @@ An extra feature:  update all remotes.  Probably very dirty.
 
 *** "Magic" commit messages
 
-We create a small function hooked to =git-commit-mode= to automatically fill commit message when applicable.  This function simply runs each function in a list, in turn, and insert the return value of the first one returning non-nil.
+Creation of some commit messages may be automated.  This function
+deals with it.
 
 #+BEGIN_SRC emacs-lisp
   (defvar thblt/git-auto-commit-message-functions
@@ -1612,7 +1647,13 @@ We create a small function hooked to =git-commit-mode= to automatically fill com
 
 *** Borg
 
-Borg is initialized from =init.el=.  As with other Emacs' package management systems, we still run the risk of keeping unneeded packages.  What follows is an attempt to address this issue: a utility function =(=want-drone)= to declare that a package is required (declared in =init.el=), and a few more functions to keep track of what is installed using the dependency tree and the set of explicitly required packages as a base.
+Borg is initialized from =init.el=.  As with other Emacs' package
+management systems, we still run the risk of keeping unneeded
+packages.  What follows is an attempt to address this issue: a utility
+function =(=want-drone)= to declare that a package is required (declared
+in =init.el=), and a few more functions to keep track of what is
+installed using the dependency tree and the set of explicitly required
+packages as a base.
 
 #+BEGIN_SRC emacs-lisp
   (require 'cl-lib)
@@ -1761,9 +1802,13 @@ Borg is initialized from =init.el=.  As with other Emacs' package management sys
 
 *** General
 
-Configuration for mu4e is split between a published part, below, and a private part, tangled from =~/.emacs.d/thblt/mu4e.el=.  The public part contains common mu4e settings, the private parts defines accounts and bookmarks.
+Configuration for mu4e is split between a published part, below, and a
+private part, tangled from =~/.emacs.d/thblt/mu4e.el=.  The public part
+contains common mu4e settings, the private parts defines accounts and
+bookmarks.
 
-First, we /may/ need to update the load-path.  Official Debian build of Emacs don't need that, but self-built versions do:
+First, we /may/ need to update the load-path.  Official Debian build of
+Emacs don't need that, but self-built versions do:
 
 #+BEGIN_SRC emacs-lisp
   (eval-and-compile (let ((mu4epath "/usr/share/emacs/site-lisp/mu4e"))
@@ -1771,7 +1816,9 @@ First, we /may/ need to update the load-path.  Official Debian build of Emacs do
                         (add-to-list 'load-path mu4epath))))
 #+END_SRC
 
-On NixOS, this is a bit more tricky.  We need to find the mu binary, dereference it (since it will be a symlink), and find the path from this.
+On NixOS, this is a bit more tricky.  We need to find the mu binary,
+dereference it (since it will be a symlink), and find the path from
+this.
 
 #+BEGIN_SRC emacs-lisp
   (eval-and-compile (let ((mu4epath
@@ -1786,7 +1833,11 @@ On NixOS, this is a bit more tricky.  We need to find the mu binary, dereference
                          (add-to-list 'load-path (file-truename mu4epath)))))
 #+END_SRC
 
-Each of my accounts is synced (by =mbsync=) to a folder at the root of the Maildir (eg, =~/.Mail/Academic/=).  We then need a function to switch contexts based on a regular expression on the current Maildir path.   For some reason, this doesn't come included with mu4e, so here it is, and it probably comes [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from here]].
+Each of my accounts is synced (by =mbsync=) to a folder at the root of
+the Maildir (eg, =~/.Mail/Academic/=).  We then need a function to
+switch contexts based on a regular expression on the current Maildir
+path.  For some reason, this doesn't come included with mu4e, so here
+it is, and it probably comes [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from here]].
 
 #+begin_src emacs-lisp
   (defun mu4e-message-maildir-matches (msg rx)
@@ -1894,7 +1945,8 @@ Compose messages with org-mode tables and lists:
 
 *** Company
 
-Enable company-mode completion in compose buffer until [[https://github.com/djcb/mu/issues/1029][this issue]] gets fixed:
+Enable company-mode completion in compose buffer until [[https://github.com/djcb/mu/issues/1029][this issue]] gets
+fixed:
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'message-mode-hook 'company-mode)
@@ -1955,7 +2007,9 @@ We use the =string= syntax, as advised on [[https://www.masteringemacs.org/artic
 
 ** scpaste
 
-Technomancy's =scpaste= is a replacement for pastebin, paste.lisp.org, and similar services.  It generates a HTML page out of a buffer or region and moves it over to a server using scp.
+Technomancy's =scpaste= is a replacement for pastebin, paste.lisp.org,
+and similar services.  It generates a HTML page out of a buffer or
+region and moves it over to a server using scp.
 
 #+BEGIN_SRC emacs-lisp
   (setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
@@ -1965,7 +2019,9 @@ Technomancy's =scpaste= is a replacement for pastebin, paste.lisp.org, and simil
         scpaste-make-name-function 'scpaste-make-name-from-timestamp)
 #+END_SRC
 
-A lot of packages add overlays which are useful when editing, noisy when reading.  We advise scpaste so a few minor modes get disabled before it runs, and restored afterwards.
+A lot of packages add overlays which are useful when editing, noisy
+when reading.  We advise scpaste so a few minor modes get disabled
+before it runs, and restored afterwards.
 
 #+BEGIN_SRC emacs-lisp
   (defun thblt/scpaste-without-noise (f &rest args)
@@ -1991,9 +2047,12 @@ A lot of packages add overlays which are useful when editing, noisy when reading
 
 ** HiDPI support (kindof)
 
-This section is made of overrides to improve support for HiDPI monitors.  It must be at the end, to avoid being overriden by default settings.
+This section is made of overrides to improve support for HiDPI
+monitors.  It must be at the end, to avoid being overriden by default
+settings.
 
-If we're running on a HiDPI machine, we replace the flycheck fringe bitmap with a larger version.
+If we're running on a HiDPI machine, we replace the flycheck fringe
+bitmap with a larger version.
 
 #+BEGIN_SRC emacs-lisp
   (if (string-prefix-p  "maladict" system-name)
@@ -2055,7 +2114,9 @@ private bits are available.
 
 ** Report success
 
-We finally set the initial contents of the scratch buffer.  This makes it easy to notice when something went wrong (this may not be obvious in daemon mode)
+We finally set the initial contents of the scratch buffer.  This makes
+it easy to notice when something went wrong (this may not be obvious
+in daemon mode)
 
 #+begin_src emacs-lisp
   (setq initial-scratch-message ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n")
