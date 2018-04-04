@@ -349,11 +349,11 @@ There's no /fast/ way to determine a window's position when rendering the mode-l
      (:eval
       (moody-tab
        (concat
-        (when buffer-read-only
-          (propertize " "))
-        (when (buffer-modified-p)
-          (propertize "💾 " 'face '(:foreground "red")))
-        (buffer-name))))
+        (if buffer-read-only
+          (propertize " ")
+          (when (buffer-modified-p)
+            (propertize "💾 " 'face '(:foreground "red"))))
+        (propertize (buffer-name) 'face 'bold))))
 
      "  %3l:%2c "
 
