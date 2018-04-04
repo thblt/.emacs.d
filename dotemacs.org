@@ -245,26 +245,23 @@ Create some shortcut commands to load both Eziam themes:
      ;; @FIXME This is NOT a good way to compute brightnesqs.  Average the three components.
      (dark (< (kurecolor-hex-get-brightness default-bg) .5))
      (brightness-step (if dark .05 -.05))
-     (bg-down1 (kurecolor-adjust-brightness default-bg (* 1 (- brightness-step))))
-     (bg-down2 (kurecolor-adjust-brightness default-bg (* 2 (- brightness-step))))
-     (bg-down4 (kurecolor-adjust-brightness default-bg (* 6 (- brightness-step))))
-     (bg-up1 (kurecolor-adjust-brightness default-bg (* 1 brightness-step)))
-     (bg-up2 (kurecolor-adjust-brightness default-bg (* 2 brightness-step)))
-     (bg-up3 (kurecolor-adjust-brightness default-bg (* 6 brightness-step))))
+     (ac-bg (kurecolor-adjust-brightness default-bg (* 6 brightness-step)))
+     (in-bg (kurecolor-adjust-brightness default-bg (* 2 brightness-step)))
+     (in-fg (kurecolor-adjust-brightness default-bg (* (if dark 5 1) brightness-step))))
 
       (face-spec-set 'mode-line
                      `((t
-                        :background ,bg-up3
+                        :background ,ac-bg
                         :foreground ,default-fg
-                        :underline ,bg-up3
-                        :overline ,bg-up3)))
+                        :underline ,ac-bg
+                        :overline ,ac-bg)))
 
       (face-spec-set 'mode-line-inactive
                      `((t
-                        :background ,bg-up1
-                        :foreground ,bg-up2
-                        :underline ,bg-up1
-                        :overline ,bg-up2)))
+                        :background ,in-bg
+                        :foreground ,in-fg
+                        :underline ,in-bg
+                        :overline ,in-fg)))
 
       (face-spec-set 'thblt/mode-line-server-name-face
                      `((t
@@ -272,7 +269,7 @@ Create some shortcut commands to load both Eziam themes:
                         :background ,(kurecolor-hsv-to-hex
                                      .85
                                      .95
-                                     (kurecolor-hex-get-brightness bg-up3))
+                                     (kurecolor-hex-get-brightness ac-bg))
                         :box ,default-fg)))
 
       (face-spec-set 'thblt/mode-line-inactive-invisible
