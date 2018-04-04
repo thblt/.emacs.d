@@ -187,8 +187,7 @@ Configure the default font:
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono"))
   (set-face-attribute 'default nil
-                      :height 60
-                      )
+                      :height 70)
 #+end_src
 
 And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]].
