@@ -249,10 +249,10 @@ Create some shortcut commands to load both Eziam themes:
 
       (face-spec-set 'mode-line-inactive
                      `((t
-                        :background ,default-bg
+                        :background ,bg-up1
                         :foreground ,bg-up2
                         :underline ,bg-up1
-                        :overline "black")))
+                        :overline ,bg-up2)))
 
       (face-spec-set 'thblt/mode-line-server-name-face
                      `((t
