@@ -371,15 +371,16 @@ parameters, and update on ~window-configuration-change-hook~:
        (moody-tab (format "⯒ %s" (projectile-project-name)) nil 'up)))
 
      (:eval
-      (when (or (projectile-project-name)
-                (vc-mode))
+      (when (or (projectile-project-p)
+                vc-mode)
         (moody-tab
          (concat
-          (format "%s " (projectile-project-name))
-          (format " %s"(substring vc-mode 1))
-          ) nil 'up)))
+          (when (projectile-project-p) (format "%s " (projectile-project-name)))
+          (--when-let vc-mode (format " %s" (substring it 1))))
+          nil 'up)))
 
-     (:eval (when vc-mode "   ")) ;; Not the cleanest way to add a conditional separator...
+     (:eval (when (or (projectile-project-p)
+                vc-mode) "   ")) ;; Not the cleanest way to add a conditional separator...
 
      (:eval (thblt/mode-line-sep
              (when (and t ;; @FIXME Detect if server is started.
