@@ -1820,16 +1820,20 @@ dereference it (since it will be a symlink), and find the path from
 this.
 
 #+BEGIN_SRC emacs-lisp
-  (eval-and-compile (let ((mu4epath
-                            (concat
-                             (file-name-directory
-                              (file-truename
-                               (executable-find "mu")))
-                             "../share/emacs/site-lisp/mu4e")))
-                       (when (and
-                              (string-prefix-p "/nix/store/" mu4epath)
-                              (file-directory-p mu4epath))
-                         (add-to-list 'load-path (file-truename mu4epath)))))
+  (eval-and-compile
+    (--when-let (and
+                 (file-exists-p "/etc/NIXOS")
+                 (executable-find "mu"))
+      (let ((mu4epath
+             (concat
+              (file-name-directory
+               (file-truename
+                it))
+              "../share/emacs/site-lisp/mu4e")))
+        (when (and
+               (string-prefix-p "/nix/store/" mu4epath)
+               (file-directory-p mu4epath))
+          (add-to-list 'load-path (file-truename mu4epath))))))
 #+END_SRC
 
 Each of my accounts is synced (by =mbsync=) to a folder at the root of
