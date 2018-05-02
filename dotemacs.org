@@ -2109,8 +2109,27 @@ private bits are available.
 
 ** Server configuration
 
+I don't explicitly run the server, but I start new daemons whenever I need one.  With a swarm of instances, updating config may be a pain.  These two functions respectively reload =init.el= and tell all daemons to do so:
+
+#+BEGIN_SRC emacs-lisp
+  (defun thblt/reload-emacs ()
+    "Reload Emacs configuration."
+    (interactive)
+    (load (expand-file-name "init.el" user-emacs-directory)))
+
+  (defun thblt/reload-all-emacsen ()
+    "Execute `thblt/reload-emacs' on all servers."
+    (interactive)
+    (dolist (instance (directory-files server-socket-dir nil (rx bol (not (any ".")))))
+      (unless (equal instance server-name)
+        (async-shell-command (format "emacsclient -s %s --eval \"(thblt/reload-emacs)\"" instance)))))
+#+END_SRC
+
+Also, some utility function:
+
 #+BEGIN_SRC emacs-lisp
   (defun thblt/server-start (name)
+    "Prompt for NAME, then start the Emacs server under that name."
     (interactive "sDaemon name? ")
     (setq server-name name)
     (server-start))
