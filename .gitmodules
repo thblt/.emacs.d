@@ -144,7 +144,7 @@
 [submodule "geiser"]
 	path = lib/geiser
 	url = https://github.com/jaor/geiser.git
-load-path = elisp
+	load-path = elisp
 [submodule "general"]
 	path = lib/general
 	url = https://github.com/noctuid/general.el
