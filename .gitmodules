@@ -29,6 +29,9 @@
 [submodule "beginend"]
 	path = lib/beginend
 	url = https://github.com/DamienCassou/beginend
+[submodule "biblio"]
+	path = lib/biblio
+	url = git@github.com:cpitclaudel/biblio.el.git
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
@@ -166,6 +169,9 @@ load-path = elisp
 [submodule "helm"]
 	path = lib/helm
 	url = https://github.com/emacs-helm/helm
+[submodule "helm-bibtex"]
+	path = lib/helm-bibtex
+	url = git@github.com:tmalsburg/helm-bibtex.git
 [submodule "helm-dash"]
 	path = lib/helm-dash
 	url = https://github.com/areina/helm-dash

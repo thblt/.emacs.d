@@ -1224,7 +1224,8 @@ The *emphasize selected* bindings:
 **** Org-ref
 
 #+BEGIN_SRC emacs-lisp
-  (want-drone org-ref)
+  (want-drone org-ref
+              :with (helm-bibtex :with (biblio)))
 
   (setq org-ref-completion-library 'org-ref-ivy-cite)
 #+END_SRC
