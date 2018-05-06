@@ -1227,9 +1227,12 @@ The *emphasize selected* bindings:
   (want-drone org-ref
               :with (helm-bibtex :with (biblio)))
 
-  (setq org-ref-completion-library 'org-ref-ivy-cite)
-#+END_SRC
+  (setq org-ref-completion-library 'org-ref-ivy-cite
+        bibtex-dialect 'biblatex)
 
+  ;; org-ref must have been (require)d to work.
+  (add-hook 'org-mode-hook (lambda () (require 'org-ref)))
+#+END_SRC
 
 * Writing code
 ** Settings
@@ -1969,7 +1972,6 @@ Enable notifications:
       ;;            (mu4e-alert-enable-notifications)
       (mu4e-alert-enable-mode-line-display)))
 #+END_SRC
-
 
 ** Password management (password-store)
 
