@@ -223,6 +223,7 @@ Create some shortcut commands to load both Eziam themes:
 #+BEGIN_SRC emacs-lisp
   (defun eziam-dark () (interactive) (load-theme 'eziam-dark t))
   (defun eziam-light () (interactive) (load-theme 'eziam-light t))
+  (defun eziam-dusk () (interactive) (load-theme 'eziam-dusk t))
 #+END_SRC
 
 ** Mode line
