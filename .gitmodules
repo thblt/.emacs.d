@@ -270,6 +270,7 @@
 [submodule "org"]
 	path = lib/org
 	url = ssh://git@repo.or.cz/org-mode.git
+	info-path = doc
 	build-step = make
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
