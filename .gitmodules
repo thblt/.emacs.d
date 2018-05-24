@@ -269,12 +269,10 @@
 	url = https://github.com/wasamasa/nov.el
 [submodule "org"]
 	path = lib/org
-	url = ssh://git@repo.or.cz/org-mode.git
+	url = https://code.orgmode.org/bzg/org-mode.git
 	info-path = doc
+	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
-	build-step = borg-update-autoloads
-	build-step = borg-byte-compile
-	build-step = borg-makeinfo
 [submodule "org-download"]
 	path = lib/org-download
 	url = https://github.com/abo-abo/org-download
