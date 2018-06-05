@@ -1550,78 +1550,6 @@ This section deals with tools which don't edit anything.
                dired+)
 #+END_SRC
 
-** TODO Magit and Git
-
-#+begin_src emacs-lisp
-  (want-drones magit
-               git-timemachine)
-
-  (general-define-key
-   "C-x g s" 'magit-status
-   "C-x g r" 'magit-list-repositories
-   "C-x g t" 'git-timemachine)
-#+end_src
-
-Use Projectile projects as a source of repositories:
-
-#+begin_src emacs-lisp
-  (defun thblt/update-magit-repository-directories (&rest _)
-    (setq magit-repository-directories (mapcar (lambda (x) `(,x . 0)) projectile-known-projects)))
-
-  (advice-add 'magit-status :before 'thblt/update-magit-repository-directories)
-  (advice-add 'magit-list-repositories :before 'thblt/update-magit-repository-directories)
-#+end_src
-
-*** magit-list-repositories
-
-=magit-list-repositories= provides a summary view of multiple
-repositories.
-
-First, let's configure the view.
-
-#+begin_src emacs-lisp
-  (setq magit-repolist-columns
-        '(
-          ("Name"       25  magit-repolist-column-ident nil)
-          ("Branch"     10  magit-repolist-column-branch)
-          ("Version" 25  magit-repolist-column-version nil)
-          ("Upstream"   15  magit-repolist-column-upstream)
-          ("↓U"         5   magit-repolist-column-unpulled-from-upstream)
-          ("↑U"         5   magit-repolist-column-unpushed-to-upstream)
-          ("↓P"         5   magit-repolist-column-unpulled-from-pushremote)
-          ("↑P"         5   magit-repolist-column-unpushed-to-pushremote)
-          (""           6   magit-repolist-column-dirty)
-          ("Path"       99  magit-repolist-column-path nil)))
-#+end_src
-
-An extra feature: update all remotes.  Probably very dirty.
-
-#+begin_src emacs-lisp
-  (require 'cl)
-  (require 'magit-repos)
-
-  (defun thblt/magit-repolist-refresh ()
-    "@TODO Add documentation"
-    (interactive)
-    (goto-char (point-min))
-    (catch 'done
-      (while t
-        (--if-let (tabulated-list-get-id)
-            (progn
-              (cd (expand-file-name it))
-              (magit-fetch-all ())))
-
-        (when (move-text--at-last-line-p)
-          (throw 'done t))
-
-        (forward-line)
-        (redisplay))
-      ()))
-
-  (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-refresh)
-#+end_src
-
-
 ** TODO Borg and their Queen
 
 *** Borg
@@ -1711,6 +1639,69 @@ packages as a base.
   (advice-add 'load-theme :after (lambda (&rest _) (when (functionp 'erc-hl-nicks-reset-face-table)
                                                      (erc-hl-nicks-reset-face-table))))
 #+END_SRC
+
+** TODO Magit and Git
+
+#+begin_src emacs-lisp :tangle yes
+  (want-drones magit
+               git-timemachine)
+
+  (general-define-key
+   "C-x g s" 'magit-status
+   "C-x g r" 'magit-list-repositories
+   "C-x g t" 'git-timemachine)
+#+end_src
+
+Use Projectile projects as a source of repositories:
+
+#+begin_src emacs-lisp :tangle yes
+  (defun thblt/update-magit-repository-directories (&rest _)
+    (setq magit-repository-directories (mapcar (lambda (x) `(,x . 0)) projectile-known-projects)))
+
+  (advice-add 'magit-status :before 'thblt/update-magit-repository-directories)
+  (advice-add 'magit-list-repositories :before 'thblt/update-magit-repository-directories)
+#+end_src
+
+*** magit-list-repositories
+
+=magit-list-repositories= provides a summary view of multiple
+repositories.
+
+First, let's configure the view.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq magit-repolist-columns
+        '(
+          ("Name"       25  magit-repolist-column-ident nil)
+          ("Branch"     10  magit-repolist-column-branch)
+          ("Version" 25  magit-repolist-column-version nil)
+          ("Upstream"   15  magit-repolist-column-upstream)
+          ("↓U"         5   magit-repolist-column-unpulled-from-upstream)
+          ("↑U"         5   magit-repolist-column-unpushed-to-upstream)
+          ("↓P"         5   magit-repolist-column-unpulled-from-pushremote)
+          ("↑P"         5   magit-repolist-column-unpushed-to-pushremote)
+          (""           6   magit-repolist-column-dirty)
+          ("Path"       99  magit-repolist-column-path nil)))
+#+end_src
+
+An extra feature: update all remotes.  Probably very dirty.
+
+#+begin_src emacs-lisp :tangle yes
+  (require 'cl)
+  (require 'magit-repos)
+
+  (defun thblt/magit-repolist-fetch-all ()
+    "@TODO Add documentation"
+    (interactive)
+    (mapc (lambda (d)
+            (shell-command
+             (format "git -C %s fetch --all &"
+                     (shell-quote-argument
+                      (expand-file-name (car d))))))
+          magit-repository-directories))
+
+  (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-fetch-all)
+#+end_src
 
 ** Mu4e
 
