@@ -103,6 +103,8 @@
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = https://github.com/skeeto/emacsql
+	build-nix-shell-packages = gnumake
+	build-step = "cd sqlite; make"
 [submodule "emmet-mode"]
 	path = lib/emmet-mode
 	url = https://github.com/smihica/emmet-mode
