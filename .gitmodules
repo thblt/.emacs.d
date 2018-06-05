@@ -49,6 +49,9 @@
 [submodule "borg-queen"]
 	path = lib/borg-queen
 	url = https://github.com/thblt/borg-queen
+[submodule "bug-hunter"]
+	path = lib/bug-hunter
+	url = git@github.com:Malabarba/elisp-bug-hunter.git
 [submodule "calfw"]
 	path = lib/calfw
 	url = https://github.com/kiwanami/emacs-calfw
@@ -225,6 +228,9 @@
 [submodule "less-css-mode"]
 	path = lib/less-css-mode
 	url = https://github.com/purcell/less-css-mode
+[submodule "lib/spelo"]
+	path = lib/spelo
+	url = https://github.com/thblt/spelo
 [submodule "lua-mode"]
 	path = lib/lua-mode
 	url = https://github.com/immerrr/lua-mode
