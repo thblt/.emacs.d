@@ -42,7 +42,7 @@ Let's start by saying hello.  Beyond being polite, when starting
 daemon it helps identifying when the literate configuration has
 started running.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (message "
   ███████╗███╗   ███╗ █████╗  ██████╗███████╗██╗
   ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝██║
@@ -55,7 +55,7 @@ started running.
 
 And introduce ourselves:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq user-full-name    "Thibault Polge"
         user-mail-address "thibault@thb.lt")
 #+end_src
@@ -63,7 +63,7 @@ And introduce ourselves:
 Before we do anything serious, we run =no-littering= to prevent packages
 putting their configuration in random places:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone no-littering)
   (require 'no-littering)
 #+end_src
@@ -72,21 +72,21 @@ For some reason, the default value of =max-specpdl-size= prevents [[Mu4e][Mu4e]]
 from correctly rendering some HTML e-mails.  We increase it from 1300
 to 5000.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq max-specpdl-size 5000)
 #+END_SRC
 
 Change the default major mode to =text-mode= instead of
 =fundamental-mode=.  Fundamental has no hooks.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq-default major-mode 'text-mode)
 #+end_src
 
 We want numbered backups, because catastrophes happen.  The numbers
 may be a bit crazy, but better safe than sorry.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq version-control t
         kept-new-versions 500
         kept-old-versions 500)
@@ -94,7 +94,7 @@ may be a bit crazy, but better safe than sorry.
 
 Disable Customize by pointing it to =/dev/null=:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq custom-file "/dev/null")
   (load custom-file t)
 #+END_SRC
@@ -103,7 +103,7 @@ Use default browser from the system. Using =setsid xdg-open= prevents
 Emacs from killing xdg-open before it actually opened anything. See
 [[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq-default
    browse-url-browser-function 'browse-url-generic
    browse-url-generic-program "setsid"
@@ -112,13 +112,13 @@ Emacs from killing xdg-open before it actually opened anything. See
 
 Don't lose the contents of system clipboard when killing from Emacs:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq save-interprogram-paste-before-kill t)
 #+end_src
 
 Running Emacs under MacOS requires a few adjustements:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone exec-path-from-shell)
 
   (when (string= system-type 'darwin)
@@ -138,7 +138,7 @@ Running Emacs under MacOS requires a few adjustements:
 
 * User interface
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones diminish
                general
                hydra
@@ -147,7 +147,7 @@ Running Emacs under MacOS requires a few adjustements:
 
 ** Settings and general configuration
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq-default
    cursor-type '(bar . 5)
    enable-recursive-minibuffers t
@@ -162,14 +162,14 @@ Running Emacs under MacOS requires a few adjustements:
 
 Never use the "safe" ~yes-or-no~ function:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
 Don't show the menu bar, unless this is MacOS.  Never show toolbar or
 scrollbars.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (unless (string= 'system-type 'darwin) (menu-bar-mode -1))
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -177,7 +177,7 @@ scrollbars.
 
 Mouse wheel scrolling makes big jumps by default, let's make it smoother.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
         mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
         mouse-wheel-follow-mouse 't ;; scroll window under mouse
@@ -188,7 +188,7 @@ Mouse wheel scrolling makes big jumps by default, let's make it smoother.
 
 Rebind =C-x k= to kill the /current/ buffer.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 #+end_src
 
@@ -196,7 +196,7 @@ Rebind =C-x k= to kill the /current/ buffer.
 
 Configure the default font:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono"))
   (set-face-attribute 'default nil
                       :height 70)
@@ -204,7 +204,7 @@ Configure the default font:
 
 And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]].
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone eziam-theme-emacs)
 
   (load-theme 'eziam-light t)
@@ -213,14 +213,14 @@ And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]
 By default, multiple themes can be loaded at the same time.  Nobody
 wants this (although it's required by =smart-mode-line=)
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defadvice load-theme (before theme-dont-propagate activate)
     (mapc #'disable-theme custom-enabled-themes))
 #+end_src
 
 Create some shortcut commands to load both Eziam themes:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun eziam-dark () (interactive) (load-theme 'eziam-dark t))
   (defun eziam-light () (interactive) (load-theme 'eziam-light t))
   (defun eziam-dusk () (interactive) (load-theme 'eziam-dusk t))
@@ -228,7 +228,7 @@ Create some shortcut commands to load both Eziam themes:
 
 ** Mode line
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone kurecolor
               moody)
 
@@ -238,7 +238,7 @@ Create some shortcut commands to load both Eziam themes:
 
 *** Faces
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun thblt/mode-line-set-faces (&rest args)
     (let* ((default-bg (face-attribute 'default :background))
      (default-fg (face-attribute 'default :foreground))
@@ -303,7 +303,7 @@ There's no /fast/ way to determine a window's position when rendering
 the mode-line, so we need to store them statically in the window
 parameters, and update on ~window-configuration-change-hook~:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun thblt/window-at-bottom-left-p (win)
     "Return non-nil if WIN is at the bottom left of the frame."
     (not (or
@@ -327,7 +327,7 @@ parameters, and update on ~window-configuration-change-hook~:
 
 *** Putting it all together
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun thblt/mode-line-wrap (str)
     (if str (concat " " str " ") ""))
 
@@ -402,7 +402,7 @@ TODO:
 
  - Could Projectile read ignore patterns from =~/.gitignore_global=?
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones projectile
                counsel-projectile)
 
@@ -421,7 +421,7 @@ TODO:
 I consider submodules to be separate projects, so don't include then
 in the main file listing:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq projectile-git-submodule-command nil)
 #+END_SRC
 
@@ -429,7 +429,7 @@ in the main file listing:
 
 *** Ace-window
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone ace-window)
 
   (with-eval-after-load 'ace-window
@@ -471,13 +471,13 @@ in the main file listing:
 
 Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
 
 *** Eyebrowse
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone eyebrowse)
 
   (eyebrowse-mode)
@@ -485,7 +485,7 @@ Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 
 *** Ivy
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone ivy)
 
   (setq ivy-use-virtual-buffers t)
@@ -507,7 +507,7 @@ Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 
 Popwin “makes you free from the hell of annoying buffers”:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone popwin)
 
   (require 'popwin)
@@ -516,7 +516,7 @@ Popwin “makes you free from the hell of annoying buffers”:
 
 *** Which-key
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone which-key)
 
   (which-key-mode)
@@ -525,7 +525,7 @@ Popwin “makes you free from the hell of annoying buffers”:
 
 *** Windmove
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq windmove-wrap-around t)
 
   (general-define-key
@@ -540,7 +540,7 @@ Popwin “makes you free from the hell of annoying buffers”:
 A little function to identify the face at point.  Nice to have when
 writing themes, and faster than =C-u C-x ==.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun what-face (pos)
     (interactive "d")
     (let ((face (or (get-char-property (point) 'read-face-name)
@@ -555,25 +555,25 @@ prose and code editing, respectively.
 
 ** Spell checking
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone auto-dictionary)
 #+end_src
 
 Use =aspell= instead of =ispell=:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq ispell-program-name "aspell")
 #+end_src
 
 Don't ask before saving custom dict:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq ispell-silently-savep t)
 #+end_src
 
 And enable Flyspell:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'text-mode-hook (lambda () (flyspell-mode t)))
 
   (diminish 'flyspell-mode "Fly")
@@ -583,13 +583,13 @@ Disable horrible and confusing Flyspell "duplicate" marks.  These are
 easily confused with actually misspelled words, but M-$ won't work on
 them, and would "correct" another word, possibly off-screen.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq flyspell-duplicate-distance 0)
 #+END_SRC
 
 Correct words using Ivy instead of default method:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone flyspell-correct)
   (require 'flyspell-correct-ivy)
 
@@ -600,7 +600,7 @@ Correct words using Ivy instead of default method:
 
 Auto-dictionary mode.  Disabled for now, as it seems to slow everything down + doesn't work with org-mode.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode)))
 #+end_src
 
@@ -609,7 +609,7 @@ Auto-dictionary mode.  Disabled for now, as it seems to slow everything down + d
 Selected is a package which allows to create specific bindings when
 region is active:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone selected)
 
   (defvar selected-org-mode-map (make-sparse-keymap))
@@ -621,7 +621,7 @@ region is active:
 
 *** avy
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone avy)
 
   (general-define-key "C-:" 'avy-goto-char-timer
@@ -630,7 +630,7 @@ region is active:
 
 *** beginend
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (require 'beginend)
   (beginend-global-mode)
    (mapc (lambda (m) (diminish (cdr m)))
@@ -640,7 +640,7 @@ region is active:
 
 *** mwim
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "C-a") 'mwim-beginning-of-code-or-line)
   (global-set-key (kbd "C-e") 'mwim-end-of-code-or-line)
   (global-set-key (kbd "<home>") 'mwim-beginning-of-line-or-code)
@@ -649,7 +649,7 @@ region is active:
 
 *** nav-flash (don't get lost)
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (require 'nav-flash)
 
   (face-spec-set 'nav-flash-face '((t (:inherit pulse-highlight-face))))
@@ -659,7 +659,7 @@ region is active:
 
 ** Replace
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone visual-regexp)
 
   (general-define-key
@@ -672,14 +672,14 @@ region is active:
 
 *** Auto-revert-mode
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (with-eval-after-load 'autorevert
     (diminish 'auto-revert-mode "🔃"))
 #+end_src
 
 *** TODO Expand-region
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone expand-region)
 #+end_src
 
@@ -687,7 +687,7 @@ region is active:
 
 Move lines of text with =M-<up>= and =M-<down>=.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone move-text)
 
   (move-text-default-bindings)
@@ -695,7 +695,7 @@ Move lines of text with =M-<up>= and =M-<down>=.
 
 *** Multiple cursors
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone multiple-cursors)
 
   (add-hook 'prog-mode-hook (lambda () (multiple-cursors-mode t)))
@@ -705,13 +705,13 @@ Move lines of text with =M-<up>= and =M-<down>=.
 
 *** Recentf
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (recentf-mode)
 #+end_src
 
 *** TODO Smartparens
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone smartparens)
   (require 'smartparens-config) ;; Load default config
 
@@ -726,7 +726,7 @@ Move lines of text with =M-<up>= and =M-<down>=.
 Since the author of Smartparens released [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][his own config]], here it is,
 copy-pasted and slightly modified to suit my needs:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'minibuffer-setup-hook 'turn-on-smartparens-strict-mode)
 
 
@@ -942,7 +942,7 @@ copy-pasted and slightly modified to suit my needs:
 
 *** Undo-tree
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone undo-tree)
 
   (setq undo-tree-auto-save-history t
@@ -954,7 +954,7 @@ copy-pasted and slightly modified to suit my needs:
 
 *** Unfill
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone unfill)
 
   (define-key selected-keymap (kbd "M-Q") 'unfill-region)
@@ -962,7 +962,7 @@ copy-pasted and slightly modified to suit my needs:
 
 *** Yasnippet
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone yasnippet)
 
   (yas-global-mode)
@@ -973,7 +973,7 @@ copy-pasted and slightly modified to suit my needs:
 
 *** Use C-h as backspace
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (general-define-key "C-h" 'delete-backward-char)
 #+END_SRC
 
@@ -981,7 +981,7 @@ copy-pasted and slightly modified to suit my needs:
 
 This is the initial version, which works perfectly well:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'focus-out-hook
             (lambda ()
               (save-some-buffers t)))
@@ -989,7 +989,7 @@ This is the initial version, which works perfectly well:
 
 *** Delete trailing whitespace when saving
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+end_src
 
@@ -999,7 +999,7 @@ Ignore modification-time-only changes in files, i.e. ones that don't
 really change the contents.  This happens often with switching between
 different VC buffers.  Code comes from [[http://stackoverflow.com/a/29556894][this StackOverflow question]].
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun update-buffer-modtime-if-byte-identical ()
     (let* ((size      (buffer-size))
            (byte-size (position-bytes size))
@@ -1045,7 +1045,7 @@ This section deals with two things:
 
 TODO validate =:= and ~=~ on all keyboard mappings.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq visual-fill-column-width fill-column)
 
   (defhydra hydra-text-mode ()
@@ -1066,21 +1066,21 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 ** Common settings and minor modes
 *** Abbrev
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'text-mode-hook (lambda () (abbrev-mode t)))
   (diminish 'abbrev-mode)
 #+end_src
 
 *** Unfill
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone unfill)
   (general-define-key "M-Q" 'unfill-paragraph)
 #+end_src
 
 *** Wordwrap/visual line/visual-fill-column
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (with-eval-after-load 'simple
     (diminish 'visual-line-mode))
 
@@ -1093,13 +1093,13 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 
 ** Major modes
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone markdown-mode)
 #+end_src
 
 *** AucTex
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones auctex
                company-auctex)
 
@@ -1127,7 +1127,7 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 
 *** Org-mode
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone htmlize
               org
               org-download)
@@ -1155,7 +1155,7 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 
 Configure smartparens:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (sp-with-modes 'org-mode
     (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
     (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
@@ -1175,14 +1175,14 @@ Some cool org extensions:
  - =toc-org= provides, guess what, automatic TOC generation for
    org-mode.  This is better [[https://github.com/snosov1/toc-org/issues/20#issuecomment-276407541][pinned to melpa-stable]].
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone toc-org)
   (add-hook 'org-mode-hook 'toc-org-enable)
 #+END_SRC
 
 Identify position in buffer:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun thblt/org-where-am-i ()
     "Return a string of headers indicating where point is in the current tree."
     (interactive)
@@ -1201,21 +1201,21 @@ Identify position in buffer:
 
 The *emphasize selected* bindings:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (define-key selected-org-mode-map (kbd "b") (lambda () (interactive) (org-emphasize ?*)))
   (define-key selected-org-mode-map (kbd "i") (lambda () (interactive) (org-emphasize ?/)))
 #+END_SRC
 
 **** Org-agenda:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq org-agenda-files (list "~/Documents/LOG.org")
         org-default-notes-file "~/Documents/LOG.org")
 #+end_src
 
 **** Org-babel
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((dot . t)
@@ -1224,7 +1224,7 @@ The *emphasize selected* bindings:
 
 **** Org-ref
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone org-ref
               :with (helm-bibtex :with (biblio)))
 
@@ -1232,6 +1232,7 @@ The *emphasize selected* bindings:
         bibtex-dialect 'biblatex)
 
   ;; org-ref must have been (require)d to work.
+
   (add-hook 'org-mode-hook (lambda () (require 'org-ref)))
 #+END_SRC
 
@@ -1240,7 +1241,7 @@ The *emphasize selected* bindings:
 
 Some basic settings...
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq-default comment-empty-lines nil
 	        tab-width 2
 	        c-basic-offset 2
@@ -1250,20 +1251,20 @@ Some basic settings...
 
 and a few mappings.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "<f8>") 'ffap)
   (global-set-key (kbd "<f5>") 'recompile)
 #+end_src
 
 ** Minor modes
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones rainbow-delimiters)
 #+END_SRC
 
 *** Color-identifiers
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone color-identifiers-mode)
 
   (add-hook 'prog-mode-hook 'color-identifiers-mode)
@@ -1277,7 +1278,7 @@ and a few mappings.
 
 *** Company
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone company)
 
   (add-hook 'prog-mode-hook 'company-mode)
@@ -1289,7 +1290,7 @@ and a few mappings.
 
 *** Editorconfig
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone editorconfig)
 
   (add-hook 'prog-mode-hook (editorconfig-mode 1))
@@ -1304,7 +1305,7 @@ A good replacement for ~comment-dwim~, but unline [[https://github.com/remyferre
 can't alternate between commenting and commenting /out/ (adding the
 comment delimiter at the start or the end of the line).
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone evil-nerd-commenter)
   (general-define-key "M-;"   'evilnc-comment-or-uncomment-lines
                       "C-M-;" 'evilnc-comment-or-uncomment-paragraphs
@@ -1315,7 +1316,7 @@ comment delimiter at the start or the end of the line).
 
 *** Flycheck
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones flycheck
                flycheck-pos-tip pos-tip
                )
@@ -1328,14 +1329,14 @@ comment delimiter at the start or the end of the line).
 
 Use popups instead of the mode-line to display flycheck errors:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (with-eval-after-load 'flycheck
     (flycheck-pos-tip-mode))
 #+end_src
 
 *** Helm-dash
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone helm-dash)
 
   (setq helm-dash-docsets-path "~/.local/share/DashDocsets")
@@ -1378,7 +1379,7 @@ Use popups instead of the mode-line to display flycheck errors:
 
 *** Highlight-indent-guides
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone highlight-indent-guides)
 
   (setq highlight-indent-guides-method 'character
@@ -1390,7 +1391,7 @@ Use popups instead of the mode-line to display flycheck errors:
 
 *** Outline and outshine
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone outshine)
 
   (add-hook 'prog-mode-hook 'outline-minor-mode)
@@ -1399,7 +1400,7 @@ Use popups instead of the mode-line to display flycheck errors:
 
 We provide a function to easily create =outline-heading-alist=:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun thblt/mk-outline-heading-alist (before character after &optional start end)
     "Make an alist of (HEADING . LEVEL) usable as `outline-heading-alist.
 
@@ -1420,7 +1421,7 @@ We provide a function to easily create =outline-heading-alist=:
 
 Rainbow mode is similar to Atom's Pigments plugin or something.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones kurecolor
                rainbow-mode)
   (add-hook 'prog-mode-hook (rainbow-mode))
@@ -1433,14 +1434,14 @@ Rainbow mode is similar to Atom's Pigments plugin or something.
 
 ** Programming languages
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones lua-mode
                rust-mode)
 #+END_SRC
 
 *** C/C++
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones clang-format
                company-irony
                company-irony-c-headers
@@ -1448,7 +1449,7 @@ Rainbow mode is similar to Atom's Pigments plugin or something.
                irony)
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'c-mode-common-hook 'irony-mode)
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
@@ -1464,7 +1465,7 @@ Rainbow mode is similar to Atom's Pigments plugin or something.
     (diminish' irony-mode))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'c-mode-common-hook
             (lambda ()
               (local-set-key (kbd "C-c o") 'ff-find-other-file)))
@@ -1475,7 +1476,7 @@ Rainbow mode is similar to Atom's Pigments plugin or something.
 Intero mode is a “complete interactive development program for
 Haskell”:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones haskell-mode
                hayoo
                intero)
@@ -1483,14 +1484,14 @@ Haskell”:
   (add-hook 'haskell-mode-hook 'intero-mode-blacklist)
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (general-define-key :keymaps 'haskell-mode-map
                       "<f1> <f1>" 'hayoo-query)
 #+end_src
 
 *** Lisps
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
     (add-hook 'lisp-mode-hook
               (lambda ()
                 (setq outline-heading-alist
@@ -1499,7 +1500,7 @@ Haskell”:
 
 *** Web development
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones emmet-mode
                haml-mode
                less-css-mode
@@ -1521,7 +1522,7 @@ Haskell”:
 
 ** Misc syntaxes
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones json-mode
                toml-mode
                yaml-mode
@@ -1531,7 +1532,7 @@ Haskell”:
 
 *** Gettext (PO)
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone po-mode)
 
   (autoload 'po-mode "po-mode"
@@ -1544,7 +1545,7 @@ Haskell”:
 
 This section deals with tools which don't edit anything.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones debian-bug
                dired+)
 #+END_SRC
@@ -1633,7 +1634,7 @@ in =init.el=), and a few more functions to keep track of what is
 installed using the dependency tree and the set of explicitly required
 packages as a base.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (require 'cl-lib)
   (require 'epkg)
 
@@ -1656,13 +1657,13 @@ packages as a base.
 
 *** Borg-Queen
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq borg-queen-pgp-global-keys '("1B1336171A0B9064"))
 #+END_SRC
 
 ** Calendars
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone calfw)
 
   (setq cfw:display-calendar-holidays nil
@@ -1679,7 +1680,7 @@ packages as a base.
 
 ** Ebib
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone ebib)
 
   (setq ebib-bibtex-dialect 'biblatex)
@@ -1687,7 +1688,7 @@ packages as a base.
 
 ** ERC
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone erc-hl-nicks)
 
   (setq erc-server "irc.freenode.net"
@@ -1723,7 +1724,7 @@ bookmarks.
 First, we /may/ need to update the load-path.  Official Debian build of
 Emacs don't need that, but self-built versions do:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (eval-and-compile (let ((mu4epath "/usr/share/emacs/site-lisp/mu4e"))
                       (when (file-directory-p mu4epath)
                         (add-to-list 'load-path mu4epath))))
@@ -1733,7 +1734,7 @@ On NixOS, this is a bit more tricky.  We need to find the mu binary,
 dereference it (since it will be a symlink), and find the path from
 this.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (eval-and-compile
     (--when-let (and
                  (file-exists-p "/etc/NIXOS")
@@ -1756,7 +1757,7 @@ switch contexts based on a regular expression on the current Maildir
 path.  For some reason, this doesn't come included with mu4e, so here
 it is, and it probably comes [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from here]].
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun mu4e-message-maildir-matches (msg rx)
     (when rx
       (if (listp rx)
@@ -1769,7 +1770,7 @@ it is, and it probably comes [[https://www.reddit.com/r/emacs/comments/47t9ec/sh
 
 Then the bulk of the config:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (require 'mu4e-contrib)
 
   (setq
@@ -1855,7 +1856,7 @@ Then the bulk of the config:
 
 Compose messages with org-mode tables and lists:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'message-mode-hook 'turn-on-orgtbl)
   (add-hook 'message-mode-hook 'turn-on-orgstruct++)
 #+end_src
@@ -1865,7 +1866,7 @@ Compose messages with org-mode tables and lists:
 Enable company-mode completion in compose buffer until [[https://github.com/djcb/mu/issues/1029][this issue]] gets
 fixed:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (add-hook 'message-mode-hook 'company-mode)
 #+END_SRC
 
@@ -1873,7 +1874,7 @@ fixed:
 
 Enable notifications:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone mu4e-alert)
 
   (with-eval-after-load 'mu4e
@@ -1886,7 +1887,7 @@ Enable notifications:
 
 ** Password management (password-store)
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drones auth-password-store
                pass
                password-store)
@@ -1895,7 +1896,7 @@ Enable notifications:
 
 ** PDF Tools
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (want-drone pdf-tools '(tablist))
 
   (setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
@@ -1917,7 +1918,7 @@ Enable notifications:
 
 We use the =string= syntax, as advised on [[https://www.masteringemacs.org/article/re-builder-interactive-regexp-builder][this Mastering Emacs' article]].
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq reb-re-syntax 'string)
 #+end_src
 
@@ -1927,7 +1928,7 @@ Technomancy's =scpaste= is a replacement for pastebin, paste.lisp.org,
 and similar services.  It generates a HTML page out of a buffer or
 region and moves it over to a server using scp.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
         scpaste-http-destination "https://paste.thb.lt"
         scpaste-user-address "https://thb.lt"
@@ -1939,7 +1940,7 @@ A lot of packages add overlays which are useful when editing, noisy
 when reading.  We advise scpaste so a few minor modes get disabled
 before it runs, and restored afterwards.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun thblt/scpaste-without-noise (f &rest args)
     (let ((hig highlight-indent-guides-mode)
           (flyc flycheck-mode)
@@ -1970,7 +1971,7 @@ settings.
 If we're running on a HiDPI machine, we replace the flycheck fringe
 bitmap with a larger version.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (if (string-prefix-p  "maladict" system-name)
       (progn
         (set-face-attribute 'default nil
@@ -2011,7 +2012,7 @@ now need to load them.  This file will provide a =dotemacs-private=
 feature, which is used elsewhere to defer configuration until some
 private bits are available.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (let ((mu4e-private-config (expand-file-name "dotemacs-private.org" user-emacs-directory)))
 
     (if (file-exists-p mu4e-private-config)
@@ -2023,7 +2024,7 @@ private bits are available.
 
 I don't explicitly run the server, but I start new daemons whenever I need one.  With a swarm of instances, updating config may be a pain.  These two functions respectively reload =init.el= and tell all daemons to do so:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun thblt/reload-emacs ()
     "Reload Emacs configuration."
     (interactive)
@@ -2039,7 +2040,7 @@ I don't explicitly run the server, but I start new daemons whenever I need one. 
 
 Also, some utility function:
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun thblt/server-start (name)
     "Prompt for NAME, then start the Emacs server under that name."
     (interactive "sDaemon name? ")
@@ -2053,7 +2054,7 @@ We finally set the initial contents of the scratch buffer.  This makes
 it easy to notice when something went wrong (this may not be obvious
 in daemon mode)
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq initial-scratch-message ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n")
 
   ;; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬
