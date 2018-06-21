@@ -7,7 +7,8 @@
 (borg-initialize)
 (require 'borg-nix-shell)
 (setq borg-build-shell-command 'borg-nix-shell-build-command)
-(require 'borg-queen)
+(defmacro want-drone (&rest _))
+(defalias 'want-drones 'want-drone)
 
 (want-drone ;; borg '(epkg (closql))
             borg-nix-shell

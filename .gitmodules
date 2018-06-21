@@ -11,6 +11,9 @@
 	path = lib/async
 	url = https://github.com/jwiegley/emacs-async
 	signingkey = DE55B769FC578A14A5BE5430C144D8F4F19FE630
+[submodule "atomic-chrome"]
+	path = lib/atomic-chrome
+	url = git@github.com:alpha22jp/atomic-chrome.git
 [submodule "auctex"]
 	path = lib/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
@@ -27,9 +30,6 @@
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = https://github.com/tarsius/auto-compile
-[submodule "auto-dictionary"]
-	path = lib/auto-dictionary
-	url = https://github.com/nschum/auto-dictionary-mode
 [submodule "avy"]
 	path = lib/avy
 	url = https://github.com/abo-abo/avy
@@ -39,6 +39,9 @@
 [submodule "biblio"]
 	path = lib/biblio
 	url = git@github.com:cpitclaudel/biblio.el.git
+[submodule "boon"]
+	path = lib/boon
+	url = git@github.com:jyp/boon.git
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
@@ -46,9 +49,6 @@
 [submodule "borg-nix-shell"]
 	path = lib/borg-nix-shell
 	url = https://github.com/thblt/borg-nix-shell
-[submodule "borg-queen"]
-	path = lib/borg-queen
-	url = https://github.com/thblt/borg-queen
 [submodule "bug-hunter"]
 	path = lib/bug-hunter
 	url = git@github.com:Malabarba/elisp-bug-hunter.git
@@ -388,9 +388,15 @@
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor
+[submodule "y"]
+	path = lib/websocket
+	url = git@github.com:ahyatt/emacs-websocket.git
 [submodule "yaml-mode"]
 	path = lib/yaml-mode
 	url = https://github.com/yoshiki/yaml-mode
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/joaotavora/yasnippet
+[submodule "znc"]
+	path = lib/znc
+	url = git@github.com:sshirokov/ZNC.el.git

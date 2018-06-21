@@ -555,10 +555,6 @@ prose and code editing, respectively.
 
 ** Spell checking
 
-#+begin_src emacs-lisp :tangle yes
-  (want-drone auto-dictionary)
-#+end_src
-
 Use =aspell= instead of =ispell=:
 
 #+begin_src emacs-lisp :tangle yes
@@ -596,25 +592,6 @@ Correct words using Ivy instead of default method:
   (general-define-key :keymaps 'flyspell-mode-map
                       "M-$" 'flyspell-auto-correct-previous-word
                       "C-;" 'flyspell-correct-previous-word-generic)
-#+end_src
-
-Auto-dictionary mode.  Disabled for now, as it seems to slow everything down + doesn't work with org-mode.
-
-#+begin_src emacs-lisp :tangle yes
-  (add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode)))
-#+end_src
-
-** “Modal” editing
-
-Selected is a package which allows to create specific bindings when
-region is active:
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone selected)
-
-  (defvar selected-org-mode-map (make-sparse-keymap))
-  (selected-global-mode)
-  (diminish 'selected-minor-mode)
 #+end_src
 
 ** Moving around
