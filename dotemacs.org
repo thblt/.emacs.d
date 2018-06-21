@@ -385,7 +385,7 @@ parameters, and update on ~window-configuration-change-hook~:
                 vc-mode) "   ")) ;; Not the cleanest way to add a conditional separator...
 
      (:eval (thblt/mode-line-sep
-             (when (and t ;; @FIXME Detect if server is started.
+             (when (and (and (boundp 'server-process) server-process)
                         (window-parameter (selected-window) 'thblt/window-at-bottom-right))
 
                (propertize (thblt/mode-line-wrap server-name) 'face 'thblt/mode-line-server-name-face))))))
