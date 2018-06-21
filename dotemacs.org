@@ -1869,7 +1869,7 @@ Haskell”:
                hayoo
                intero)
 
-  (add-hook 'haskell-mode-hook 'intero-mode-blacklist)
+  (intero-global-mode)
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
