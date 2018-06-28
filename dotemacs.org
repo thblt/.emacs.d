@@ -1839,6 +1839,8 @@ Haskell”:
                intero)
 
   (intero-global-mode)
+
+  (setq intero-blacklist '("~/.dotfiles"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
