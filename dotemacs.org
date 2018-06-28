@@ -521,6 +521,12 @@ Popwin “makes you free from the hell of annoying buffers”:
    "S-<down>" 'windmove-down)
 #+END_SRC
 
+*** Winner
+
+#+begin_src emacs-lisp :tangle yes
+  (winner-mode)
+#+end_src
+
 *** Customization helper
 
 A little function to identify the face at point.  Nice to have when
