@@ -230,9 +230,6 @@
 [submodule "less-css-mode"]
 	path = lib/less-css-mode
 	url = https://github.com/purcell/less-css-mode
-[submodule "lib/spelo"]
-	path = lib/spelo
-	url = https://github.com/thblt/spelo
 [submodule "lua-mode"]
 	path = lib/lua-mode
 	url = https://github.com/immerrr/lua-mode
