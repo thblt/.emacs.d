@@ -1759,32 +1759,13 @@ Use popups instead of the mode-line to display flycheck errors:
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 #+end_src
 
-*** Outline and outshine
+*** Outline and Outshine
 
 #+begin_src emacs-lisp :tangle yes
   (want-drone outshine)
 
   (add-hook 'prog-mode-hook 'outline-minor-mode)
-  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-#+END_SRC
-
-We provide a function to easily create =outline-heading-alist=:
-
-#+begin_src emacs-lisp :tangle yes
-  (defun thblt/mk-outline-heading-alist (before character after &optional start end)
-    "Make an alist of (HEADING . LEVEL) usable as `outline-heading-alist.
-
-  For level n, BEFORE is concatenated with n times CHARACTER followed by AFTER.
-
-  Sequences start at START and end at END, default is 1--8."
-    (unless start (setq start 1))
-    (unless end (setq end 8))
-    (mapcar (lambda (n) (cons (concat
-                               before
-                               (make-string n character)
-                               after)
-                              n))
-            (number-sequence start end)))
+  (add-hook 'outline-minor-mode-hook 'outshine-minor-mode)
 #+END_SRC
 
 *** Rainbow mode
@@ -2075,10 +2056,9 @@ An extra feature: update all remotes.  Probably very dirty.
 
 ** Mu4e
 
-*** General
 
 Configuration for mu4e is split between a published part, below, and a
-private part, tangled from =~/.emacs.d/thblt/mu4e.el=.  The public part
+private part, tangled from =~/.emacs.d/dotemacs-private.org=.  The public part
 contains common mu4e settings, the private parts defines accounts and
 bookmarks.
 
@@ -2222,29 +2202,6 @@ Compose messages with org-mode tables and lists:
   (add-hook 'message-mode-hook 'turn-on-orgstruct++)
 #+end_src
 
-*** Company
-
-Enable company-mode completion in compose buffer until [[https://github.com/djcb/mu/issues/1029][this issue]] gets
-fixed:
-
-#+begin_src emacs-lisp :tangle yes
-  (add-hook 'message-mode-hook 'company-mode)
-#+END_SRC
-
-*** Notifications (mu4e-alert)
-
-Enable notifications:
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone mu4e-alert)
-
-  (with-eval-after-load 'mu4e
-    (with-eval-after-load 'dotemacs-private
-      (setq mu4e-alert-interesting-mail-query (concat "flag:unread AND " (mu4e-get-bookmark-query ?i)))
-      ;;            (mu4e-alert-set-default-style 'libnotify)
-      ;;            (mu4e-alert-enable-notifications)
-      (mu4e-alert-enable-mode-line-display)))
-#+END_SRC
 
 ** Password management (password-store)
 
@@ -2333,37 +2290,36 @@ If we're running on a HiDPI machine, we replace the flycheck fringe
 bitmap with a larger version.
 
 #+begin_src emacs-lisp :tangle yes
-  (if (string-prefix-p  "maladict" system-name)
-      (progn
-        (set-face-attribute 'default nil
-                            :height 070)
+  (when (string-prefix-p  "maladict" system-name)
+    (set-face-attribute 'default nil
+                        :height 070)
 
-        (setq fringe-mode-explicit t)
-        (set-fringe-mode '(16 . 0))
+    (setq fringe-mode-explicit t)
+    (set-fringe-mode '(16 . 0))
 
-        (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
-          (vector
-           #b1000000000
-           #b1100000000
-           #b1110000000
-           #b1111000000
-           #b1111100000
-           #b1111110000
-           #b1111111000
-           #b1111111100
-           #b1111111110
-           #b1111111111
-           #b1111111111
-           #b1111111110
-           #b1111111100
-           #b1111111000
-           #b1111110000
-           #b1111100000
-           #b1111000000
-           #b1110000000
-           #b1100000000
-           #b1000000000)
-          20 10 'center)))
+    (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
+      (vector
+       #b1000000000
+       #b1100000000
+       #b1110000000
+       #b1111000000
+       #b1111100000
+       #b1111110000
+       #b1111111000
+       #b1111111100
+       #b1111111110
+       #b1111111111
+       #b1111111111
+       #b1111111110
+       #b1111111100
+       #b1111111000
+       #b1111110000
+       #b1111100000
+       #b1111000000
+       #b1110000000
+       #b1100000000
+       #b1000000000)
+      20 10 'center))
 #+END_SRC
 
 ** Load private configuration
