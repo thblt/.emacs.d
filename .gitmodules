@@ -245,15 +245,9 @@
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
-[submodule "moody"]
-	path = lib/moody
-	url = https://github.com/tarsius/moody/
 [submodule "move-text"]
 	path = lib/move-text
 	url = https://github.com/emacsfodder/move-text
-[submodule "mu4e-alert"]
-	path = lib/mu4e-alert
-	url = https://github.com/iqbalansari/mu4e-alert
 [submodule "multiple-cursors"]
 	path = lib/multiple-cursors
 	url = https://github.com/magnars/multiple-cursors.el
@@ -293,6 +287,9 @@
 [submodule "outshine"]
 	path = lib/outshine
 	url = https://github.com/alphapapa/outshine
+[submodule "package-lint"]
+	path = lib/package-lint
+	url = git@github.com:purcell/package-lint.git
 [submodule "packed"]
 	path = lib/packed
 	url = https://github.com/tarsius/packed
