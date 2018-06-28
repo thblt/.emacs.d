@@ -208,7 +208,8 @@ And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]
 #+begin_src emacs-lisp :tangle yes
   (want-drone eziam-theme-emacs)
 
-  (load-theme 'eziam-light t)
+  (setq eziam-scale-headings nil)
+  (load-theme 'eziam-dark t)
 #+end_src
 
 By default, multiple themes can be loaded at the same time.  Nobody
@@ -229,17 +230,17 @@ Create some shortcut commands to load both Eziam themes:
 
 ** Mode line
 
+*** The mode line itself
+
 #+begin_src emacs-lisp :tangle yes
-  (want-drone kurecolor
-              moody)
+  (want-drone kurecolor)
 
   (require 'kurecolor)
-  (require 'moody)
 #+END_SRC
 
-*** Faces
-
 #+begin_src emacs-lisp :tangle yes
+  (setq x-underline-at-descent-line t)
+
   (defun thblt/mode-line-set-faces (&rest args)
     (let* ((default-bg (face-attribute 'default :background))
      (default-fg (face-attribute 'default :foreground))
@@ -247,14 +248,17 @@ Create some shortcut commands to load both Eziam themes:
      ;; @FIXME This is NOT a good way to compute brightnesqs.  Average the three components.
      (dark (< (kurecolor-hex-get-brightness default-bg) .5))
      (brightness-step (if dark .05 -.05))
-     (ac-bg (kurecolor-adjust-brightness default-bg (* 6 brightness-step)))
+     ;; active
+     (ac-bg (kurecolor-adjust-brightness default-bg (* 12 brightness-step)))
+     (ac-fg (if dark "black" "white"))
+     ;; inactive
      (in-bg (kurecolor-adjust-brightness default-bg (* 2 brightness-step)))
      (in-fg (kurecolor-adjust-brightness default-bg (* (if dark 5 1) brightness-step))))
 
       (face-spec-set 'mode-line
                      `((t
                         :background ,ac-bg
-                        :foreground ,default-fg
+                        :foreground ,ac-fg
                         :underline ,ac-bg
                         :overline ,ac-bg)))
 
@@ -290,19 +294,62 @@ Create some shortcut commands to load both Eziam themes:
         base
         (if active "-active" "")
         (if variant (concat "-" variant) ""))))
+
+  (defun thblt/mode-line-wrap (str)
+    (if str (concat " " str " ") ""))
+
+  (defun thblt/mode-line-sep (str)
+    (if str (concat str " ") ""))
+
+  (setq-default
+   mode-line-format
+   '((:eval
+      (when (and (bound-and-true-p eyebrowse-mode) ;; Eyebrowse is bound and on
+                 (window-parameter (selected-window) 'thblt/window-at-bottom-left)) ;;
+        (let* ((num (eyebrowse--get 'current-slot))
+               (tag (when num (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
+               (str (if (and tag (< 0 (length tag)))
+                        tag
+                      (when num (int-to-string num)))))
+          (propertize (thblt/mode-line-wrap str) 'face '(:weight bold :background "#FFCC33" :foreground "black" :box t)))))
+
+     " "
+
+     (:eval
+       (propertize
+       (thblt/mode-line-sep (concat
+         (and buffer-read-only "")
+         (and (buffer-file-name) (buffer-modified-p) "💾")))
+       'face '(:foreground "red")))
+
+     (:eval (propertized-buffer-identification "%12b"))
+
+     "  %3l:%2c "
+
+     "  ["
+     (:eval (propertize mode-name 'face 'bold))
+     minor-mode-alist
+     "]   "
+
+
+     (:eval
+      (when (or (projectile-project-p)
+                vc-mode)
+         (concat
+          (when (projectile-project-p) (format "%s " (projectile-project-name)))
+          (--when-let vc-mode (format " %s" (substring it 1))))))
+
+     (:eval (when (or (projectile-project-p)
+                vc-mode) "   ")) ;; Not the cleanest way to add a conditional separator...
+
+     (:eval (thblt/mode-line-sep
+             (when (and (and (boundp 'server-process) server-process)
+                        (window-parameter (selected-window) 'thblt/window-at-bottom-right))
+
+               (propertize (thblt/mode-line-wrap server-name) 'face 'thblt/mode-line-server-name-face))))))
 #+END_SRC
 
-*** Track window position
-
-The mode-lines of the windows at the bottom left and the bottom right
-of the frame display special information:
-
- - At the *bottom left*, the name of the current [[https://github.com/wasamasa/eyebrowse][Eyebrowse]] perspective;
- - At the *bottom right*, the name of the server.
-
-There's no /fast/ way to determine a window's position when rendering
-the mode-line, so we need to store them statically in the window
-parameters, and update on ~window-configuration-change-hook~:
+*** The window position tracker
 
 #+begin_src emacs-lisp :tangle yes
   (defun thblt/window-at-bottom-left-p (win)
@@ -324,71 +371,9 @@ parameters, and update on ~window-configuration-change-hook~:
           (window-list (selected-frame) nil)))
 
   (add-hook 'window-configuration-change-hook 'thblt/update-window-position-parameters)
-#+END_SRC
 
-*** Putting it all together
 
-#+begin_src emacs-lisp :tangle yes
-  (defun thblt/mode-line-wrap (str)
-    (if str (concat " " str " ") ""))
 
-  (defun thblt/mode-line-sep (str)
-    (if str (concat str " ") ""))
-
-  (setq moody-mode-line-height 35
-        x-underline-at-descent-line t)
-
-  (setq-default
-   mode-line-format
-   '((:eval
-      (when (and (bound-and-true-p eyebrowse-mode) ;; Eyebrowse is bound and on
-                 (window-parameter (selected-window) 'thblt/window-at-bottom-left)) ;;
-        (let* ((num (eyebrowse--get 'current-slot))
-               (tag (when num (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
-               (str (if (and tag (< 0 (length tag)))
-                        tag
-                      (when num (int-to-string num)))))
-          (propertize (thblt/mode-line-wrap str) 'face '(:weight bold :background "#FFCC33" :foreground "black" :box t)))))
-
-     " "
-
-     (:eval
-      (moody-tab
-       (concat
-        (if buffer-read-only
-          (propertize " ")
-          (when (and (buffer-file-name)
-                     (buffer-modified-p))
-            (propertize "💾 " 'face '(:foreground "red"))))
-        (propertize (buffer-name) 'face 'bold))))
-
-     "  %3l:%2c "
-
-     "  ["
-     (:eval (propertize mode-name 'face 'bold))
-     minor-mode-alist
-     "]   "
-
-     (:eval (--when-let
-       (moody-tab (format "⯒ %s" (projectile-project-name)) nil 'up)))
-
-     (:eval
-      (when (or (projectile-project-p)
-                vc-mode)
-        (moody-tab
-         (concat
-          (when (projectile-project-p) (format "%s " (projectile-project-name)))
-          (--when-let vc-mode (format " %s" (substring it 1))))
-          nil 'up)))
-
-     (:eval (when (or (projectile-project-p)
-                vc-mode) "   ")) ;; Not the cleanest way to add a conditional separator...
-
-     (:eval (thblt/mode-line-sep
-             (when (and (and (boundp 'server-process) server-process)
-                        (window-parameter (selected-window) 'thblt/window-at-bottom-right))
-
-               (propertize (thblt/mode-line-wrap server-name) 'face 'thblt/mode-line-server-name-face))))))
 #+END_SRC
 
 ** TODO Project management with Projectile
@@ -1334,7 +1319,7 @@ copy-pasted and slightly modified to suit my needs:
   (want-drone undo-tree)
 
   (setq undo-tree-auto-save-history t
-        undo-tree-visualizer-diff t)
+        undo-tree-visualizer-diff nil)
 
   (global-undo-tree-mode)
   (diminish 'undo-tree-mode)
@@ -1520,17 +1505,14 @@ TODO validate =:= and ~=~ on all keyboard mappings.
               org
               org-download)
 
-  (setq org-catch-invisible-edits t ; Avoid editing folded contents
+  (setq org-catch-invisible-edits t
         org-hide-leading-stars t
         org-hide-emphasis-markers t
-        org-html-htmlize-output-type 'css ; Use CSS selectors
-                                          ; instead of inline
-                                          ; styles in
-                                          ; generated HTML
-                                          ; code blocks
-        org-imenu-depth 6
-        org-src-fontify-natively t  ; Syntax highlighting in src blocks.
-        )
+        org-html-htmlize-output-type 'css
+        org-imenu-depth 8
+        org-src-fontify-natively t
+        org-ellipsis " ▼")
+
   (add-hook 'org-mode-hook (lambda ()
                              (org-indent-mode t)
                              (visual-line-mode t)
