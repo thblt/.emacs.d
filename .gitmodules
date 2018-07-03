@@ -1,12 +1,6 @@
 [submodule "ace-window"]
 	path = lib/ace-window
 	url = https://github.com/abo-abo/ace-window
-[submodule "alert"]
-	path = lib/alert
-	url = https://github.com/jwiegley/alert
-[submodule "apiwrap"]
-	path = lib/apiwrap
-	url = https://github.com/vermiculus/apiwrap.el
 [submodule "async"]
 	path = lib/async
 	url = https://github.com/jwiegley/emacs-async
