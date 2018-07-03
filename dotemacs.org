@@ -2064,41 +2064,17 @@ An extra feature: update all remotes.  Probably very dirty.
 
 ** Mu4e
 
-
 Configuration for mu4e is split between a published part, below, and a
 private part, tangled from =~/.emacs.d/dotemacs-private.org=.  The public part
 contains common mu4e settings, the private parts defines accounts and
 bookmarks.
 
-First, we /may/ need to update the load-path.  Official Debian build of
-Emacs don't need that, but self-built versions do:
+mu4e is loaded as a regular Emacs package, complete with its binary, build through usual Borg mechanisms.
 
 #+begin_src emacs-lisp :tangle yes
-  (eval-and-compile (let ((mu4epath "/usr/share/emacs/site-lisp/mu4e"))
-                      (when (file-directory-p mu4epath)
-                        (add-to-list 'load-path mu4epath))))
+  (setq mu4e-mu-binary (expand-file-name "mu/mu" (borg-worktree "mu4e")))
 #+END_SRC
 
-On NixOS, this is a bit more tricky.  We need to find the mu binary,
-dereference it (since it will be a symlink), and find the path from
-this.
-
-#+begin_src emacs-lisp :tangle yes
-  (eval-and-compile
-    (--when-let (and
-                 (file-exists-p "/etc/NIXOS")
-                 (executable-find "mu"))
-      (let ((mu4epath
-             (concat
-              (file-name-directory
-               (file-truename
-                it))
-              "../share/emacs/site-lisp/mu4e")))
-        (when (and
-               (string-prefix-p "/nix/store/" mu4epath)
-               (file-directory-p mu4epath))
-          (add-to-list 'load-path (file-truename mu4epath))))))
-#+END_SRC
 
 Each of my accounts is synced (by =mbsync=) to a folder at the root of
 the Maildir (eg, =~/.Mail/Academic/=).  We then need a function to

@@ -245,6 +245,14 @@
 [submodule "move-text"]
 	path = lib/move-text
 	url = https://github.com/emacsfodder/move-text
+[submodule "mu4e"]
+	path = lib/mu4e
+	url = git@github.com:djcb/mu.git
+  build-nix-shell-packages = gnumake autoconf automake m4 libtool pkgconfig glib gmime xapian emacs texinfo
+  build-step = ./autogen.sh
+  build-step = make
+  load-path = mu4e
+  info-path = mu4e
 [submodule "multiple-cursors"]
 	path = lib/multiple-cursors
 	url = https://github.com/magnars/multiple-cursors.el
