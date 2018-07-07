@@ -46,21 +46,9 @@
 [submodule "bug-hunter"]
 	path = lib/bug-hunter
 	url = git@github.com:Malabarba/elisp-bug-hunter.git
-[submodule "calfw"]
-	path = lib/calfw
-	url = https://github.com/kiwanami/emacs-calfw
-[submodule "cider"]
-	path = lib/cider
-	url = https://github.com/clojure-emacs/cider
-[submodule "clojure-mode"]
-	path = lib/clojure-mode
-	url = https://github.com/clojure-emacs/clojure-mode
 [submodule "closql"]
 	path = lib/closql
 	url = https://github.com/emacscollective/closql
-[submodule "cmake-mode"]
-	path = lib/cmake-mode
-	url = https://github.com/emacsmirror/cmake-mode
 [submodule "color-identifiers-mode"]
 	path = lib/color-identifiers-mode
 	url = https://github.com/ankurdave/color-identifiers-mode
@@ -99,9 +87,6 @@
 	url = https://github.com/skeeto/emacsql
 	build-nix-shell-packages = gnumake
 	build-step = "cd sqlite; make"
-[submodule "emmet-mode"]
-	path = lib/emmet-mode
-	url = https://github.com/smihica/emmet-mode
 [submodule "epkg"]
 	path = lib/epkg
 	url = https://github.com/emacscollective/epkg
@@ -141,9 +126,6 @@
 [submodule "flycheck-irony"]
 	path = lib/flycheck-irony
 	url = https://github.com/Sarcasm/flycheck-irony
-[submodule "flycheck-pos-tip"]
-	path = lib/flycheck-pos-tip
-	url = https://github.com/flycheck/flycheck-pos-tip
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct
@@ -157,21 +139,9 @@
 [submodule "ghub"]
 	path = lib/ghub
 	url = https://github.com/magit/ghub
-[submodule "git-timemachine"]
-	path = lib/git-timemachine
-	url = https://github.com/pidu/git-timemachine
-[submodule "graphviz-dot-mode"]
-	path = lib/graphviz-dot-mode
-	url = https://github.com/ppareit/graphviz-dot-mode
-[submodule "haml-mode"]
-	path = lib/haml-mode
-	url = https://github.com/nex3/haml-mode
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	url = https://github.com/haskell/haskell-mode
-[submodule "hayoo"]
-	path = lib/hayoo
-	url = https://github.com/benma/hayoo.el
 [submodule "helm"]
 	path = lib/helm
 	url = https://github.com/emacs-helm/helm
@@ -184,9 +154,6 @@
 [submodule "highlight-indent-guides"]
 	path = lib/highlight-indent-guides
 	url = https://github.com/DarthFennec/highlight-indent-guides
-[submodule "ht"]
-	path = lib/ht
-	url = https://github.com/Wilfred/ht.el
 [submodule "htmlize"]
 	path = lib/htmlize
 	url = https://github.com/hniksic/emacs-htmlize
@@ -209,24 +176,9 @@
 [submodule "ivy"]
 	path = lib/ivy
 	url = https://github.com/abo-abo/swiper
-[submodule "json-mode"]
-	path = lib/json-mode
-	url = https://github.com/joshwnj/json-mode
-[submodule "json-reformat"]
-	path = lib/json-reformat
-	url = https://github.com/gongo/json-reformat
-[submodule "json-snatcher"]
-	path = lib/json-snatcher
-	url = https://github.com/Sterlingg/json-snatcher
 [submodule "kurecolor"]
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
-[submodule "less-css-mode"]
-	path = lib/less-css-mode
-	url = https://github.com/purcell/less-css-mode
-[submodule "lua-mode"]
-	path = lib/lua-mode
-	url = https://github.com/immerrr/lua-mode
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit
@@ -305,15 +257,9 @@
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
 	url = https://github.com/politza/pdf-tools
-[submodule "po-mode"]
-	path = lib/po-mode
-	url = https://github.com/emacsmirror/po-mode
 [submodule "popwin"]
 	path = lib/popwin
 	url = https://github.com/m2ym/popwin-el
-[submodule "pos-tip"]
-	path = lib/pos-tip
-	url = https://github.com/pitkali/pos-tip
 [submodule "projectile"]
 	path = lib/projectile
 	url = https://github.com/bbatsov/projectile
@@ -326,39 +272,24 @@
 [submodule "rainbow-mode"]
 	path = lib/rainbow-mode
 	url = https://github.com/emacsmirror/rainbow-mode
-[submodule "rust-mode"]
-	path = lib/rust-mode
-	url = https://github.com/rust-lang/rust-mode
 [submodule "s"]
 	path = lib/s
 	url = https://github.com/magnars/s.el
 [submodule "scpaste"]
 	path = lib/scpaste
 	url = https://github.com/technomancy/scpaste
-[submodule "scss-mode"]
-	path = lib/scss-mode
-	url = https://github.com/antonj/scss-mode
 [submodule "selected"]
 	path = lib/selected
 	url = https://github.com/Kungsgeten/selected.el
-[submodule "skewer-mode"]
-	path = lib/skewer-mode
-	url = https://github.com/skeeto/skewer-mode
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
-[submodule "spinner"]
-	path = lib/spinner
-	url = https://github.com/Malabarba/spinner.el
 [submodule "tablist"]
 	path = lib/tablist
 	url = https://github.com/politza/tablist
 [submodule "toc-org"]
 	path = lib/toc-org
 	url = https://github.com/snosov1/toc-org
-[submodule "toml-mode"]
-	path = lib/toml-mode
-	url = https://github.com/dryman/toml-mode.el
 [submodule "transmission"]
 	path = lib/transmission
 	url = https://github.com/holomorph/transmission
@@ -375,9 +306,6 @@
 [submodule "visual-regexp"]
 	path = lib/visual-regexp
 	url = https://github.com/benma/visual-regexp.el
-[submodule "web-mode"]
-	path = lib/web-mode
-	url = https://github.com/fxbois/web-mode
 [submodule "which-key"]
 	path = lib/which-key
 	url = https://github.com/justbur/emacs-which-key
@@ -387,9 +315,6 @@
 [submodule "y"]
 	path = lib/websocket
 	url = git@github.com:ahyatt/emacs-websocket.git
-[submodule "yaml-mode"]
-	path = lib/yaml-mode
-	url = https://github.com/yoshiki/yaml-mode
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/joaotavora/yasnippet
