@@ -232,6 +232,9 @@
 [submodule "org-ref"]
 	path = lib/org-ref
 	url = https://github.com/jkitchin/org-ref
+[submodule "orgalist"]
+	path = lib/orgalist
+	url = git@github.com:emacsmirror/orgalist.git
 [submodule "outorg"]
 	path = lib/outorg
 	url = https://github.com/alphapapa/outorg

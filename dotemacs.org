@@ -2182,10 +2182,11 @@ Then the bulk of the config:
 Compose messages with org-mode tables and lists:
 
 #+begin_src emacs-lisp :tangle yes
-  (add-hook 'message-mode-hook 'turn-on-orgtbl)
-  (add-hook 'message-mode-hook 'turn-on-orgstruct++)
-#+end_src
+  (want-drone orgalist)
 
+  (add-hook 'message-mode-hook 'turn-on-orgtbl)
+  (add-hook 'message-mode-hook 'orgalist-mode)
+#+end_src
 
 ** Password management (password-store)
 
