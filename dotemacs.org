@@ -196,7 +196,7 @@ Configure the default font:
 #+begin_src emacs-lisp :tangle yes
   (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono"))
   (set-face-attribute 'default nil
-                      :height 70)
+                      :height 65)
 #+end_src
 
 And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]].
@@ -1513,7 +1513,9 @@ TODO validate =:= and ~=~ on all keyboard mappings.
         org-html-htmlize-output-type 'css
         org-imenu-depth 8
         org-src-fontify-natively t
-        org-ellipsis " ▼")
+        org-ellipsis " ▼"
+        org-special-ctrl-a/e t
+        org-special-ctrl-k t)
 
   (add-hook 'org-mode-hook (lambda ()
                              (org-indent-mode t)
@@ -1716,6 +1718,7 @@ comment delimiter at the start or the end of the line).
 
   (add-hook 'prog-mode-hook 'outline-minor-mode)
   (add-hook 'outline-minor-mode-hook 'outshine-minor-mode)
+  (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
 #+END_SRC
 
 *** Rainbow mode
@@ -1781,7 +1784,8 @@ Haskell”:
                hayoo
                intero)
 
-  (intero-global-mode)
+  (add-hook 'haskell-mode-hook 'intero-mode)
+  ;; (intero-global-mode)
 
   (setq intero-blacklist '("~/.dotfiles"))
 #+end_src
