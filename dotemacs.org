@@ -19,10 +19,6 @@ with maybe a few interesting properties:
 
  + It has a whole section dedicated to [[#writing-prose][writing prose]].
 
- + It uses [[https://github.com/abo-abo/swiper][Ivy]] /and/ (a bit of) [[https://github.com/emacs-helm/helm][Helm]].  The bulk of completion is
-   performed through Ivy, but in some rare cases where Helm is still
-   required, or is a better fit for the job, Helm is used instead.
-
 * Contents :TOC_1:noexport:
 - [[#introduction][Introduction]]
 - [[#user-interface][User interface]]
@@ -1693,64 +1689,12 @@ comment delimiter at the start or the end of the line).
 *** Flycheck
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones flycheck
-               flycheck-pos-tip pos-tip
-               )
+  (want-drones flycheck)
 
-    (add-hook 'prog-mode-hook 'flycheck-mode)
+  (add-hook 'prog-mode-hook 'flycheck-mode)
 
-    (with-eval-after-load 'flycheck
-      (diminish 'flycheck-mode))
-#+end_src
-
-Use popups instead of the mode-line to display flycheck errors:
-
-#+begin_src emacs-lisp :tangle yes
   (with-eval-after-load 'flycheck
-    (flycheck-pos-tip-mode))
-#+end_src
-
-*** Helm-dash
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone helm-dash)
-
-  (setq helm-dash-docsets-path "~/.local/share/DashDocsets")
-
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (setq-local helm-dash-docsets '("C"))
-
-              (add-hook 'c++-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Boost" "C++" "Qt"))))
-
-              (add-hook 'emacs-lisp-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Emacs Lisp"))))
-
-              (add-hook 'haskell-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Haskell"))))
-
-              (add-hook 'html-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("HTML"))))
-
-              (add-hook 'js-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("JavaScript"))))
-
-              (add-hook 'python-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Python 2" "Python 3"))))
-
-              (add-hook 'rust-mode-hook
-                        (lambda ()
-                          (setq-local helm-dash-docsets '("Rust"))))))
-
-  (general-define-key :keymaps 'prog-mode-map
-                    "<f1> <f1>" 'helm-dash-at-point)
+    (diminish 'flycheck-mode))
 #+end_src
 
 *** Highlight-indent-guides
@@ -1799,8 +1743,7 @@ Rainbow mode is similar to Atom's Pigments plugin or something.
 *** C/C++
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones clang-format
-               company-irony
+  (want-drones company-irony
                company-irony-c-headers
                flycheck-irony
                irony)
@@ -1848,66 +1791,9 @@ Haskell”:
                       "<f1> <f1>" 'hayoo-query)
 #+end_src
 
-*** Lisps
-
-#+begin_src emacs-lisp :tangle yes
-    (add-hook 'lisp-mode-hook
-              (lambda ()
-                (setq outline-heading-alist
-                      (thblt/mk-outline-heading-alist ";;" ?\; " "))))
-#+END_SRC
-
-*** Web development
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drones emmet-mode
-               haml-mode
-               less-css-mode
-               scss-mode
-               skewer-mode
-               web-mode)
-
-  (setq scss-compile-at-save nil)
-  (add-to-list 'auto-mode-alist '("\\.css\\'" . scss-mode))
-
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-#+end_src
-
-** Misc syntaxes
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drones json-mode
-               toml-mode
-               yaml-mode
-
-               cmake-mode)
-#+END_SRC
-
-*** Gettext (PO)
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone po-mode)
-
-  (autoload 'po-mode "po-mode"
-    "Major mode for translators to edit PO files" t)
-  (setq auto-mode-alist (cons '("\\.po\\'\\|\\.po\\." . po-mode)
-                              auto-mode-alist))
-#+END_SRC
-
 * Tools
 
 This section deals with tools which don't edit anything.
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drones debian-bug
-               dired+)
-#+END_SRC
 
 ** TODO Borg and their Queen
 
@@ -1948,22 +1834,6 @@ packages as a base.
   (setq borg-queen-pgp-global-keys '("1B1336171A0B9064"))
 #+END_SRC
 
-** Calendars
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone calfw)
-
-  (setq cfw:display-calendar-holidays nil
-        ;; Grid characters
-        cfw:fchar-vertical-line ?│
-        cfw:fchar-horizontal-line ?─
-        cfw:fchar-junction ?┼
-        cfw:fchar-top-junction ?┬
-        cfw:fchar-top-left-corner ?╭
-        cfw:fchar-top-right-corner ?╮
-        cfw:fchar-left-junction ?├
-        cfw:fchar-right-junction ?┤)
-#+END_SRC
 
 ** Ebib
 
@@ -2002,8 +1872,7 @@ packages as a base.
 ** TODO Magit and Git
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones magit
-               git-timemachine)
+  (want-drones magit)
 
   (general-define-key
    "C-x g s" 'magit-status
