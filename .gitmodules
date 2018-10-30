@@ -242,6 +242,9 @@
 	url = https://github.com/politza/pdf-tools
   build-nix-shell-disable = 1
   build-step = "cd server; ./autobuild"
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
 [submodule "popwin"]
 	path = lib/popwin
 	url = https://github.com/m2ym/popwin-el
