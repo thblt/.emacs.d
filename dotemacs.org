@@ -1805,14 +1805,12 @@ packages as a base.
 
 #+begin_src emacs-lisp :tangle yes
   (require 'cl-lib)
-  (require 'epkg)
 
   (want-drone borg)
 
   (defun thblt/drones-status ()
     (interactive)
     (with-output-to-temp-buffer "*Drones*"
-
 
      (let* ((installed (borg-drones))
             (extra (cl-remove-if (lambda (x) (member x required-drones)) installed))

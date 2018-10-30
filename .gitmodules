@@ -46,9 +46,6 @@
 [submodule "bug-hunter"]
 	path = lib/bug-hunter
 	url = git@github.com:Malabarba/elisp-bug-hunter.git
-[submodule "closql"]
-	path = lib/closql
-	url = https://github.com/emacscollective/closql
 [submodule "color-identifiers-mode"]
 	path = lib/color-identifiers-mode
 	url = https://github.com/ankurdave/color-identifiers-mode
@@ -79,14 +76,6 @@
 [submodule "ebib"]
 	path = lib/ebib
 	url = https://github.com/joostkremers/ebib
-[submodule "emacsql"]
-	path = lib/emacsql
-	url = https://github.com/skeeto/emacsql
-	build-nix-shell-packages = gnumake
-	build-step = "cd sqlite; make"
-[submodule "epkg"]
-	path = lib/epkg
-	url = https://github.com/emacscollective/epkg
 [submodule "erc-hl-nicks"]
 	path = lib/erc-hl-nicks
 	url = https://github.com/leathekd/erc-hl-nicks
