@@ -79,9 +79,6 @@
 [submodule "ebib"]
 	path = lib/ebib
 	url = https://github.com/joostkremers/ebib
-[submodule "editorconfig"]
-	path = lib/editorconfig
-	url = https://github.com/editorconfig/editorconfig-emacs
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = https://github.com/skeeto/emacsql
@@ -148,6 +145,9 @@
 [submodule "highlight-indent-guides"]
 	path = lib/highlight-indent-guides
 	url = https://github.com/DarthFennec/highlight-indent-guides
+[submodule "hlint-refactor"]
+	path = lib/hlint-refactor
+	url = git@github.com:mpickering/hlint-refactor-mode.git
 [submodule "htmlize"]
 	path = lib/htmlize
 	url = https://github.com/hniksic/emacs-htmlize
@@ -220,9 +220,6 @@
 	info-path = doc
 	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
-[submodule "org-download"]
-	path = lib/org-download
-	url = https://github.com/abo-abo/org-download
 [submodule "org-ref"]
 	path = lib/org-ref
 	url = https://github.com/jkitchin/org-ref
@@ -254,6 +251,8 @@
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
 	url = https://github.com/politza/pdf-tools
+  build-nix-shell-disable = 1
+  build-step = "cd server; ./autobuild"
 [submodule "popwin"]
 	path = lib/popwin
 	url = https://github.com/m2ym/popwin-el
@@ -303,9 +302,6 @@
 [submodule "visual-regexp"]
 	path = lib/visual-regexp
 	url = https://github.com/benma/visual-regexp.el
-[submodule "which-key"]
-	path = lib/which-key
-	url = https://github.com/justbur/emacs-which-key
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor

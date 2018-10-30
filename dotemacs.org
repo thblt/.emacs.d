@@ -27,6 +27,7 @@ with maybe a few interesting properties:
 - [[#writing-prose][Writing prose]]
 - [[#writing-code][Writing code]]
 - [[#tools][Tools]]
+- [[#package-drafts][Package drafts]]
 - [[#conclusion][Conclusion]]
 
 * Introduction
@@ -179,14 +180,18 @@ Mouse wheel scrolling makes big jumps by default, let's make it smoother.
         mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
         mouse-wheel-follow-mouse 't ;; scroll window under mouse
 
-        scroll-step 1 ;; keyboard scroll one line at a time
-        )
+        scroll-step 1)
 #+end_src
 
 Rebind =C-x k= to kill the /current/ buffer.
 
 #+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
+#+end_src
+
+And force leave the minibuffer with =C-M-]=
+#+begin_src emacs-lisp :tangle yes
+  (global-set-key (kbd "C-M-]") 'abort-recursive-edit)
 #+end_src
 
 ** Fonts and themes
@@ -495,15 +500,6 @@ Popwin “makes you free from the hell of annoying buffers”:
   (require 'popwin)
   (popwin-mode)
 #+END_SRC
-
-*** Which-key
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone which-key)
-
-  (which-key-mode)
-  (diminish 'which-key-mode)
-#+end_src
 
 *** Windmove
 
@@ -1645,6 +1641,12 @@ and a few mappings.
   (advice-add 'load-theme :after (lambda (&rest _)
                                    (color-identifiers:regenerate-colors)
                                    (color-identifiers:refresh)))
+  (with-eval-after-load 'color-identifers-mode
+    (add-to-list
+     'color-identifiers:modes-alist
+     `(haskell-mode . ("[^.][[:space:]]*"
+                       "\\_<\\([[:lower:][:upper:]]\\([_]??[[:lower:][:upper:]\\$0-9]+\\)*\\(_+[#:<=>@!%&*+/?\\\\^|~-]+\\|_\\)?\\)"
+                       (nil scala-font-lock:var-face font-lock-variable-name-face)))))
 
   (with-eval-after-load 'color-identifiers-mode
     (diminish 'color-identifiers-mode))
@@ -1660,17 +1662,6 @@ and a few mappings.
   ;; (("M-TAB" . company-complete-common)))
   (with-eval-after-load 'company
     (diminish 'company-mode))
-#+end_src
-
-*** Editorconfig
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone editorconfig)
-
-  (add-hook 'prog-mode-hook (editorconfig-mode 1))
-  (add-hook 'text-mode-hook (editorconfig-mode 1))
-  (with-eval-after-load 'editorconfig
-    (diminish 'editorconfig-mode))
 #+end_src
 
 *** Evil Nerd Commenter
@@ -1717,7 +1708,8 @@ comment delimiter at the start or the end of the line).
   (want-drone outshine)
 
   (add-hook 'prog-mode-hook 'outline-minor-mode)
-  (add-hook 'outline-minor-mode-hook 'outshine-minor-mode)
+;  (add-hook 'outline-minor-mode-hook 'outshine-minor-mode)
+  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
   (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
 #+END_SRC
 
@@ -1815,21 +1807,21 @@ packages as a base.
   (require 'cl-lib)
   (require 'epkg)
 
-  (defun thblt/borg-mk-dep-list ()
-    ""
-    (let ((drones (borg-drones)))
-      (cl-pairlis drones
-                  (mapcar
-                   (lambda (d)
-                     (cl-remove-if-not
-                      (lambda (p) (member p drones))
-                      (mapcar 'car (epkg-required d))))
-                   drones))))
+  (want-drone borg)
 
-  (defun thblt/borg-clones-strict ()
-    "Return a list of strict clones, ie clones that are not assimimated as submodules."
-    (let ((drones (borg-drones)))
-      (cl-remove-if (lambda (obj) (member obj drones)) (borg-clones))))
+  (defun thblt/drones-status ()
+    (interactive)
+    (with-output-to-temp-buffer "*Drones*"
+
+
+     (let* ((installed (borg-drones))
+            (extra (cl-remove-if (lambda (x) (member x required-drones)) installed))
+            (missing (cl-remove-if (lambda (x) (member x installed)) required-drones)))
+       (print "* Extra drones:\n")
+       (print (mapconcat 'identity extra ", "))
+
+       (print "\n\n* Missing drones: ")
+       (print (mapconcat 'identity missing ", ")) (fill-paragraph))))
   #+END_SRC
 
 *** Borg-Queen
@@ -1837,7 +1829,6 @@ packages as a base.
 #+begin_src emacs-lisp :tangle yes
   (setq borg-queen-pgp-global-keys '("1B1336171A0B9064"))
 #+END_SRC
-
 
 ** Ebib
 
@@ -1942,12 +1933,12 @@ private part, tangled from =~/.emacs.d/dotemacs-private.org=.  The public part
 contains common mu4e settings, the private parts defines accounts and
 bookmarks.
 
-mu4e is loaded as a regular Emacs package, complete with its binary, build through usual Borg mechanisms.
+mu4e is loaded as a regular Emacs package, complete with its binary,
+built through usual Borg mechanisms.
 
 #+begin_src emacs-lisp :tangle yes
   (setq mu4e-mu-binary (expand-file-name "mu/mu" (borg-worktree "mu4e")))
 #+END_SRC
-
 
 Each of my accounts is synced (by =mbsync=) to a folder at the root of
 the Maildir (eg, =~/.Mail/Academic/=).  We then need a function to
@@ -1979,7 +1970,7 @@ Then the bulk of the config:
    message-send-mail-function 'smtpmail-send-it
    message-kill-buffer-on-exit t
    mu4e-change-filenames-when-moving t  ; Required for mbsync
-   mu4e-get-mail-command "mbsync ovh"
+   mu4e-get-mail-command "mbsync -a"
    mu4e-headers-auto-update t
    mu4e-html2text-command 'mu4e-shr2text
    mu4e-maildir "~/.Mail/"
@@ -2034,8 +2025,8 @@ Then the bulk of the config:
                                  "thibault@thb.lt"
                                  "tpolge@gmail.com"
                                  )
-   mu4e-context-policy 'pick-first
-   mu4e-compose-context-policy 'pick-first)
+   mu4e-context-policy 'ask
+   mu4e-compose-context-policy 'ask)
 
   (add-hook 'mu4e-view-mode-hook (lambda ()
                                    (setq visual-fill-column-width 80)
@@ -2059,6 +2050,19 @@ Compose messages with org-mode tables and lists:
 
   (add-hook 'message-mode-hook 'turn-on-orgtbl)
   (add-hook 'message-mode-hook 'orgalist-mode)
+#+end_src
+
+Refiling messages: if a message is in =*/INBOX=, refile to =*/Archive=,
+otherwise leave it where it is.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq mu4e-refile-folder
+    (lambda (msg)
+      (let ((maildir (mu4e-message-field msg :maildir)))
+        (message "This is in %s" maildir)
+        (if (string-suffix-p "/Inbox" maildir)
+            (concat (substring maildir 0 -5) "Archive")
+            maildir))))
 #+end_src
 
 ** Password management (password-store)
@@ -2134,6 +2138,68 @@ before it runs, and restored afterwards.
 
   (advice-add 'scpaste :around 'thblt/scpaste-without-noise)
   (advice-add 'scpaste-region :around 'thblt/scpaste-without-noise)
+#+END_SRC
+
+* Package drafts
+
+** org-numbered-headings.el
+
+This /experimental/ package provides automatically numbered headings for
+Org-Mode using text overlays (it thus doesn't modify the buffer
+contents in any way).  It supports the =:UNNUMBERED:== keyword, offers a
+lot of numbering styles, customizable resets, and looks like this:
+
+*** Numbering styles
+
+| Name   | Example                     |
+|--------+-----------------------------|
+| =Alpha=  | a, c, c ... aa, ab, ac ...  |
+| =alpha=  | a, c, c ... aa, ab, ac ...  |
+| =Arabic= | 1, 2, 3, 4, 5, 6...         |
+| =Greek=  | Α, Β, Γ ...  ΑΑ, ΑΒ, ΑΓ ... |
+| =greek=  | α, β, γ ...  αα, αβ, αγ ... |
+| =Roman=  | I, II, III, IV, V, VI...    |
+| =roman=  | i, ii, iii, iv, v, vi...    |
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;; org-numbered-headings.el --- Numbered headings for Org-Mode, who'd have guessed? (using overlays!)
+
+  ;; Copyright (c) 2018 Thibault Polge <thibault@thb.lt>
+
+  ;; Author: Thibault Polge <thibault@thb.lt>
+  ;; Maintener: Thibault Polge <thibault@thb.lt>
+  ;;
+  ;; Keywords: tools
+  ;; Homepage: https://github.com/thblt/org-numbered-headings
+  ;; Version: 0.0.1
+
+  ;; This program is free software; you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation, either version 3 of the License, or
+  ;; (at your option) any later version.
+  ;;
+  ;; This program is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ;; GNU General Public License for more details.
+  ;;
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  ;;; Commentary:
+
+  ;; See README.org.
+  ;;
+  ;; This packages uses the onh- pseudo namespace.  It's now mine.
+
+  ;;; Code:
+
+  (defvar-local onh-heading-properties
+    '((1 . ((template . "Part {1@Roman}. ")))
+      (2 . ((template . "Chapter {2@arabic}. " )))
+      (3 . ((template . "Section {3@arabic}. " )))
+      (4 . ((template . "({3@arabic}{4@latin}) ")))
+      (5 . "{5@greek}/ ")))
 #+END_SRC
 
 * Conclusion
