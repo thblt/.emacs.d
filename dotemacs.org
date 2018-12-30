@@ -199,9 +199,9 @@ And force leave the minibuffer with =C-M-]=
 Configure the default font:
 
 #+begin_src emacs-lisp :tangle yes
-  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono"))
+  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono 10"))
   (set-face-attribute 'default nil
-                      :height 65)
+                      :height 100)
 #+end_src
 
 And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]].
@@ -1641,9 +1641,9 @@ and a few mappings.
   (advice-add 'load-theme :after (lambda (&rest _)
                                    (color-identifiers:regenerate-colors)
                                    (color-identifiers:refresh)))
-  (with-eval-after-load 'color-identifers-mode
+  (with-eval-after-load 'color-identifiers-mode
     (add-to-list
-     'color-identifiers:modes-alist
+     'color-identifiers:modes-alist'
      `(haskell-mode . ("[^.][[:space:]]*"
                        "\\_<\\([[:lower:][:upper:]]\\([_]??[[:lower:][:upper:]\\$0-9]+\\)*\\(_+[#:<=>@!%&*+/?\\\\^|~-]+\\|_\\)?\\)"
                        (nil scala-font-lock:var-face font-lock-variable-name-face)))))
@@ -1707,9 +1707,9 @@ comment delimiter at the start or the end of the line).
 #+begin_src emacs-lisp :tangle yes
   (want-drone outshine)
 
-  (add-hook 'prog-mode-hook 'outline-minor-mode)
-;  (add-hook 'outline-minor-mode-hook 'outshine-minor-mode)
-  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+  (add-hook 'prog-mode-hook 'outshine-mode)
+  ; (add-hook 'outline-minor-mode-hook 'outshine-minor-mode)
+  ; (add-hook 'outline-minor-mode-hook 'outshine-mode)
   (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
 #+END_SRC
 
