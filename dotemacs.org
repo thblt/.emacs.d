@@ -19,17 +19,6 @@ with maybe a few interesting properties:
 
  + It has a whole section dedicated to [[#writing-prose][writing prose]].
 
-* Contents :TOC_1:noexport:
-- [[#introduction][Introduction]]
-- [[#user-interface][User interface]]
-- [[#divine-modal-editing][DivINE: Modal editing]]
-- [[#editing-text][Editing text]]
-- [[#writing-prose][Writing prose]]
-- [[#writing-code][Writing code]]
-- [[#tools][Tools]]
-- [[#package-drafts][Package drafts]]
-- [[#conclusion][Conclusion]]
-
 * Introduction
 
 This chapter deals with the general use of Emacs, and is limited to
@@ -62,7 +51,6 @@ Before we do anything serious, we run =no-littering= to prevent packages
 putting their configuration in random places:
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone no-littering)
   (require 'no-littering)
 #+end_src
 
@@ -114,34 +102,7 @@ Don't lose the contents of system clipboard when killing from Emacs:
   (setq save-interprogram-paste-before-kill t)
 #+end_src
 
-Running Emacs under MacOS requires a few adjustements:
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone exec-path-from-shell)
-
-  (when (string= system-type 'darwin)
-    ;; Don't use alt, cmd is meta
-    (setq mac-option-modifier 'nil
-          mac-command-modifier 'meta)
-
-    ; Fix weird Apple keymap.on full-size kbs.
-    (global-set-key (kbd "<help>") 'overwrite-mode)
-
-    ; Fix load-path for mu4e (not sure this is still needed)
-    (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-
-    ; Load path from a shell
-    (exec-path-from-shell-initialize))
-#+end_src
-
 * User interface
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drones diminish
-               general
-               hydra
-               visual-fill-column)
-#+end_src
 
 ** Settings and general configuration
 
@@ -207,8 +168,6 @@ Configure the default font:
 And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]].
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone eziam-theme-emacs)
-
   (setq eziam-scale-headings nil)
   (load-theme 'eziam-dark t)
 #+end_src
@@ -234,8 +193,6 @@ Create some shortcut commands to load both Eziam themes:
 *** The mode line itself
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone kurecolor)
-
   (require 'kurecolor)
 #+END_SRC
 
@@ -390,9 +347,6 @@ TODO:
  - Could Projectile read ignore patterns from =~/.gitignore_global=?
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones projectile
-               counsel-projectile)
-
   (projectile-global-mode)
   (counsel-projectile-mode)
 
@@ -417,8 +371,6 @@ in the main file listing:
 *** Ace-window
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone ace-window)
-
   (with-eval-after-load 'ace-window
     ;; We make use of aw-ignored-buffers, so we need the eval-after-load
     (setq aw-scope 'frame
@@ -465,16 +417,12 @@ Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 *** Eyebrowse
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone eyebrowse)
-
   (eyebrowse-mode)
 #+END_SRC
 
 *** Ivy
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone ivy)
-
   (setq ivy-use-virtual-buffers t)
 
   (ivy-mode)
@@ -495,8 +443,6 @@ Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 Popwin “makes you free from the hell of annoying buffers”:
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone popwin)
-
   (require 'popwin)
   (popwin-mode)
 #+END_SRC
@@ -531,416 +477,6 @@ writing themes, and faster than =C-u C-x ==.
                     (get-char-property (point) 'face))))
       (if face (message "Face: %s" face) (message "No face at %d" pos))))
 #+end_src
-
-* DivINE: Modal editing
-
-Because /DivINE Is Not [[https://github.com/emacs-evil/evil][Evil]]/, see?  DivINE is an extremely
-simplified modal layer for Emacs, hand-cooked with selected, boon and
-some hydras.
-
-Like Evil, DivINE has text-objects (courtesy of Boon) and three
-"modes" (normal, insert, visual), but it doesn't try to emulate Vim in
-any way, although it stays quite close.  But ambiguous or misleading
-mnemonics (eg, =y=) are replaced by their more natural Emacs
-counterparts.  "=y=" is confusing because in Vim, to yank is to /copy/,
-whereas Emacs uses the term and the binding for paste.  Hence, DivINE
-uses =y= to paste, =,= to insert kill-ring, etc.
-
-** DivINE
-
-#+begin_src emacs-lisp :tangle yes
-  ;; Divine
-
-  (provide 'boon-keys)
-  (require 'boon-core)
-  (require 'selected)
-  (require 'smartparens)
-
-  ;;; Utility
-
-  (defmacro λ (&rest body)
-    `(lambda (arg)
-       (interactive "p")
-       ,@body))
-
-  (defmacro divine-argtimes (shift first repeated &rest then)
-    `(progn
-       ,first
-       (--dotimes (cond
-       ((null arg) 1)
-       ((= 1 (abs arg)) arg)
-       ((< 1 arg) (+ arg ,shift))
-       ((> 1 arg) (- arg ,shift))
-       (t (error "[thblt] Dafuk")))
-         ,repeated)
-       ,@then))
-
-  ;;; Command Mode
-
-  ;;;; basic motion
-
-  (defmacro divine-make-jump-to-char (extra &optional backward)
-    `(lambda (arg)
-       (interactive "p")
-       (re-search-forward
-        (regexp-quote (char-to-string (read-char)))
-        nil ;; FIXME bound at end of logical line
-        t
-        ,(if backward '(- arg) 'arg))
-       (forward-char ,extra)))
-
-  (define-key boon-moves-map "h" 'left-char)
-  (define-key boon-moves-map "j" 'previous-line)
-  (define-key boon-moves-map "k" 'next-line)
-  (define-key boon-moves-map "l" 'right-char)
-
-  (define-key boon-moves-map "w" 'forward-to-word)
-  (define-key boon-moves-map "e" 'forward-word)
-  (define-key boon-moves-map "b" 'backward-word)
-
-  (define-key boon-moves-map "^" 'beginning-of-line-text)
-  (define-key boon-moves-map "$" 'end-of-line)
-
-  (define-key boon-moves-map "[" 'sp-backward-sexp)
-  (define-key boon-moves-map "]" 'sp-forward-sexp)
-
-  (define-key boon-moves-map "{" 'backward-paragraph)
-  (define-key boon-moves-map "}" 'forward-paragraph)
-
-  ;;;; search-like motion
-
-  (define-key boon-moves-map "f" (divine-make-jump-to-char -1))
-  (define-key boon-moves-map "F" (divine-make-jump-to-char 0 t))
-  (define-key boon-moves-map "t" (divine-make-jump-to-char -2))
-  (define-key boon-moves-map "T" (divine-make-jump-to-char +1 t))
-
-  (define-key boon-command-map "/" 're-search-forward)
-
-  ;;;; line operations
-
-  (define-key boon-command-map "J" (λ (divine-argtimes -1 nil (join-line -1))))
-  (define-key boon-command-map "o" (λ (divine-argtimes 0 nil (progn
-                  (end-of-line)
-                                                            (open-line 1)
-                                                            (forward-line)))))
-  (define-key boon-command-map "O" (λ (divine-argtimes 0 nil (progn
-                  (beginning-of-line)))))
-
-  ;;;; leave command mode
-
-  (define-key boon-command-map "i" 'boon-insert)
-  (define-key boon-command-map "o" (lambda))
-  (define-key boon-command-map "c" (λ
-            (call-interactively 'boon-take-region)
-                                    (boon-insert)))
-
-
-  ;;;; ???
-
-  (define-prefix-command 'boon-forward-search-map)
-  (define-prefix-command 'boon-backward-search-map)
-
-  (define-key boon-forward-search-map " "  'isearch-forward)
-  (define-key boon-forward-search-map "t"  'boon-qsearch-next-at-point)
-  (define-key boon-forward-search-map "s"  'boon-qsearch-next-at-point)
-  (define-key boon-forward-search-map "p"  'boon-qsearch-next)
-  (define-key boon-forward-search-map "e"  'next-error)
-  (define-key boon-forward-search-map "k"  'flycheck-next-error)
-  (define-key boon-forward-search-map "b"  'next-buffer)
-  (define-key boon-forward-search-map "u"  'mc/cycle-forward)
-
-  (define-key boon-backward-search-map " "  'isearch-backward)
-  (define-key boon-backward-search-map "t"  'boon-qsearch-previous-at-point)
-  (define-key boon-backward-search-map "s"  'boon-qsearch-previous-at-point)
-  (define-key boon-backward-search-map "p"  'boon-qsearch-previous)
-  (define-key boon-backward-search-map "e"  'previous-error)
-  (define-key boon-backward-search-map "k"  'flycheck-previous-error)
-  (define-key boon-backward-search-map "b"  'previous-buffer)
-  (define-key boon-backward-search-map "u"  'mc/cycle-backward)
-
-  ;;;; goto
-
-  (define-prefix-command 'divine-goto-map)
-  ;;(set-keymap-parent divine-goto-map goto-map) @TODO What is that for?  What does that do?
-
-  (defun divine-goto (&optional arg)
-    (interactive "P")
-    (if (null arg)
-        (set-transient-map 'divine-goto-map)
-        (push-mark)
-        (goto-line arg)))
-
-  (define-key boon-command-map "g" 'divine-goto)
-
-  (define-key divine-goto-map "l" (lambda nil (interactive)
-          (let ((linum linum-mode))
-            (linum-mode 1)
-            (call-interactively 'goto-line)
-            (unless linum (linum-mode -1)))))
-  (define-key divine-goto-map "=" 'find-tag)
-  (define-key divine-goto-map "i" 'imenu)
-  ;; @TODO g a [alternate] : toggles between header and source
-
-  ;;;; delete
-
-  (define-key boon-command-map "d" 'boon-take-region)
-
-  ;;;; smartparens
-
-  (define-key boon-command-map "!" 'divine-smartparens/body)
-
-  (defhydra divine-smartparens (:hint nil)
-    "Nav: hjkl"
-      ("q" nil)
-      ;; Decoration
-      ("!" rainbow-delimiters-mode)
-
-      ;; Navigation
-      ("h" sp-backward-sexp)
-      ("j" sp-down-sexp)
-      ("k" sp-up-sexp)
-      ("l" sp-forward-sexp )
-      ("C-k" sp-backward-up-sexp)
-      ("C-l" sp-backward-down-sexp)
-      ;; Kill/copy
-      ("w" sp-copy-sexp)
-      ("W" sp-kill-sexp)
-      ;; Misc
-      ("t" sp-transpose-sexp)
-      ("j" sp-join-sexp)
-      ("s" sp-split-sexp)
-      ("c" sp-convolute-sexp)
-      ("i" sp-indent-defun)
-      ;; Depth changing
-      ("R" sp-splice-sexp)
-      ("r" sp-splice-sexp-killing-around)
-      ("<up>" sp-splice-sexp-killing-backward)
-      ("<down>" sp-splice-sexp-killing-forward)
-      ;; Barfing/slurping
-      ("<right>" sp-forward-slurp-sexp)
-      ("<left>" sp-forward-barf-sexp)
-      ("C-<left>" sp-backward-barf-sexp)
-      ("C-<right>" sp-backward-slurp-sexp))
-
-  ;;;; narrowing
-
-  (define-prefix-command 'divine-narrow-map)
-  (define-key boon-command-map "n" 'divine-narrow-map)
-
-  (define-key divine-narrow-map "d" 'narrow-to-defun)
-  (define-key divine-narrow-map "p" 'narrow-to-page)
-  (define-key divine-narrow-map "r" 'narrow-to-region)
-  (define-key divine-narrow-map "b" 'org-narrow-to-block)
-  (define-key divine-narrow-map "s" 'org-narrow-to-subtree)
-  (define-key divine-narrow-map "e" 'org-narrow-to-element)
-  (define-key divine-narrow-map "w" 'narrow-widen)
-
-  ;;;; position cursor
-
-  (define-prefix-command 'divine-recenter-map)
-  (define-key boon-command-map "z" 'divine-recenter-map)
-
-  (define-key divine-recenter-map "t" (λ (recenter-top-bottom 1)))
-  (define-key divine-recenter-map "z" 'recenter)
-  (define-key divine-recenter-map "b" (λ (recenter ;; Code from recenter-top-bottom
-            (-
-                                          -1
-                                          (min
-                                           (max 0 scroll-margin)
-             (truncate (/ (window-body-height) 4.0)))))))
-
-  ;;;; misc
-
-  (define-key boon-command-map ";" 'evilnc-comment-or-uncomment-lines)
-
-  (define-key boon-x-map "x" 'execute-extended-command)
-
-  (define-key boon-select-map "@"  'boon-select-occurences)
-  (define-key boon-select-map "#"  'boon-select-all)
-  (define-key boon-select-map " "  'boon-select-line)
-
-  (define-key boon-command-map "'" 'set-mark-command)
-  (define-key boon-command-map [(return)] 'undefined)
-  (define-key boon-command-map (kbd "<RET>") 'undefined)
-  (define-key boon-command-map [(backspace)] 'undefined)
-  (define-key boon-command-map (kbd "<DEL>") 'undefined)
-  (define-key boon-command-map "`" 'boon-toggle-case)
-
-  (define-key boon-command-map "u" 'undo)
-  (dolist (number '("0" "1" "2" "3" "4" "5" "6" "7" "8" "9"))
-    (define-key boon-command-map number 'digit-argument))
-  (define-key boon-command-map "~" 'universal-argument)
-
-  (define-key boon-command-map " " 'boon-drop-mark)
-  (define-key boon-command-map [escape] 'boon-quit)
-
-  ;; Special mode rebinds
-  (define-key boon-special-map "`" 'boon-quote-character)
-  (define-key boon-special-map "'" 'boon-quote-character)
-  (define-key boon-special-map "x" boon-x-map)
-  (define-key boon-special-map [escape] 'boon-set-command-state)
-
-  ;;  Insert mode rebinds
-  (define-key boon-insert-map [remap newline] 'boon-newline-dwim)
-
-  (define-key boon-insert-map [escape] 'boon-set-command-state)
-
-  ;; Global rebinds
-  (define-key global-map [escape] 'keyboard-quit)
-  (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-  (define-key isearch-mode-map [escape] 'isearch-abort)
-
-  (provide 'boon-keys)
-
-  ;; (define-key boon-select-map "q"  'boon-select-outside-quotes)
-  (define-key boon-select-map "w"  'boon-select-word)
-  ;; (define-key boon-select-map "g"  'boon-select-paragraph)
-
-  ;; (define-key boon-select-map "a"  'boon-select-borders) ;; Around
-  ;; (define-key boon-select-map "s"  'boon-select-wim) ;; symbol
-  ;; (define-key boon-select-map "v"  'boon-select-with-spaces)
-  ;; (define-key boon-select-map "d"  'boon-select-document)
-
-  ;; (define-key boon-select-map "C"  'boon-select-comment)
-  ;; (define-key boon-select-map "x"  'boon-select-outside-pairs) ;; eXpression
-  ;; (define-key boon-select-map "c"  'boon-select-inside-pairs) ;; Contents
-
-  ;; (define-key boon-select-map "y"  'boon-select-content) ;; inZide
-
-  ;; (define-key boon-select-map "b"  'boon-select-blanks) ;; blanKs
-
-
-  ;; (define-key boon-moves-map "n" '("noon walk" . boon-switch-mark))
-  ;; (define-key boon-moves-map "N" 'xref-pop-marker-stack)
-
-  ;; (define-key boon-moves-map "z"  '("fYnd" . xref-find-definitions))
-  ;; (define-key boon-moves-map "Z"  'xref-find-references)
-  ;; (define-key boon-moves-map "i"  'previous-line)
-  ;; (define-key boon-moves-map "o"  'next-line)
-  ;; (define-key boon-moves-map "I"  'backward-paragraph)
-  ;; (define-key boon-moves-map "O"  'forward-paragraph)
-  ;; (define-key boon-moves-map "u"  'boon-beginning-of-line)
-  ;; (define-key boon-moves-map "p"  'boon-end-of-line)
-  ;; (define-key boon-moves-map "j"  'boon-smarter-backward)
-  ;; (define-key boon-moves-map "ö"  'boon-smarter-forward)
-  ;; (define-key boon-moves-map "K"  'boon-smarter-upward)
-  ;; (define-key boon-moves-map "L"  'boon-smarter-downward)
-  ;; (define-key boon-moves-map ","  'boon-beginning-of-expression)
-  ;; (define-key boon-moves-map "."  'boon-end-of-expression)
-  ;; (define-key boon-moves-map "k"  'backward-char)
-  ;; (define-key boon-moves-map "l"  'forward-char)
-  ;; (define-key boon-moves-map "<"  'beginning-of-buffer)
-  ;; (define-key boon-moves-map ">"  'end-of-buffer)
-  ;; (define-key boon-moves-map "h"  '("hop" . avy-goto-word-1))
-  ;; (define-key boon-moves-map "H"  'avy-goto-char)
-
-
-
-  ;; ;; Special keys
-
-  ;; ;; LEFT HAND
-
-  ;; ;; Top row
-  ;; ;; q
-  ;; (define-key boon-command-map "q" '("quote" . boon-quote-character))
-
-  ;; ;; w,e
-  ;; ;; where is? elsewhere?
-  (define-key boon-moves-map "w" '("where was?" . boon-backward-search-map))
-  (define-key boon-moves-map "e" '("elsewhere?" . boon-forward-search-map))
-
-  ;; (define-key boon-moves-map "ww"  'boon-qsearch-previous)
-  ;; (define-key boon-moves-map "ee"  'boon-qsearch-next)
-
-  ;; (define-key boon-moves-map "W"  'boon-qsearch-previous)
-  ;; (define-key boon-moves-map "E"  'boon-qsearch-next)
-
-  ;; ;; r
-  ;; (define-key boon-command-map "r" '("occuR" . occur))
-  ;; (define-key boon-command-map "R" 'kmacro-start-macro) ; Record
-
-  ;; ;; Misc crap
-  ;; (define-key boon-command-map "P" 'kmacro-end-or-call-macro) ; Play
-  ;; (define-key boon-command-map "X" 'boon-highlight-regexp)
-
-  ;; ;; t
-  ;; (define-key boon-command-map "t" '("transform" . boon-replace-by-character))
-
-
-  ;; ;; home row
-  ;; ;; a
-  ;; (define-key boon-command-map "a" '("around" . boon-enclose))
-
-  ;; ;; s
-  ;; (define-key boon-command-map "s" '("substitute" . boon-substitute-region))
-
-  ;; ;; d
-  ;; (define-key boon-command-map "d" '("delete" . boon-take-region)) ; "delete"
-  ;; (define-key boon-command-map "D" 'boon-treasure-region) ; "duplicate"
-
-  ;; ;; f
-  ;; (define-key boon-command-map "f" '("fetch" . boon-splice))
-  ;; (define-key boon-command-map "F" 'yank-pop)
-
-  ;; ;; g
-
-
-  ;; ;; Bottom row
-  ;; ;; z
-  ;; (define-key boon-command-map "y" '("repeat" . boon-repeat-command))
-  ;; ;; x
-  ;; (define-key boon-command-map "x" 'boon-x-map)
-  ;; ;; c
-  ;; (define-key boon-command-map "c" 'boon-c-god)
-  ;; ;; v
-  ;; (define-key boon-command-map (kbd "C-v") 'boon-open-line-and-insert)
-  ;; (define-key boon-command-map "V" 'boon-open-next-line-and-insert)
-  ;; (define-key boon-command-map "v" '("v looks like an insert mark" . boon-set-insert-like-state))
-  ;; ;; b
-  ;; (define-key boon-command-map "B" 'boon-copy-to-register) ; bank
-  ;; (define-key boon-command-map "b" 'insert-register)
-
-  ;; ;; RIGHT HAND: movement and marking commands.
-  ;; ;; Most of these are actually in the boon-moves-map; however some don't quite work there; so they end up here.
-  ;; (define-key boon-command-map (kbd "C-k") 'scroll-down-line)
-  ;; (define-key boon-command-map (kbd "C-l") 'scroll-up-line)
-
-  ;; (define-key indent-rigidly-map "k" 'indent-rigidly-right)
-  ;; (define-key indent-rigidly-map "l" 'indent-rigidly-left)
-
-  ;;; Visual mode
-
-  (define-key selected-keymap (kbd "r") #'rectangle-mark-mode)
-  (define-key selected-keymap (kbd "h") #'exchange-point-and-mark)
-  (define-key selected-keymap (kbd "k") #'kill-region)
-  (define-key selected-keymap (kbd "'") #'deactivate-mark)
-  (define-key selected-keymap (kbd "n") #'narrow-to-region)
-  (define-key selected-keymap (kbd "x") #'er/expand-region)
-  (define-key selected-keymap (kbd "e") #'eval-region)
-
-  (require 'boon)
-  (add-hook 'prog-mode-hook 'boon-local-mode)
-  (add-hook 'text-mode-hook 'boon-local-mode)
-  (add-hook 'conf-mode-hook 'boon-local-mode)
-  (selected-global-mode)
-
-#+end_src
-
-Selected is a package which allows to create specific bindings when
-region is active:
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone selected)
-
-  (defvar selected-org-mode-map (make-sparse-keymap))
-  (selected-global-mode)
-  (diminish 'selected-minor-mode)
-#+end_src
-
-** Cheatsheet generator
 
 * Editing text
 
@@ -980,7 +516,6 @@ them, and would "correct" another word, possibly off-screen.
 Correct words using Ivy instead of default method:
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone flyspell-correct)
   (require 'flyspell-correct-ivy)
 
   (general-define-key :keymaps 'flyspell-mode-map
@@ -993,8 +528,6 @@ Correct words using Ivy instead of default method:
 *** avy
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone avy)
-
   (general-define-key "C-:" 'avy-goto-char-timer
                       "M-g f" 'avy-goto-line)
 #+END_SRC
@@ -1031,8 +564,6 @@ Correct words using Ivy instead of default method:
 ** Replace
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone visual-regexp)
-
   (general-define-key
            "C-M-%" 'vr/query-replace
            "C-c r" 'vr/replace
@@ -1048,30 +579,13 @@ Correct words using Ivy instead of default method:
     (diminish 'auto-revert-mode "🔃"))
 #+end_src
 
-*** TODO Expand-region
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone expand-region)
-#+end_src
 
 *** Move text
 
 Move lines of text with =M-<up>= and =M-<down>=.
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone move-text)
-
   (move-text-default-bindings)
-#+end_src
-
-*** Multiple cursors
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone multiple-cursors)
-
-  (add-hook 'prog-mode-hook (lambda () (multiple-cursors-mode t)))
-  (add-hook 'text-mode-hook (lambda () (multiple-cursors-mode t)))
-  (general-define-key "C-S-c C-S-c" 'mc/edit-lines)
 #+end_src
 
 *** Recentf
@@ -1083,7 +597,6 @@ Move lines of text with =M-<up>= and =M-<down>=.
 *** TODO Smartparens
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone smartparens)
   (require 'smartparens-config) ;; Load default config
 
   (smartparens-global-mode)
@@ -1142,19 +655,7 @@ copy-pasted and slightly modified to suit my needs:
                       "M-B" 'sp-backward-symbol
 
                       "C-c f" (lambda () (interactive) (sp-beginning-of-sexp 2))
-                      "C-c b" (lambda () (interactive) (sp-beginning-of-sexp -2))
-
-                      "C-M-s"
-                      (defhydra smartparens-hydra ()
-                        "Smartparens"
-                        ("d" sp-down-sexp "Down")
-                        ("e" sp-up-sexp "Up")
-                        ("u" sp-backward-up-sexp "Up")
-                        ("a" sp-backward-down-sexp "Down")
-                        ("f" sp-forward-sexp "Forward")
-                        ("b" sp-backward-sexp "Backward")
-                        ("k" sp-kill-sexp "Kill" :color blue)
-                        ("q" nil "Quit" :color blue)))
+                      "C-c b" (lambda () (interactive) (sp-beginning-of-sexp -2)))
 
 
   ;; (bind-key "H-t" 'sp-prefix-tag-object smartparens-mode-map)
@@ -1314,8 +815,6 @@ copy-pasted and slightly modified to suit my needs:
 *** Undo-tree
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone undo-tree)
-
   (setq undo-tree-auto-save-history t
         undo-tree-visualizer-diff nil)
 
@@ -1323,19 +822,10 @@ copy-pasted and slightly modified to suit my needs:
   (diminish 'undo-tree-mode)
 #+end_src
 
-*** Unfill
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drone unfill)
-
-  (define-key selected-keymap (kbd "M-Q") 'unfill-region)
-#+END_SRC
 
 *** Yasnippet
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone yasnippet)
-
   (yas-global-mode)
   (diminish 'yas-minor-mode)
 #+end_src
@@ -1412,27 +902,6 @@ This section deals with two things:
  2. Non-code bits in code/configuration files: comments and integrated
     documentation.
 
-** The text-mode hydra
-
-TODO validate =:= and ~=~ on all keyboard mappings.
-
-#+begin_src emacs-lisp :tangle yes
-  (setq visual-fill-column-width fill-column)
-
-  (defhydra hydra-text-mode ()
-    "text-mode switches"
-    ("f" flyspell-mode "Flyspell")
-    ("d" ispell-change-dictionary "Language")
-    ("w" visual-fill-column-mode "Visual fill column")
-    ("," text-scale-decrease "Decrease font size")
-    (";" text-scale-increase "Increase font size")
-    (":" (lambda () (interactive) (setq-local visual-fill-column-width (- visual-fill-column-width 5))) "Decrease width")
-    ("!" (lambda () (interactive) (setq-local visual-fill-column-width (+ visual-fill-column-width 5))) "Decrease width"))
-
-
-  (general-define-key :keymaps 'text-mode-map
-                      "C-x w" 'hydra-text-mode/body)
-#+END_SRC
 
 ** Common settings and minor modes
 *** Abbrev
@@ -1445,7 +914,6 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 *** Unfill
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone unfill)
   (general-define-key "M-Q" 'unfill-paragraph)
 #+end_src
 
@@ -1455,7 +923,6 @@ TODO validate =:= and ~=~ on all keyboard mappings.
   (with-eval-after-load 'simple
     (diminish 'visual-line-mode))
 
-  (want-drone visual-fill-column)
   (require 'visual-fill-column)
 
   (dolist (hook '(markdown-mode-hook org-mode-hook))
@@ -1464,15 +931,10 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 
 ** Major modes
 
-#+begin_src emacs-lisp :tangle yes
-  (want-drone markdown-mode)
-#+end_src
-
 *** AucTex
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones auctex
-               company-auctex)
+  (require 'tex-site)
 
   (add-hook 'LaTeX-mode-hook (lambda ()
                                (visual-line-mode t)
@@ -1498,11 +960,9 @@ TODO validate =:= and ~=~ on all keyboard mappings.
 
 *** Org-mode
 
-#+begin_src emacs-lisp :tangle yes
-  (want-drone htmlize
-              org
-              org-download)
+(htmlize is a dependency of Org)
 
+#+begin_src emacs-lisp :tangle yes
   (setq org-catch-invisible-edits t
         org-hide-leading-stars t
         org-hide-emphasis-markers t
@@ -1546,7 +1006,6 @@ Some cool org extensions:
    org-mode.  This is better [[https://github.com/snosov1/toc-org/issues/20#issuecomment-276407541][pinned to melpa-stable]].
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone toc-org)
   (add-hook 'org-mode-hook 'toc-org-enable)
 #+END_SRC
 
@@ -1594,10 +1053,9 @@ The *emphasize selected* bindings:
 
 **** Org-ref
 
-#+begin_src emacs-lisp :tangle yes
-  (want-drone org-ref
-              :with (helm-bibtex :with (biblio)))
+(=helm-bibtex= and =biblio= are dependencies of =org-ref=)
 
+#+begin_src emacs-lisp :tangle yes
   (setq org-ref-completion-library 'org-ref-ivy-cite
         bibtex-dialect 'biblatex)
 
@@ -1628,15 +1086,9 @@ and a few mappings.
 
 ** Minor modes
 
-#+begin_src emacs-lisp :tangle yes
-  (want-drones rainbow-delimiters)
-#+END_SRC
-
 *** Color-identifiers
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone color-identifiers-mode)
-
   (add-hook 'prog-mode-hook 'color-identifiers-mode)
   (advice-add 'load-theme :after (lambda (&rest _)
                                    (color-identifiers:regenerate-colors)
@@ -1655,8 +1107,6 @@ and a few mappings.
 *** Company
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone company)
-
   (add-hook 'prog-mode-hook 'company-mode)
   ;;TODO BIND  :bind (:map company-mode-map
   ;; (("M-TAB" . company-complete-common)))
@@ -1671,7 +1121,6 @@ can't alternate between commenting and commenting /out/ (adding the
 comment delimiter at the start or the end of the line).
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone evil-nerd-commenter)
   (general-define-key "M-;"   'evilnc-comment-or-uncomment-lines
                       "C-M-;" 'evilnc-comment-or-uncomment-paragraphs
                       "C-c l" 'evilnc-quick-comment-or-uncomment-to-the-line
@@ -1682,8 +1131,6 @@ comment delimiter at the start or the end of the line).
 *** Flycheck
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones flycheck)
-
   (add-hook 'prog-mode-hook 'flycheck-mode)
 
   (with-eval-after-load 'flycheck
@@ -1693,8 +1140,6 @@ comment delimiter at the start or the end of the line).
 *** Highlight-indent-guides
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone highlight-indent-guides)
-
   (setq highlight-indent-guides-method 'character
         highlight-indent-guides-character ?┃
         highlight-indent-guides-auto-character-face-perc 25)
@@ -1705,12 +1150,13 @@ comment delimiter at the start or the end of the line).
 *** Outline and Outshine
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone outshine)
-
   (add-hook 'prog-mode-hook 'outshine-mode)
   ; (add-hook 'outline-minor-mode-hook 'outshine-minor-mode)
   ; (add-hook 'outline-minor-mode-hook 'outshine-mode)
   (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
+
+  (diminish 'outline-minor-mode)
+  (diminish 'outshine-mode)
 #+END_SRC
 
 *** Rainbow mode
@@ -1718,8 +1164,6 @@ comment delimiter at the start or the end of the line).
 Rainbow mode is similar to Atom's Pigments plugin or something.
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones kurecolor
-               rainbow-mode)
   (add-hook 'prog-mode-hook (rainbow-mode))
   (add-hook 'css-mode-hook 'rainbow-mode)
   (add-hook 'scss-mode-hook 'rainbow-mode)
@@ -1730,19 +1174,7 @@ Rainbow mode is similar to Atom's Pigments plugin or something.
 
 ** Programming languages
 
-#+begin_src emacs-lisp :tangle yes
-  (want-drones lua-mode
-               rust-mode)
-#+END_SRC
-
 *** C/C++
-
-#+begin_src emacs-lisp :tangle yes
-  (want-drones company-irony
-               company-irony-c-headers
-               flycheck-irony
-               irony)
-#+end_src
 
 #+begin_src emacs-lisp :tangle yes
   (add-hook 'c-mode-common-hook 'irony-mode)
@@ -1772,10 +1204,6 @@ Intero mode is a “complete interactive development program for
 Haskell”:
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones haskell-mode
-               hayoo
-               intero)
-
   (add-hook 'haskell-mode-hook 'intero-mode)
   ;; (intero-global-mode)
 
@@ -1793,54 +1221,15 @@ This section deals with tools which don't edit anything.
 
 ** TODO Borg and their Queen
 
-*** Borg
-
-Borg is initialized from =init.el=.  As with other Emacs' package
-management systems, we still run the risk of keeping unneeded
-packages.  What follows is an attempt to address this issue: a utility
-function =(=want-drone)= to declare that a package is required (declared
-in =init.el=), and a few more functions to keep track of what is
-installed using the dependency tree and the set of explicitly required
-packages as a base.
-
-#+begin_src emacs-lisp :tangle yes
-  (require 'cl-lib)
-
-  (want-drone borg)
-
-  (defun thblt/drones-status ()
-    (interactive)
-    (with-output-to-temp-buffer "*Drones*"
-
-     (let* ((installed (borg-drones))
-            (extra (cl-remove-if (lambda (x) (member x required-drones)) installed))
-            (missing (cl-remove-if (lambda (x) (member x installed)) required-drones)))
-       (print "* Extra drones:\n")
-       (print (mapconcat 'identity extra ", "))
-
-       (print "\n\n* Missing drones: ")
-       (print (mapconcat 'identity missing ", ")) (fill-paragraph))))
-  #+END_SRC
-
-*** Borg-Queen
-
-#+begin_src emacs-lisp :tangle yes
-  (setq borg-queen-pgp-global-keys '("1B1336171A0B9064"))
-#+END_SRC
-
 ** Ebib
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone ebib)
-
   (setq ebib-bibtex-dialect 'biblatex)
 #+end_src
 
 ** ERC
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone erc-hl-nicks)
-
   (setq erc-server "irc.freenode.net"
         erc-port 7000
         erc-nick "thblt"
@@ -1865,8 +1254,6 @@ packages as a base.
 ** TODO Magit and Git
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones magit)
-
   (general-define-key
    "C-x g s" 'magit-status
    "C-x g r" 'magit-list-repositories
@@ -2041,11 +1428,9 @@ Then the bulk of the config:
                       "c"      'visual-fill-column-mode)
 #+end_src
 
-Compose messages with org-mode tables and lists:
+Compose messages with org-mode tables and lists (using =orgalist=):
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drone orgalist)
-
   (add-hook 'message-mode-hook 'turn-on-orgtbl)
   (add-hook 'message-mode-hook 'orgalist-mode)
 #+end_src
@@ -2066,17 +1451,14 @@ otherwise leave it where it is.
 ** Password management (password-store)
 
 #+begin_src emacs-lisp :tangle yes
-  (want-drones auth-password-store
-               pass
-               password-store)
   (auth-source-pass-enable)
 #+END_SRC
 
 ** PDF Tools
 
-#+begin_src emacs-lisp :tangle yes
-  (want-drone pdf-tools '(tablist))
+(=tablist= is a dependency of =pdf-tools=)
 
+#+begin_src emacs-lisp :tangle yes
   (setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
 
   (pdf-tools-install)
@@ -2193,11 +1575,43 @@ lot of numbering styles, customizable resets, and looks like this:
   ;;; Code:
 
   (defvar-local onh-heading-properties
-    '((1 . ((template . "Part {1@Roman}. ")))
-      (2 . ((template . "Chapter {2@arabic}. " )))
-      (3 . ((template . "Section {3@arabic}. " )))
-      (4 . ((template . "({3@arabic}{4@latin}) ")))
+    '((1 . ((template "Part " '(1 . Roman) ". ")))
+      (2 . ((template "Chapter {2@arabic}. " )))
+      (3 . ((template "Section {3@arabic}. " )))
+      (4 . ((template "({3@arabic}{4@latin}) ")))
       (5 . "{5@greek}/ ")))
+
+  (defun onh-format-number (format n)
+    (cond
+     ((eq format 'arabic) (number-to-string n))
+     ((eq format 'roman) (downcase (org-export-number-to-roman n)))
+     ((eq format 'Roman) (upcase (org-export-number-to-roman n)))
+     ((eq format 'alpha) (char-to-string (+ ?a (- n 1))))
+     ((eq format 'Alpha) (char-to-string (+ ?A (- n 1))))
+     ((eq format 'greek) (char-to-string (+ ?α (- n 1))))
+     ((eq format 'Greek) (char-to-string (+ ?Α (- n 1))))))
+
+  (defmacro thblt/step (n)
+    `(setq ,n (1+ ,n)))
+
+  ;; overlay test
+  (ignore
+   (let ((part 0)
+         (chapter 0))
+     (remove-overlays)
+     (org-map-entries
+      (lambda nil
+        (looking-at org-complex-heading-regexp)
+        (let ((o (make-overlay (match-beginning 4) (1+ (match-beginning 4))))
+              (l (org-current-level)))
+          ;; (overlay-put o 'name "org-numbered-headings")
+          (overlay-put o 'before-string
+                       (format "%s %s. "
+                               (if (= l 1) "Partie" "")
+                               (if (= l 1)
+                                   (thblt/format-number 'Roman (thblt/step part))
+                                 (thblt/format-number 'greek (thblt/step chapter)))))))))
+   )
 #+END_SRC
 
 * Conclusion
@@ -2214,7 +1628,7 @@ bitmap with a larger version.
 #+begin_src emacs-lisp :tangle yes
   (when (string-prefix-p  "maladict" system-name)
     (set-face-attribute 'default nil
-                        :height 070)
+                        :height 100)
 
     (setq fringe-mode-explicit t)
     (set-fringe-mode '(16 . 0))

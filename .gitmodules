@@ -33,9 +33,6 @@
 [submodule "biblio"]
 	path = lib/biblio
 	url = git@github.com:cpitclaudel/biblio.el.git
-[submodule "boon"]
-	path = lib/boon
-	url = git@github.com:jyp/boon.git
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
@@ -88,12 +85,6 @@
 [submodule "evil-nerd-commenter"]
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
-[submodule "exec-path-from-shell"]
-	path = lib/exec-path-from-shell
-	url = https://github.com/purcell/exec-path-from-shell
-[submodule "expand-region"]
-	path = lib/expand-region
-	url = https://github.com/magnars/expand-region.el
 [submodule "eyebrowse"]
 	path = lib/eyebrowse
 	url = https://github.com/wasamasa/eyebrowse
@@ -182,9 +173,6 @@
   build-step = make
   load-path = mu4e
   info-path = mu4e
-[submodule "multiple-cursors"]
-	path = lib/multiple-cursors
-	url = https://github.com/magnars/multiple-cursors.el
 [submodule "mwim"]
 	path = lib/mwim
 	url = https://github.com/alezost/mwim.el
