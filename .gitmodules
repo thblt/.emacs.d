@@ -43,6 +43,9 @@
 [submodule "bug-hunter"]
 	path = lib/bug-hunter
 	url = git@github.com:Malabarba/elisp-bug-hunter.git
+[submodule "closql"]
+	path = lib/closql
+	url = https://github.com/emacscollective/closql
 [submodule "color-identifiers-mode"]
 	path = lib/color-identifiers-mode
 	url = https://github.com/ankurdave/color-identifiers-mode
@@ -73,6 +76,10 @@
 [submodule "ebib"]
 	path = lib/ebib
 	url = https://github.com/joostkremers/ebib
+[submodule "emacsql"]
+	path = lib/emacsql
+	url = https://github.com/skeeto/emacsql
+  build-nix-shell-packages = llvmPackages.clang.cc
 [submodule "erc-hl-nicks"]
 	path = lib/erc-hl-nicks
 	url = https://github.com/leathekd/erc-hl-nicks
@@ -106,6 +113,9 @@
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct
+[submodule "forge"]
+	path = lib/forge
+	url = https://github.com/magit/forge
 [submodule "geiser"]
 	path = lib/geiser
 	url = https://github.com/jaor/geiser.git
@@ -116,6 +126,9 @@
 [submodule "ghub"]
 	path = lib/ghub
 	url = https://github.com/magit/ghub
+[submodule "graphql"]
+	path = lib/graphql
+	url = https://github.com/vermiculus/graphql.el
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	url = https://github.com/haskell/haskell-mode
@@ -269,6 +282,9 @@
 [submodule "transmission"]
 	path = lib/transmission
 	url = https://github.com/holomorph/transmission
+[submodule "treepy"]
+	path = lib/treepy
+	url = https://github.com/volrath/treepy.el
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
@@ -282,12 +298,12 @@
 [submodule "visual-regexp"]
 	path = lib/visual-regexp
 	url = https://github.com/benma/visual-regexp.el
-[submodule "with-editor"]
-	path = lib/with-editor
-	url = https://github.com/magit/with-editor
 [submodule "websocket"]
 	path = lib/websocket
 	url = git@github.com:ahyatt/emacs-websocket.git
+[submodule "with-editor"]
+	path = lib/with-editor
+	url = https://github.com/magit/with-editor
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/joaotavora/yasnippet
