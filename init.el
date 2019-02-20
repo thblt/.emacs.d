@@ -1084,13 +1084,7 @@
 
 (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-fetch-all)
 
-
 ;;;; Mu4e
-
-;; Configuration for mu4e is split between a published part, below, and a
-;; private part, tangled from =~/.emacs.d/dotemacs-private.org=.  The public part
-;; contains common mu4e settings, the private parts defines accounts and
-;; bookmarks.
 
 ;; mu4e is loaded as a regular Emacs package, complete with its binary,
 ;; built through usual Borg mechanisms.
@@ -1105,7 +1099,6 @@
 ;; [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from
 ;; here]].
 
-
 (defun mu4e-message-maildir-matches (msg rx)
   (when rx
     (if (listp rx)
@@ -1115,77 +1108,71 @@
       ;; not a list, check rx
       (string-match rx (mu4e-message-field msg :maildir)))))
 
-
 ;; Then the bulk of the config:
-
 
 (require 'mu4e-contrib)
 
-(setq
- ;; Use ivy
- mu4e-completing-read-function 'ivy-completing-read
+(setq mu4e-completing-read-function 'ivy-completing-read
 
- ;; General settings
- message-send-mail-function 'smtpmail-send-it
- message-kill-buffer-on-exit t
- mu4e-change-filenames-when-moving t  ; Required for mbsync
- mu4e-get-mail-command "mbsync -a"
- mu4e-headers-auto-update t
- mu4e-html2text-command 'mu4e-shr2text
- mu4e-maildir "~/.Mail/"
- mu4e-update-interval 60 ;; seconds
- mu4e-sent-messages-behavior 'sent
+      ;; General settings
+      message-send-mail-function 'smtpmail-send-it
+      message-kill-buffer-on-exit t
+      mu4e-change-filenames-when-moving t  ; Required for mbsync
+      mu4e-get-mail-command "mbsync -a"
+      mu4e-headers-auto-update t
+      mu4e-html2text-command 'mu4e-shr2text
+      mu4e-maildir "~/.Mail/"
+      mu4e-update-interval 60 ;; seconds
+      mu4e-sent-messages-behavior 'sent
 
- ;; Behavior
- mu4e-compose-dont-reply-to-self t
+      ;; Behavior
+      mu4e-compose-dont-reply-to-self t
 
- ;; UI settings
- mu4e-confirm-quit nil
- mu4e-hide-index-messages t
- mu4e-split-view 'vertical
- mu4e-headers-include-related t  ; Include related messages in threads
- mu4e-view-show-images t
+      ;; UI settings
+      mu4e-confirm-quit nil
+      mu4e-hide-index-messages t
+      mu4e-split-view 'vertical
+      mu4e-headers-include-related t  ; Include related messages in threads
+      mu4e-view-show-images t
 
- ;; UI symbols
- mu4e-use-fancy-chars t
- mu4e-headers-attach-mark '("" . "")
- mu4e-headers-encrypted-mark '("" . "")
- mu4e-headers-flagged-mark '("+" . "⚑")
- mu4e-headers-list-mark '("" . "")
- mu4e-headers-new-mark '("" . "")
- mu4e-headers-read-mark '("" . "")
- mu4e-headers-replied-mark '("" . "↩")
- mu4e-headers-seen-mark '("" . "")
- mu4e-headers-unseen-mark '("" . "")
- mu4e-headers-unread-mark '("" . "✱")
- mu4e-headers-signed-mark '("" . "")
- mu4e-headers-trashed-mark '("T" . "T")
+      ;; UI symbols
+      mu4e-use-fancy-chars t
+      mu4e-headers-attach-mark '("" . "")
+      mu4e-headers-encrypted-mark '("" . "")
+      mu4e-headers-flagged-mark '("+" . "⚑")
+      mu4e-headers-list-mark '("" . "")
+      mu4e-headers-new-mark '("" . "")
+      mu4e-headers-read-mark '("" . "")
+      mu4e-headers-replied-mark '("" . "↩")
+      mu4e-headers-seen-mark '("" . "")
+      mu4e-headers-unseen-mark '("" . "")
+      mu4e-headers-unread-mark '("" . "✱")
+      mu4e-headers-signed-mark '("" . "")
+      mu4e-headers-trashed-mark '("T" . "T")
 
- mu4e-headers-from-or-to-prefix '("" . "→ ")
+      mu4e-headers-from-or-to-prefix '("" . "→ ")
 
- mu4e-headers-default-prefix '(" " . " ─")
- mu4e-headers-duplicate-prefix '("D" . "D")
- mu4e-headers-empty-parent-prefix '("X" . " X")
- mu4e-headers-first-child-prefix '("|" . "╰─")
- mu4e-headers-has-child-prefix '("+" . "╰┬")
+      mu4e-headers-default-prefix '(" " . " ─")
+      mu4e-headers-duplicate-prefix '("D" . "D")
+      mu4e-headers-empty-parent-prefix '("X" . " X")
+      mu4e-headers-first-child-prefix '("|" . "╰─")
+      mu4e-headers-has-child-prefix '("+" . "╰┬")
 
- mu4e-headers-fields '(
-                       (:flags          . 5)
-                       (:mailing-list   . 18)
-                       (:human-date     . 12)
-                       (:from-or-to     . 25)
-                       (:thread-subject . nil)
-                       )
+      mu4e-headers-fields '(
+                            (:flags          . 5)
+                            (:mailing-list   . 18)
+                            (:human-date     . 12)
+                            (:from-or-to     . 25)
+                            (:thread-subject . nil)
+                            )
 
- mu4e-user-mail-address-list '(
-                               "thblt@thb.lt"
-                               "thibault.polge@malix.univ-paris1.fr"
-                               "thibault.polge@univ-paris1.fr"
-                               "thibault@thb.lt"
-                               "tpolge@gmail.com"
-                               )
- mu4e-context-policy 'ask
- mu4e-compose-context-policy 'ask)
+      mu4e-user-mail-address-list '(
+                                    "thblt@thb.lt"
+                                    "thibault.polge@malix.univ-paris1.fr"
+                                    "thibault.polge@univ-paris1.fr"
+                                    "thibault@thb.lt"
+                                    "tpolge@gmail.com"
+                                    ))
 
 (add-hook 'mu4e-view-mode-hook (lambda ()
                                  (setq visual-fill-column-width 80)
@@ -1201,13 +1188,10 @@
                     ")"      'mu4e-view-headers-next-unread
                     "c"      'visual-fill-column-mode)
 
-
 ;; Compose messages with org-mode tables and lists (using =orgalist=):
-
 
 (add-hook 'message-mode-hook 'turn-on-orgtbl)
 (add-hook 'message-mode-hook 'orgalist-mode)
-
 
 ;; Refiling messages: if a message is in =*/INBOX=, refile to =*/Archive=,
 ;; otherwise leave it where it is.
@@ -1220,6 +1204,64 @@
               (concat (substring maildir 0 -5) "Archive")
             maildir))))
 
+
+;;;;; Contexts
+
+(setq mu4e-context-policy 'pick-first
+      mu4e-compose-context-policy 'ask)
+
+
+(eval-after-load 'mu4e
+  '(setq mu4e-contexts `(
+                         ,(make-mu4e-context
+                           :name "OVH"
+                           :enter-func (lambda () (mu4e-message "OVH"))
+                           :match-func (lambda (msg)
+                                         (when msg
+                                           (mu4e-message-maildir-matches msg "^/OVH/")))
+                           :vars '(( user-mail-address   . "thibault@thb.lt"  )
+                                   ( mu4e-sent-folder        . "/OVH/Sent" )
+                                   ( mu4e-drafts-folder      . "/OVH/Drafts" )
+                                   ( mu4e-trash-folder       . "/OVH/Trash" )
+                                   ;; ( mu4e-refile-folder      . "/OVH/Archive" )
+                                   ( smtpmail-local-domain   . "thb.lt" )
+                                   ( smtpmail-smtp-server    . "ssl0.ovh.net" )
+                                   ( smtpmail-smtp-user      . "thibault@thb.lt" )
+                                   ( smtpmail-stream-type    . tls )
+                                   ( smtpmail-smtp-service   . 465 )))
+
+                         ,(make-mu4e-context
+                           :name "Académie"
+                           :enter-func (lambda () (mu4e-message "Académie"))
+                           :match-func (lambda (msg)
+                                         (when msg
+                                           (mu4e-message-maildir-matches msg "^/OVH/")))
+                           :vars '(( user-mail-address   . "thibault.polge@ac-orleans-tours.fr"  )
+                                   ( mu4e-sent-folder        . "/Ac/Sent" )
+                                   ( mu4e-drafts-folder      . "/Ac/Drafts" )
+                                   ( mu4e-trash-folder       . "/Ac/Trash" )
+                                   ;; ( mu4e-refile-folder      . "/OVH/Archive" )
+                                   ( smtpmail-local-domain   . "ac-orleans-tours.fr" )
+                                   ( smtpmail-smtp-server    . "smtps.ac-orleans-tours.fr" )
+                                   ( smtpmail-smtp-user      . "tpolge" )
+                                   ( smtpmail-stream-type    . tls )
+                                   ( smtpmail-smtp-service   . 465 ))))))
+
+;; =================
+;; IMPORTANT.  Si tu ajoutes un contexte (ou plusieurs), il faut modifier dans dotemacs.org la ligne
+;; > mu4e-compose-context-policy 'pick-first)
+;; en
+;; > mu4e-compose-context-policy 'ask)
+;; =================
+
+
+;;;;; Bookmarks
+
+(setq mu4e-bookmarks `(("(m:/OVH/INBOX) or (m:/Ac/INBOX)"     "Global inbox" ?i)
+                       ("(m:/OVH/Archive) or (m:/Ac/Archive)" "Archives"     ?a)
+                       ("(flag:flagged)"                      "Flagged"      ?f)
+                       ("(m:/OVH/Sent) or (m:/Ac/Sent)"       "Sent"         ?s)
+                       ("(m:/OVH/Drafts) or (m:/Ac/Drafts)"   "Drafts"       ?d)))
 
 ;;;; Password management (password-store)
 
