@@ -387,6 +387,9 @@
 	path = lib/treepy
 	url = https://github.com/volrath/treepy.el
   branch = master
+[submodule "undo-propose"]
+	path = lib/undo-propose
+	url = https://github.com/jackkamm/undo-propose-el
 [submodule "unfill"]
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
