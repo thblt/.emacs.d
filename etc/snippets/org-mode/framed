@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: framed
+# key: frm
+# --
+#+begin_framed
+  $0
+#+end_framd

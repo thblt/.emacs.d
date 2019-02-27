@@ -112,10 +112,6 @@
 	path = lib/esxml
 	url = https://github.com/tali713/esxml
   branch = master
-[submodule "etc/yasnippet/snippets"]
-	path = etc/yasnippet
-	url = https://github.com/thblt/yasnippet-snippets
-  branch = master
 [submodule "evil"]
 	path = lib/evil
 	url = https://github.com/emacs-evil/evil
@@ -224,6 +220,10 @@
 [submodule "kurecolor"]
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
+  branch = master
+[submodule "lib/yasnippet-snippets"]
+	path = lib/yasnippet-snippets
+	url = https://github.com/AndreaCrotti/yasnippet-snippets
   branch = master
 [submodule "magit"]
 	path = lib/magit
@@ -379,10 +379,9 @@
 	path = lib/toc-org
 	url = https://github.com/snosov1/toc-org
   branch = master
-[submodule "transmission"]
-	path = lib/transmission
-	url = https://github.com/holomorph/transmission
-  branch = master
+[submodule "transient"]
+	path = lib/transient
+	url = https://github.com/magit/transient
 [submodule "treepy"]
 	path = lib/treepy
 	url = https://github.com/volrath/treepy.el

@@ -693,7 +693,12 @@
 
 ;;;;; Yasnippet
 
+(setq yas-snippet-dirs
+      `("~/.emacs.d/etc/snippets"
+        ,(borg-worktree "yasnippet-snippets/snippets")))
+
 (yas-global-mode)
+
 (diminish 'yas-minor-mode)
 
 ;;;; Misc customizations
