@@ -116,6 +116,9 @@
 	path = etc/yasnippet
 	url = https://github.com/thblt/yasnippet-snippets
   branch = master
+[submodule "evil"]
+	path = lib/evil
+	url = https://github.com/emacs-evil/evil
 [submodule "evil-nerd-commenter"]
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
@@ -144,6 +147,9 @@
 	path = lib/flycheck-irony
 	url = https://github.com/Sarcasm/flycheck-irony
   branch = master
+[submodule "flycheck-rust"]
+	path = lib/flycheck-rust
+	url = https://github.com/flycheck/flycheck-rust/
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct
@@ -346,6 +352,9 @@
 	path = lib/rainbow-mode
 	url = https://github.com/emacsmirror/rainbow-mode
   branch = master
+[submodule "rust-mode"]
+	path = lib/rust-mode
+	url = https://github.com/rust-lang/rust-mode
 [submodule "s"]
 	path = lib/s
 	url = https://github.com/magnars/s.el
@@ -378,11 +387,6 @@
 	path = lib/treepy
 	url = https://github.com/volrath/treepy.el
   branch = master
-[submodule "undo-tree"]
-	path = lib/undo-tree
-	url = http://www.dr-qubit.org/git/undo-tree.git
-  branch = master
-	signingkey = 8262BBE54D035960
 [submodule "unfill"]
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
