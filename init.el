@@ -196,7 +196,9 @@
 
 (setq-default
  mode-line-format
- '((:eval
+ '(
+   ;; Window number
+   (:eval
     (when (and (bound-and-true-p eyebrowse-mode) ;; Eyebrowse is bound and on
                (window-parameter (selected-window) 'thblt/window-at-bottom-left)) ;;
       (let* ((num (eyebrowse--get 'current-slot))
@@ -208,6 +210,7 @@
 
    " "
 
+   ;; Read-only marker
    (:eval
     (propertize
      (thblt/mode-line-sep (concat
@@ -215,26 +218,35 @@
                            (and (buffer-file-name) (buffer-modified-p) "💾")))
      'face '(:foreground "red")))
 
-   (:eval (propertized-buffer-identification "%12b"))
+   ;; Buffer name
+   (:eval (propertized-buffer-identification "%b"))
 
-   "  %3l:%2c "
 
-   "  ["
+   ;; Buffer modes
+   "    ["
    (:eval (propertize mode-name 'face 'bold))
    minor-mode-alist
-   "]   "
+   "]    "
 
+   ;; Position
+   (:eval (propertize "  %3l:%2c" 'face 'bold))
+   " ("
+   (:eval (propertize "%o" 'face 'italic))
+   ")"
+   "    "
 
+   ;; Project/VC
    (:eval
     (when (or (projectile-project-p)
               vc-mode)
       (concat
-       (when (projectile-project-p) (format "%s " (projectile-project-name)))
-       (--when-let vc-mode (format " %s" (substring it 1))))))
+       (propertize
+        (when (projectile-project-p) (format "%s " (projectile-project-name)))
+        'face 'bold)
+        (--when-let vc-mode (format " %s" it))
+        "    ")))
 
-   (:eval (when (or (projectile-project-p)
-                    vc-mode) "   ")) ;; Not the cleanest way to add a conditional separator...
-
+   ;; Server
    (:eval (thblt/mode-line-sep
            (when (and (and (boundp 'server-process) server-process)
                       (window-parameter (selected-window) 'thblt/window-at-bottom-right))
@@ -558,7 +570,7 @@
 ;; (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
 ;; (bind-key "C-(" 'sp---wrap-with-40 minibuffer-local-map)
 
-;; ;;; markdown-mode
+;;  markdown-mode
 ;; (sp-with-modes '(markdown-mode gfm-mode rst-mode)
 ;;   (sp-local-pair "*" "*"
 ;;                  :wrap "C-*"
@@ -679,14 +691,6 @@
 ;;     (let ((o (sp--get-active-overlay)))
 ;;       (indent-region (overlay-start o) (overlay-end o)))))
 
-
-;;;;; Undo-tree
-
-(setq undo-tree-auto-save-history t
-      undo-tree-visualizer-diff nil)
-(global-undo-tree-mode)
-(diminish 'undo-tree-mode)
-
 ;;;;; Yasnippet
 
 (yas-global-mode)
@@ -793,8 +797,10 @@
   )
 
 
-;; Configure smartparens:
 
+;;;;;; PDF export
+
+(setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdf %f"))
 
 (sp-with-modes 'org-mode
   (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
@@ -994,6 +1000,15 @@
 (general-define-key :keymaps 'haskell-mode-map
                     "<f1> <f1>" 'hayoo-query)
 
+;;;;; Rust
+
+(with-eval-after-load 'rust-mode
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+  )
+
+(add-hook 'rust-mode-hook
+          (lambda nil (setq-local compile-command "cargo build")))
+
 ;;; Tools
 
 ;; This section deals with tools which don't edit anything.
@@ -1168,6 +1183,8 @@
 
       mu4e-user-mail-address-list '(
                                     "thblt@thb.lt"
+                                    "thibault.polge@ac-orleans-tours.fr"
+                                    "thibault.polge@etu.univ-paris1.fr"
                                     "thibault.polge@malix.univ-paris1.fr"
                                     "thibault.polge@univ-paris1.fr"
                                     "thibault@thb.lt"
