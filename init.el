@@ -1020,6 +1020,11 @@
 
 ;;;; TODO Borg and their Queen
 
+(defun thblt/borg-build-all nil
+  (interactive)
+    (mapc (lambda (x) (borg-build x))
+          (borg-drones)))
+
 ;;;; Ebib
 
 (setq ebib-bibtex-dialect 'biblatex)
