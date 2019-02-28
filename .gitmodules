@@ -248,7 +248,7 @@
 	path = lib/mu4e
 	url = git@github.com:djcb/mu.git
   branch = master
-  build-nix-shell-packages = gnumake autoconf automake m4 libtool pkgconfig glib gmime xapian emacs texinfo
+  build-nix-shell-packages = gnumake autoconf automake m4 libtool pkgconfig glib gmime3 xapian emacs texinfo
   build-step = ./autogen.sh
   build-step = make
   load-path = mu4e
