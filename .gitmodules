@@ -2,6 +2,9 @@
 	path = lib/ace-window
 	url = https://github.com/abo-abo/ace-window
   branch = master
+[submodule "aggressive-indent-mode"]
+	path = lib/aggressive-indent-mode
+	url = https://github.com/Malabarba/aggressive-indent-mode
 [submodule "async"]
 	path = lib/async
 	url = https://github.com/jwiegley/emacs-async
