@@ -122,134 +122,286 @@
 (defun eziam-light () (interactive) (load-theme 'eziam-light t))
 (defun eziam-dusk () (interactive) (load-theme 'eziam-dusk t))
 
-;;;; Mode line
-
-;;;;; The mode line itself
+;;;; Modeline
+;;;;; Variables
 
 (require 'kurecolor)
+(require 'powerline)
+(require 'server)
 
-(setq x-underline-at-descent-line t)
+(setq x-underline-at-descent-line t
+      powerline-gui-use-vcs-glyph t)
 
-(defun thblt/mode-line-set-faces (&rest args)
-  (let* ((default-bg (face-attribute 'default :background))
-         (default-fg (face-attribute 'default :foreground))
+(defvar thblt/mode-line-evil-state-indicators
+  '(
+    (emacs    . "")
+    (hybrid   . " HYBRID ")
+    (insert   . " INSERT ")
+    (lisp     . " LISP   ")
+    (motion   . " MOTION ")
+    (nil      . " ")
+    (normal   . " NORMAL ")
+    (operator . " WHERE ?")
+    (replace  . " REPLACE")
+    (visual   . " VISUAL ")))
 
-         ;; @FIXME This is NOT a good way to compute brightnesqs.  Average the three components.
-         (dark (< (kurecolor-hex-get-brightness default-bg) .5))
-         (brightness-step (if dark .05 -.05))
-         ;; active
-         (ac-bg (kurecolor-adjust-brightness default-bg (* 12 brightness-step)))
-         (ac-fg (if dark "black" "white"))
-         ;; inactive
-         (in-bg (kurecolor-adjust-brightness default-bg (* 2 brightness-step)))
-         (in-fg (kurecolor-adjust-brightness default-bg (* (if dark 5 1) brightness-step))))
+;;;;; Theme
 
+(defun thblt/powerline-theme ()
+  "Setup the default mode-line."
+  (interactive)
+  (setq-default mode-line-format
+                '("%e"
+                  (:eval
+                   (let* ((active (powerline-selected-window-active))
+                          (face (if active 'mode-line 'mode-line-inactive))
+                          (state-name (cdr (assoc evil-state thblt/mode-line-evil-state-indicators)))
+                          (state-face (intern (format "thblt/mode-line--evil-%s-state" evil-state)))
+                          (buffid-face (intern (format "thblt/mode-line--buffer-id-%s" evil-state)))
+                          (last-face) ; The last face used, to show the
+                                        ; correct separator after conditional
+                                        ; segments
+                          (separator-left (intern (format "powerline-%s-%s"
+                                                          (powerline-current-separator)
+                                                          (car powerline-default-separator-dir))))
+                          (separator-right (intern (format "powerline-%s-%s"
+                                                           (powerline-current-separator)
+                                                           (cdr powerline-default-separator-dir))))
+                          (delim-face (if active 'thblt/mode-line--section-delimiter face))
+                          (open (powerline-raw " [" ' delim-face))
+                          (open* (powerline-raw "[" 'delim-face))
+                          (close (powerline-raw "]" 'delim-face))
+                          (lhs
+                           (list
+
+                            ;; Evil state
+                            (progn
+                              (setq last-face (if active state-face face))
+                              (powerline-raw state-name last-face 'r))
+
+                            (when last-face
+                              (funcall separator-left last-face buffid-face)) ; ))buffid-face))
+                            ;;
+
+                            ;; Buffer id
+                            ;; Modified?
+                            (when (and buffer-file-name (buffer-modified-p))
+                              (powerline-raw " ●"  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-modified)))
+                            ;; Read-only?
+                            (when buffer-read-only
+                              (powerline-raw " "  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-read-only)))
+
+                            ;; Not read-only, has a file, but isn't modified: spaces where the modified marker will appear
+                            (when (and buffer-file-name
+                                       (not (or (buffer-modified-p)
+                                                buffer-read-only)))
+                              ;; @Notice: we're borrowing the narrow face here
+                              (powerline-raw " -"  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-narrowed)))
+
+                            ;; Buffer name
+                            (progn
+                              (setq last-face buffid-face)
+                              ( powerline-raw
+                                " %[%b%] "
+                                `(:weight ,(if buffer-file-name 'bold 'normal) :inherit ,buffid-face )))
+
+                            ;; Narrowing indicator
+                            (when (buffer-narrowed-p)
+                              (powerline-raw "[Narrow] " `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-narrowed)))
+
+                            (funcall separator-left last-face face)
+                            ;; Position
+                            (powerline-raw " %2l:%3c    ")
+
+                            ;; Major mode
+                            open
+                            (powerline-major-mode '(:weight bold))
+                            ;; Minor modes
+                            (powerline-minor-modes (if active 'thblt/mode-line--minor-mode face) 'l)
+                            close
+                            ))
+                          (rhs (list
+                                ;; Version control
+                                (when buffer-file-name
+                                  (concat
+                                   open
+                                   (projectile-project-name)
+                                   (powerline-vc)
+                                   close))
+
+                                ;; (funcall separator-right face 'mlface1)
+                                ;; (powerline-raw " {}" 'mlface1)
+                                ;; (powerline-raw " .emacs.d " 'mlface1)
+
+                                ;; (funcall separator-right 'mlface1 'mlface2)
+
+                                ;; (funcall separator-right 'mlface1 'mlface2)
+                                ;; (powerline-raw " " 'mlface2)
+                                ;; (powerline-vc 'mlface2 'r)
+
+
+                                ;; (funcall separator-right 'mlface2 'mlface1)
+
+                                ;; (powerline-raw " ● " 'mlflycheck-err)
+                                ;; (powerline-raw "3 " 'mlflycheck)
+
+                                ;; (powerline-raw "● " 'mlflycheck-warn)
+                                ;; (powerline-raw "3 " 'mlflycheck)
+                                ;; (powerline-raw "● " 'mlflycheck-info)
+                                ;; (powerline-raw "32 " 'mlflycheck)
+
+                                " "
+                                (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
+                                  (funcall separator-right face 'thblt/mode-line--server))
+                                (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
+                                  (powerline-raw
+                                   (if server-process
+                                       (format " %s  " server-name)
+                                     "")
+                                   'thblt/mode-line--server)))
+
+                               ))
+
+                     (concat (powerline-render lhs)
+                             (powerline-fill 'face (powerline-width rhs))
+                             (powerline-render rhs)))))))
+
+;;;;; Faces
+
+(defun thblt/mode-line-set-faces (&rest _) ; I'm hooking this on theme change so it needs to accept arg
+  "Configure faces for the mode-line."
+  (pl/reset-cache)
+
+  (let* ((dark (< (kurecolor-hex-get-brightness (face-attribute 'default :background)) .5))
+
+         (active-bg                        (if dark "#111111" "#DDDDDD"))
+         (active-fg                        (if dark "#cccccc" "#222222"))
+         (active-outline                   (if dark "#222222" "#222222"))
+         (inactive-bg                      (if dark "#222222" "#DDDDDD"))
+         (inactive-fg                      (if dark "#222222" "#222222"))
+         (inactive-outline                 (if dark "#222222" "#222222"))
+
+         ;; Evil state colors
+         ;; (= evil-state-segment-bg)
+         (evil-emacs-state                  "#ffffff")
+         (evil-emacs-state-fg               "#000000")
+         (evil-hybrid-state                 "#aabbcc")
+         (evil-hybrid-state-fg              "#000000")
+         (evil-insert-state                 "#ffcc33")
+         (evil-insert-state-fg              "#000000")
+         (evil-lisp-state                   "#850085")
+         (evil-lisp-state-fg                "#ffffff")
+         (evil-motion-state                 "#aabbcc")
+         (evil-motion-state-fg              "#000000")
+         (evil-nil-state                    "#444444")
+         (evil-nil-state-fg                 "#000000")
+         (evil-normal-state                 "#00dd00")
+         (evil-normal-state-fg              "#000000")
+         (evil-operator-state               "#aabbcc")
+         (evil-operator-state-fg            "#000000")
+         (evil-replace-state                "#ff0000")
+         (evil-replace-state-fg             "#ffffff")
+         (evil-visual-state                 "#00aaBB")
+         (evil-visual-state-fg              "#000000")
+
+         (section-delimiter-fg              "#666688")
+
+         (read-only-fg                      "#ff0000")
+         (modified-fg                       "#ff0000")
+         (buffer-id-fg                      "#ffffff")
+         (narrow-fg                         "#888888")
+         (minor-mode-fg                     "#aaccee")
+
+         ;; Vc states
+         (vc-added-state                    "#ffcc00")
+         (vc-conflict-state                 "#ff0000")
+         (vc-edited-state                   "#ffcc00")
+         (vc-ignored-state                  "#444444")
+         (vc-missing-state                  "#ff0000")
+         (vc-nil-state                      "#444444")
+         (vc-needs-state-merge              "#ffcc00")
+         (vc-needs-update-state             "#ffcc00")
+         (vc-removed-state                  "#ff0000")
+         (vc-unlocked-change-state          "#ff0000")
+         (vc-unregistered-state             "#444444")
+         (vc-up-to-date-state               "#ccff33")
+
+         (server-bg                         "#520052")
+         (server-fg                         "#ffffff")
+         )
+
+    ;; Create face
     (face-spec-set 'mode-line
                    `((t
-                      :background ,ac-bg
-                      :foreground ,ac-fg
-                      :underline ,ac-bg
-                      :overline ,ac-bg)))
+                      :background ,active-bg
+                      :foreground ,active-fg
+                      :underline ,active-outline
+                      :overline ,active-outline)))
 
     (face-spec-set 'mode-line-inactive
                    `((t
-                      :background ,in-bg
-                      :foreground ,in-fg
-                      :underline ,in-bg
-                      :overline ,in-fg)))
+                      :background ,inactive-bg
+                      :foreground ,inactive-fg
+                      :underline ,inactive-outline
+                      ,inactive-outline)))
 
-    (face-spec-set 'thblt/mode-line-server-name-face
+    (face-spec-set 'thblt/mode-line--buffer-modified
                    `((t
-                      :foreground "white"
-                      :background ,(kurecolor-hsv-to-hex
-                                    .85
-                                    .95
-                                    (kurecolor-hex-get-brightness ac-bg))
-                      :box ,default-fg)))
+                      :foreground ,modified-fg)))
 
-    (face-spec-set 'thblt/mode-line-inactive-invisible
+    (face-spec-set 'thblt/mode-line--buffer-read-only
                    `((t
-                      :foreground ,default-bg
-                      :background ,default-bg
-                      :underline ,default-bg
-                      :overline ,default-bg)))))
+                      :foreground ,read-only-fg)))
 
-(thblt/mode-line-set-faces)
-(advice-add 'load-theme :after 'thblt/mode-line-set-faces)
+    ;; Narrowing indicator
+    (face-spec-set 'thblt/mode-line--buffer-narrowed
+                   `((t
+                      :inherit thblt/mode-line--buffer-id
+		                  :foreground ,narrow-fg)))
 
-(defun thblt/mode-line-get-face (base &optional variant)
-  "Select a face for the mode-line."
-  (intern (format "thblt/mode-line-%s%s%s-face"
-                  base
-                  (if active "-active" "")
-                  (if variant (concat "-" variant) ""))))
+    ;; Minor mode lighter
+    (face-spec-set 'thblt/mode-line--minor-mode
+                   `((t
+		                  :foreground ,minor-mode-fg)))
 
-(defun thblt/mode-line-wrap (str)
-  (if str (concat " " str " ") ""))
+    ;; Section delimiters (brackets)
+    (face-spec-set 'thblt/mode-line--section-delimiter
+                   `((t
+		                  :foreground ,section-delimiter-fg)))
 
-(defun thblt/mode-line-sep (str)
-  (if str (concat str " ") ""))
+    ;; Server ON face
+    (face-spec-set 'thblt/mode-line--server
+                   `((t
+		                  :background ,server-bg
+		                  :foreground ,server-fg)))
 
-(setq-default
- mode-line-format
- '(
-   ;; Window number
-   (:eval
-    (when (and (bound-and-true-p eyebrowse-mode) ;; Eyebrowse is bound and on
-               (window-parameter (selected-window) 'thblt/window-at-bottom-left)) ;;
-      (let* ((num (eyebrowse--get 'current-slot))
-             (tag (when num (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
-             (str (if (and tag (< 0 (length tag)))
-                      tag
-                    (when num (int-to-string num)))))
-        (propertize (thblt/mode-line-wrap str) 'face '(:weight bold :background "#FFCC33" :foreground "black" :box t)))))
+    ;; Generate the various Evil-state-specific faces
+    (mapc (lambda (state)
+            (let* ((base-color (symbol-value (intern (format "evil-%s-state" state))))
+                   (fg-color (symbol-value (intern (format "evil-%s-state-fg" state)))))
 
-   " "
+              ;; State indicator, active
+              (face-spec-set (intern (format "thblt/mode-line--evil-%s-state" state))
+                             `((t
+                                :background ,base-color
+                                :foreground ,fg-color )))
 
-   ;; Read-only marker
-   (:eval
-    (propertize
-     (thblt/mode-line-sep (concat
-                           (and buffer-read-only "")
-                           (and (buffer-file-name) (buffer-modified-p) "💾")))
-     'face '(:foreground "red")))
+              ;; Buffer ID segment, active
+              (face-spec-set (intern (format "thblt/mode-line--buffer-id-%s" state))
+                             `((t
+                                :background ,(let* ((h (kurecolor-hex-get-hue base-color))
+                                                    (s (kurecolor-hex-get-saturation base-color))
+                                                    (v (kurecolor-hex-get-brightness base-color)))
+                                               (kurecolor-hsv-to-hex h (/ s 4) (/ v 3) )
+                                               )
+                                :foreground ,buffer-id-fg )))
+              ))
 
-   ;; Buffer name
-   (:eval (propertized-buffer-identification "%b"))
+          '(emacs hybrid insert lisp motion nil normal operator replace visual))))
 
+;;;;; Support code
 
-   ;; Buffer modes
-   "    ["
-   (:eval (propertize mode-name 'face 'bold))
-   minor-mode-alist
-   "]    "
-
-   ;; Position
-   (:eval (propertize "  %3l:%2c" 'face 'bold))
-   " ("
-   (:eval (propertize "%o" 'face 'italic))
-   ")"
-   "    "
-
-   ;; Project/VC
-   (:eval
-    (when (or (projectile-project-p)
-              vc-mode)
-      (concat
-       (propertize
-        (when (projectile-project-p) (format "%s " (projectile-project-name)))
-        'face 'bold)
-        (--when-let vc-mode (format " %s" it))
-        "    ")))
-
-   ;; Server
-   (:eval (thblt/mode-line-sep
-           (when (and (and (boundp 'server-process) server-process)
-                      (window-parameter (selected-window) 'thblt/window-at-bottom-right))
-
-             (propertize (thblt/mode-line-wrap server-name) 'face 'thblt/mode-line-server-name-face))))))
-
-;;;;; The window position tracker
+;;;;;; Window position tracker
 
 (defun thblt/window-at-bottom-left-p (win)
   "Return non-nil if WIN is at the bottom left of the frame."
@@ -263,29 +415,31 @@
         (window-in-direction 'below win)
         (window-in-direction 'right win))))
 
-(defun thblt/update-window-position-parameters ()
+(defun thblt/update-window-position-parameters (&optional frame)
+  (unless frame (setq frame (selected-frame)))
   (mapc (lambda (win)
           (set-window-parameter win 'thblt/window-at-bottom-left (thblt/window-at-bottom-left-p win))
           (set-window-parameter win 'thblt/window-at-bottom-right (thblt/window-at-bottom-right-p win)))
-        (window-list (selected-frame) nil)))
+        (window-list frame nil)))
 
 (add-hook 'window-configuration-change-hook 'thblt/update-window-position-parameters)
 
-;;;; Project management with Projectile
+;;;;; Installation
 
-;; Let's load Projectile, and:
+(thblt/mode-line-set-faces)
+(advice-add 'load-theme :after 'thblt/mode-line-set-faces)
 
-;; - globally ignore undo-files and similar byproducts.
-;; - toggle the =C-p p= and =C-p SPC= bindings (I find the latter easier to
-;;   enter, and thus more adequate for "do what I mean");
-;;
-;; @TODO:
-;;
-;; - Could Projectile read ignore patterns from ~/.gitignore_global?
+(add-to-list 'after-make-frame-functions 'thblt/update-window-position-parameters)
+(thblt/update-window-position-parameters) ; This is apparently required for non-daemon instances.
+
+(thblt/powerline-theme)
+
+;;;; Projectile
 
 (projectile-global-mode)
 (counsel-projectile-mode)
 
+;; - globally ignore undo-files and similar byproducts.
 (setq projectile-globally-ignored-file-suffixes (append '(
                                                           ".un~"
                                                           ".~undo-tree~"
@@ -294,8 +448,8 @@
 
 (diminish 'projectile-mode)
 
-;; I consider submodules to be separate projects, so don't include then
-;; in the main file listing:
+;; I prefer to treat submodules as separate projects, so don't include
+;; then in the main file listing:
 
 (setq projectile-git-submodule-command nil)
 
@@ -471,7 +625,7 @@
 ;;;;; Auto-revert-mode
 
 (with-eval-after-load 'autorevert
-  (diminish 'auto-revert-mode "🔃"))
+  (diminish 'auto-revert-mode " 🔃"))
 
 ;;;;; Move text
 
@@ -937,7 +1091,7 @@
 ;; it can't alternate between commenting and commenting /out/ (adding
 ;; the comment delimiter at the start or the end of the line).
 
-(general-define-key "M-;"   'evilnc-comment-or-uncomment-lines
+(general-define-key "M-;"   'evilnc-comment-or-uncomment-line
                     "C-M-;" 'evilnc-comment-or-uncomment-paragraphs
                     "C-c l" 'evilnc-quick-comment-or-uncomment-to-the-line
                     "C-c c" 'evilnc-copy-and-comment-lines
@@ -1032,8 +1186,8 @@
 
 (defun thblt/borg-build-all nil
   (interactive)
-    (mapc (lambda (x) (borg-build x))
-          (borg-drones)))
+  (mapc (lambda (x) (borg-build x))
+        (borg-drones)))
 
 ;;;; Ebib
 
@@ -1061,9 +1215,7 @@
 (advice-add 'load-theme :after (lambda (&rest _) (when (functionp 'erc-hl-nicks-reset-face-table)
                                                    (erc-hl-nicks-reset-face-table))))
 
-
 ;;;; TODO Magit and Git
-
 
 (general-define-key
  "C-x g s" 'magit-status
@@ -1072,7 +1224,6 @@
 
 
 ;; Use Projectile projects as a source of repositories:
-
 
 (defun thblt/update-magit-repository-directories (&rest _)
   (setq magit-repository-directories (mapcar (lambda (x) `(,x . 0)) projectile-known-projects)))

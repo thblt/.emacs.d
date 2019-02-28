@@ -354,6 +354,9 @@
 	path = lib/popwin
 	url = https://github.com/m2ym/popwin-el
   branch = master
+[submodule "powerline"]
+	path = lib/powerline
+	url = https://github.com/milkypostman/powerline
 [submodule "projectile"]
 	path = lib/projectile
 	url = https://github.com/bbatsov/projectile
