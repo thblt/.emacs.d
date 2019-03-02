@@ -901,6 +901,9 @@
 (global-set-key (kbd "<f5>") 'recompile)
 
 ;;;; Minor modes
+;;;;; Aggressive indent
+
+(add-hook 'emacs-lisp-mode-hook 'aggressive-indent-mode)
 
 ;;;;; Color-identifiers
 
