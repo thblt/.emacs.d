@@ -45,6 +45,9 @@
 	path = lib/biblio
 	url = git@github.com:cpitclaudel/biblio.el.git
   branch = master
+[submodule "bind-map"]
+	path = lib/bind-map
+	url = https://github.com/justbur/emacs-bind-map/
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
@@ -118,10 +121,19 @@
 [submodule "evil"]
 	path = lib/evil
 	url = https://github.com/emacs-evil/evil
+[submodule "evil-lisp-state"]
+	path = lib/evil-lisp-state
+	url = https://github.com/syl20bnr/evil-lisp-state
+[submodule "evil-matchit"]
+	path = lib/evil-matchit
+	url = https://github.com/redguardtoo/evil-matchit
 [submodule "evil-nerd-commenter"]
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
   branch = master
+[submodule "evil-surround"]
+	path = lib/evil-surround
+	url = https://github.com/emacs-evil/evil-surround
 [submodule "eyebrowse"]
 	path = lib/eyebrowse
 	url = https://github.com/wasamasa/eyebrowse
@@ -170,6 +182,9 @@
 	path = lib/ghub
 	url = https://github.com/magit/ghub
   branch = master
+[submodule "goto-chg"]
+	path = lib/goto-chg
+	url = https://github.com/emacs-evil/goto-chg
 [submodule "graphql"]
 	path = lib/graphql
 	url = https://github.com/vermiculus/graphql.el

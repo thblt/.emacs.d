@@ -33,17 +33,13 @@
       ;; prevents [[Mu4e][Mu4e]] from correctly rendering some HTML
       ;; e-mails.  We increase it from 1300 to 5000.
       max-specpdl-size 5000
-
-
-      ;; We want numbered backups, because catastrophes happen.  The numbers
+      ;; Numbered backups, because catastrophes happen.  The numbers
       ;; may be a bit crazy, but better safe than sorry.
       version-control t
       kept-new-versions 500
       kept-old-versions 500
-
       ;; Don't lose the contents of system clipboard when killing from Emacs:
       save-interprogram-paste-before-kill t
-
       ;; Disable Customize by pointing it to =/dev/null=:
       custom-file "/dev/null")
 
@@ -408,6 +404,17 @@
 
 ;; This chapter deals with /general/ text editing.  The next two configure
 ;; prose and code editing, respectively.
+
+;;;; Evil and friends
+
+(require 'evil)
+(require 'evil-lisp-state)
+(require 'evil-matchit)
+(require 'evil-surround)
+
+(evil-mode)
+(global-evil-surround-mode)
+(global-evil-matchit-mode)
 
 ;;;; Spell checking
 
