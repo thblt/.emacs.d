@@ -922,9 +922,7 @@
 (with-eval-after-load 'color-identifiers-mode
   (diminish 'color-identifiers-mode))
 
-
 ;;;;; Company
-
 
 (add-hook 'prog-mode-hook 'company-mode)
 ;;TODO BIND  :bind (:map company-mode-map
@@ -954,11 +952,13 @@
 
 ;;;;; Highlight-indent-guides
 
-(setq highlight-indent-guides-method 'character
+(setq highlight-indent-guides-method 'fill
       highlight-indent-guides-character ?┃
       highlight-indent-guides-auto-character-face-perc 25)
 
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+
+(diminish 'highlight-indent-guides-mode nil)
 
 ;;;;; Outline and Outshine
 
