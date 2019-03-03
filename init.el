@@ -1133,7 +1133,6 @@
 (with-eval-after-load 'rainbow-mode
   (diminish 'rainbow-mode))
 
-
 ;;;; Programming languages
 
 ;;;;; C/C++
@@ -1182,12 +1181,39 @@
 
 ;; This section deals with tools which don't edit anything.
 
-;;;; TODO Borg and their Queen
+;;;; Borg and their Queen
 
 (defun thblt/borg-build-all nil
   (interactive)
   (mapc (lambda (x) (borg-build x))
         (borg-drones)))
+
+(defun thblt/borg-fix-branch-declarations ()
+  "Verify that all Borg drones have a branch declared in .gitmodules."
+  (interactive)
+  (let ((errors))
+    (mapc (lambda (drone)
+            (unless (borg-get drone "branch")
+              (add-to-list 'errors drone)
+              (call-process "git" nil nil nil
+                            "config" "-f" borg-gitmodules-file "--add" (format "submodule.%s.branch" drone) "master")))
+          (borg-drones))
+    (when errors
+      (borg--sort-submodule-sections borg-gitmodules-file)
+                                        ; (sort errors 'string<)
+      (message "These modules were updated: %s" errors))))
+
+
+(defun thblt/borg-check-urls ()
+  "Verify that all Borg drones remote URLs begin with http."
+  (interactive)
+  (mapc (lambda (drone)
+          (let ((url (borg-get drone "url")))
+            (unless (string-prefix-p "http" url)
+              (message "Bad remote URL on %s: %s" drone url))))
+        (borg-drones)))
+
+
 
 ;;;; Ebib
 

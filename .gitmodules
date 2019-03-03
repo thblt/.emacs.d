@@ -5,6 +5,7 @@
 [submodule "aggressive-indent-mode"]
 	path = lib/aggressive-indent-mode
 	url = https://github.com/Malabarba/aggressive-indent-mode
+	branch = master
 [submodule "async"]
 	path = lib/async
 	url = https://github.com/jwiegley/emacs-async
@@ -48,6 +49,7 @@
 [submodule "bind-map"]
 	path = lib/bind-map
 	url = https://github.com/justbur/emacs-bind-map/
+	branch = master
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
@@ -113,6 +115,7 @@
 [submodule "emmet-mode"]
 	path = lib/emmet-mode
 	url = https://github.com/smihica/emmet-mode/
+	branch = master
 [submodule "erc-hl-nicks"]
 	path = lib/erc-hl-nicks
 	url = https://github.com/leathekd/erc-hl-nicks
@@ -124,15 +127,19 @@
 [submodule "evil"]
 	path = lib/evil
 	url = https://github.com/emacs-evil/evil
+	branch = master
 [submodule "evil-leader"]
 	path = lib/evil-leader
 	url = https://github.com/cofi/evil-leader
+	branch = master
 [submodule "evil-lisp-state"]
 	path = lib/evil-lisp-state
 	url = https://github.com/syl20bnr/evil-lisp-state
+	branch = master
 [submodule "evil-matchit"]
 	path = lib/evil-matchit
 	url = https://github.com/redguardtoo/evil-matchit
+	branch = master
 [submodule "evil-nerd-commenter"]
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
@@ -140,6 +147,7 @@
 [submodule "evil-surround"]
 	path = lib/evil-surround
 	url = https://github.com/emacs-evil/evil-surround
+	branch = master
 [submodule "eyebrowse"]
 	path = lib/eyebrowse
 	url = https://github.com/wasamasa/eyebrowse
@@ -167,6 +175,7 @@
 [submodule "flycheck-rust"]
 	path = lib/flycheck-rust
 	url = https://github.com/flycheck/flycheck-rust/
+	branch = master
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct
@@ -191,6 +200,7 @@
 [submodule "goto-chg"]
 	path = lib/goto-chg
 	url = https://github.com/emacs-evil/goto-chg
+	branch = master
 [submodule "graphql"]
 	path = lib/graphql
 	url = https://github.com/vermiculus/graphql.el
@@ -202,6 +212,7 @@
 [submodule "helm"]
 	path = lib/helm
 	url = https://github.com/emacs-helm/helm
+	branch = master
 [submodule "helm-bibtex"]
 	path = lib/helm-bibtex
 	url = git@github.com:tmalsburg/helm-bibtex.git
@@ -245,7 +256,7 @@
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
   branch = master
-[submodule "lib/yasnippet-snippets"]
+[submodule "yasnippet-snippets"]
 	path = lib/yasnippet-snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets
   branch = master
@@ -318,6 +329,7 @@
 [submodule "origami"]
 	path = lib/origami
 	url = https://github.com/gregsexton/origami.el/blob/master/origami.el
+	branch = master
 [submodule "outorg"]
 	path = lib/outorg
 	url = https://github.com/alphapapa/outorg
@@ -363,6 +375,7 @@
 [submodule "powerline"]
 	path = lib/powerline
 	url = https://github.com/milkypostman/powerline
+	branch = master
 [submodule "projectile"]
 	path = lib/projectile
 	url = https://github.com/bbatsov/projectile
@@ -382,6 +395,7 @@
 [submodule "rust-mode"]
 	path = lib/rust-mode
 	url = https://github.com/rust-lang/rust-mode
+	branch = master
 [submodule "s"]
 	path = lib/s
 	url = https://github.com/magnars/s.el
@@ -409,6 +423,7 @@
 [submodule "transient"]
 	path = lib/transient
 	url = https://github.com/magit/transient
+	branch = master
 [submodule "treepy"]
 	path = lib/treepy
 	url = https://github.com/volrath/treepy.el
@@ -416,9 +431,11 @@
 [submodule "undo-propose"]
 	path = lib/undo-propose
 	url = https://github.com/jackkamm/undo-propose-el
+	branch = master
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
+	branch = master
 [submodule "unfill"]
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
@@ -438,6 +455,7 @@
 [submodule "which-key"]
 	path = lib/which-key
 	url = https://github.com/justbur/emacs-which-key/
+	branch = master
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor
