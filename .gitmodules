@@ -110,6 +110,9 @@
 	url = https://github.com/skeeto/emacsql
   branch = master
   build-nix-shell-packages = llvmPackages.clang.cc
+[submodule "emmet-mode"]
+	path = lib/emmet-mode
+	url = https://github.com/smihica/emmet-mode/
 [submodule "erc-hl-nicks"]
 	path = lib/erc-hl-nicks
 	url = https://github.com/leathekd/erc-hl-nicks
@@ -121,6 +124,9 @@
 [submodule "evil"]
 	path = lib/evil
 	url = https://github.com/emacs-evil/evil
+[submodule "evil-leader"]
+	path = lib/evil-leader
+	url = https://github.com/cofi/evil-leader
 [submodule "evil-lisp-state"]
 	path = lib/evil-lisp-state
 	url = https://github.com/syl20bnr/evil-lisp-state
@@ -410,6 +416,9 @@
 [submodule "undo-propose"]
 	path = lib/undo-propose
 	url = https://github.com/jackkamm/undo-propose-el
+[submodule "undo-tree"]
+	path = lib/undo-tree
+	url = http://www.dr-qubit.org/git/undo-tree.git
 [submodule "unfill"]
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
@@ -426,6 +435,9 @@
 	path = lib/websocket
 	url = git@github.com:ahyatt/emacs-websocket.git
   branch = master
+[submodule "which-key"]
+	path = lib/which-key
+	url = https://github.com/justbur/emacs-which-key/
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor
