@@ -149,122 +149,116 @@
 
 (defun thblt/powerline-theme ()
   "Setup the default mode-line."
+
+  ;; MAINTENANCE NOTES
+  ;;
+  ;;  - the `mode-line' face isn't used, because the whole modeline
+  ;;  - color is determined by the current Evil mode.
+
   (interactive)
-  (setq-default mode-line-format
-                '("%e"
-                  (:eval
-                   (let* ((active (powerline-selected-window-active))
-                          (face (if active 'mode-line 'mode-line-inactive))
-                          (state-name (cdr (assoc evil-state thblt/mode-line-evil-state-indicators)))
-                          (state-face (intern (format "thblt/mode-line--evil-%s-state" evil-state)))
-                          (buffid-face (intern (format "thblt/mode-line--buffer-id-%s" evil-state)))
-                          (last-face) ; The last face used, to show the
+  (setq-default
+   mode-line-format
+   '("%e"
+     (:eval
+      (let* ((active (powerline-selected-window-active))
+             (face (if active (intern (format "thblt/mode-line--%s" evil-state))
+                     'mode-line-inactive))
+             (state-face (intern (format "thblt/mode-line--evil-%s-state" evil-state)))
+             (buffid-face (intern (format "thblt/mode-line--buffer-id-%s" evil-state)))
+             (state-name (cdr (assoc evil-state thblt/mode-line-evil-state-indicators)))
+             (last-face) ; The last face used, to show the
                                         ; correct separator after conditional
                                         ; segments
-                          (separator-left (intern (format "powerline-%s-%s"
-                                                          (powerline-current-separator)
-                                                          (car powerline-default-separator-dir))))
-                          (separator-right (intern (format "powerline-%s-%s"
-                                                           (powerline-current-separator)
-                                                           (cdr powerline-default-separator-dir))))
-                          (delim-face (if active 'thblt/mode-line--section-delimiter face))
-                          (open (powerline-raw " [" ' delim-face))
-                          (open* (powerline-raw "[" 'delim-face))
-                          (close (powerline-raw "]" 'delim-face))
-                          (lhs
-                           (list
+             (separator-left (intern (format "powerline-%s-%s"
+                                             (powerline-current-separator)
+                                             (car powerline-default-separator-dir))))
+             (separator-right (intern (format "powerline-%s-%s"
+                                              (powerline-current-separator)
+                                              (cdr powerline-default-separator-dir))))
+             (delim-face (if active (intern (format "thblt/mode-line--delimiter-%s" evil-state)) face))
+             (space (powerline-raw " " face))
+             (open (powerline-raw " [" delim-face))
+             (open* (powerline-raw "[" delim-face))
+             (close (powerline-raw "]" delim-face))
+             (lhs
+              (list
+               ;; Evil state
+               (progn
+                 (setq last-face (if active state-face face))
+                 (powerline-raw state-name last-face 'r))
 
-                            ;; Evil state
-                            (progn
-                              (setq last-face (if active state-face face))
-                              (powerline-raw state-name last-face 'r))
+               (when last-face
+                 (funcall separator-left last-face buffid-face))
 
-                            (when last-face
-                              (funcall separator-left last-face buffid-face)) ; ))buffid-face))
-                            ;;
+               ;; Buffer id
+               ;; Modified?
+               (when (and buffer-file-name (buffer-modified-p))
+                 (powerline-raw " ●"  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-modified)))
+               ;; Read-only?
+               (when buffer-read-only
+                 (powerline-raw " "  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-read-only)))
+               ;; Not read-only, has a file, but isn't modified: spaces where the modified marker will appear
+               (when (and buffer-file-name
+                          (not (or (buffer-modified-p)
+                                   buffer-read-only)))
+                 ;; @Notice: we're borrowing the narrow face here
+                 (powerline-raw " -"  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-narrowed)))
 
-                            ;; Buffer id
-                            ;; Modified?
-                            (when (and buffer-file-name (buffer-modified-p))
-                              (powerline-raw " ●"  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-modified)))
-                            ;; Read-only?
-                            (when buffer-read-only
-                              (powerline-raw " "  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-read-only)))
+               ;; Buffer name
+               (progn
+                 (setq last-face buffid-face)
+                 ( powerline-raw
+                   " %[%b%] "
+                   `(:weight ,(if buffer-file-name 'bold 'normal) :inherit ,buffid-face)))
 
-                            ;; Not read-only, has a file, but isn't modified: spaces where the modified marker will appear
-                            (when (and buffer-file-name
-                                       (not (or (buffer-modified-p)
-                                                buffer-read-only)))
-                              ;; @Notice: we're borrowing the narrow face here
-                              (powerline-raw " -"  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-narrowed)))
+               ;; Narrowing indicator
+               (when (buffer-narrowed-p)
+                 (powerline-raw "[Narrow] " `(:inherit thblt/mode-line--buffer-narrowed :inherit ,buffid-face )))
 
-                            ;; Buffer name
-                            (progn
-                              (setq last-face buffid-face)
-                              ( powerline-raw
-                                " %[%b%] "
-                                `(:weight ,(if buffer-file-name 'bold 'normal) :inherit ,buffid-face )))
+               (funcall separator-left last-face face)
+               ;; Position
+               (powerline-raw " %2l:%3c [%o]    " face)
 
-                            ;; Narrowing indicator
-                            (when (buffer-narrowed-p)
-                              (powerline-raw "[Narrow] " `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-narrowed)))
+               ;; Major mode
+               open
+               (powerline-major-mode `(:inherit ,face :weight bold 'r))
+               ;; Minor modes
+               (powerline-minor-modes  face 'l)
+               close
 
-                            (funcall separator-left last-face face)
-                            ;; Position
-                            (powerline-raw " %2l:%3c    ")
+               space space space space
 
-                            ;; Major mode
-                            open
-                            (powerline-major-mode '(:weight bold))
-                            ;; Minor modes
-                            (powerline-minor-modes (if active 'thblt/mode-line--minor-mode face) 'l)
-                            close
-                            ))
-                          (rhs (list
-                                ;; Version control
-                                (when buffer-file-name
-                                  (concat
-                                   open
-                                   (projectile-project-name)
-                                   (powerline-vc)
-                                   close))
+               ;; open
+               ;; (powerline-raw "⯃ 3 ⯅ 14" face)
+               ;; close
+               ))
+             (rhs (list
+                   ;; Version control
+                   (when buffer-file-name
+                     (concat
+                      open
+                      (powerline-raw
+                       (concat
+                        (projectile-project-name)
+                        (powerline-vc))
+                       face)
+                      close))
 
-                                ;; (funcall separator-right face 'mlface1)
-                                ;; (powerline-raw " {}" 'mlface1)
-                                ;; (powerline-raw " .emacs.d " 'mlface1)
+                   space
+                   (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
+                     (funcall separator-right face state-face))
+                   (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
+                     (powerline-raw
+                      (if server-process
+                          (format " %s  " server-name)
+                        "")
+                      state-face)))
 
-                                ;; (funcall separator-right 'mlface1 'mlface2)
+                  ))
 
-                                ;; (funcall separator-right 'mlface1 'mlface2)
-                                ;; (powerline-raw " " 'mlface2)
-                                ;; (powerline-vc 'mlface2 'r)
-
-
-                                ;; (funcall separator-right 'mlface2 'mlface1)
-
-                                ;; (powerline-raw " ● " 'mlflycheck-err)
-                                ;; (powerline-raw "3 " 'mlflycheck)
-
-                                ;; (powerline-raw "● " 'mlflycheck-warn)
-                                ;; (powerline-raw "3 " 'mlflycheck)
-                                ;; (powerline-raw "● " 'mlflycheck-info)
-                                ;; (powerline-raw "32 " 'mlflycheck)
-
-                                " "
-                                (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
-                                  (funcall separator-right face 'thblt/mode-line--server))
-                                (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
-                                  (powerline-raw
-                                   (if server-process
-                                       (format " %s  " server-name)
-                                     "")
-                                   'thblt/mode-line--server)))
-
-                               ))
-
-                     (concat (powerline-render lhs)
-                             (powerline-fill 'face (powerline-width rhs))
-                             (powerline-render rhs)))))))
+        (concat (powerline-render lhs)
+                (powerline-fill face (powerline-width rhs))
+                (powerline-render rhs)))))))
 
 ;;;;; Faces
 
@@ -272,18 +266,14 @@
   "Configure faces for the mode-line."
   (pl/reset-cache)
 
-  (let* ((dark (< (kurecolor-hex-get-brightness (face-attribute 'default :background)) .5))
+  (let* ((default-bg (face-attribute 'default :background))
+         (default-fg (face-attribute 'default :foreground))
 
-         (active-bg                        (if dark "#111111" "#DDDDDD"))
-         (active-fg                        (if dark "#cccccc" "#222222"))
-         (active-outline                   (if dark "#222222" "#222222"))
-         (inactive-bg                      (if dark "#222222" "#DDDDDD"))
-         (inactive-fg                      (if dark "#222222" "#222222"))
-         (inactive-outline                 (if dark "#222222" "#222222"))
+         (dark (< (kurecolor-hex-get-brightness default-bg) .5))
 
          ;; Evil state colors
          ;; (= evil-state-segment-bg)
-         (evil-emacs-state                  "#ffffff")
+         (evil-emacs-state                  (if dark "#ffffff" "#ffffff"))
          (evil-emacs-state-fg               "#000000")
          (evil-hybrid-state                 "#aabbcc")
          (evil-hybrid-state-fg              "#000000")
@@ -293,24 +283,25 @@
          (evil-lisp-state-fg                "#ffffff")
          (evil-motion-state                 "#aabbcc")
          (evil-motion-state-fg              "#000000")
-         (evil-nil-state                    "#444444")
-         (evil-nil-state-fg                 "#000000")
+         (evil-nil-state                    evil-emacs-state)
+         (evil-nil-state-fg                 evil-emacs-state-fg)
          (evil-normal-state                 "#00dd00")
          (evil-normal-state-fg              "#000000")
          (evil-operator-state               "#aabbcc")
          (evil-operator-state-fg            "#000000")
          (evil-replace-state                "#ff0000")
          (evil-replace-state-fg             "#ffffff")
-         (evil-visual-state                 "#00aaBB")
+         (evil-visual-state                 "#00E0F7")
          (evil-visual-state-fg              "#000000")
 
          (section-delimiter-fg              "#666688")
 
-         (read-only-fg                      "#ff0000")
-         (modified-fg                       "#ff0000")
-         (buffer-id-fg                      "#ffffff")
-         (narrow-fg                         "#888888")
-         (minor-mode-fg                     "#aaccee")
+         ;; (read-only-fg                      "#ff0000")
+         ;; (modified-fg                       "#ff0000")
+         ;; (buffer-id-bg                      (if dark "#000000" "#ffffff"))
+         ;; (buffer-id-fg                      (if dark "#ffffff" "#000000"))
+         ;; (narrow-fg                         "#888888")
+         ;; (minor-mode-fg )
 
          ;; Vc states
          (vc-added-state                    "#ffcc00")
@@ -330,73 +321,96 @@
          (server-fg                         "#ffffff")
          )
 
-    ;; Create face
-    (face-spec-set 'mode-line
-                   `((t
-                      :background ,active-bg
-                      :foreground ,active-fg
-                      :underline ,active-outline
-                      :overline ,active-outline)))
-
+    ;; Inactive mode line (invisible)
     (face-spec-set 'mode-line-inactive
                    `((t
-                      :background ,inactive-bg
-                      :foreground ,inactive-fg
-                      :underline ,inactive-outline
-                      ,inactive-outline)))
+                      :background ,default-bg
+                      :foreground ,default-bg
+                      :overline ,default-bg
+                      :underline ,default-bg
+
+                      )))
 
     (face-spec-set 'thblt/mode-line--buffer-modified
                    `((t
-                      :foreground ,modified-fg)))
+                      :foreground "#ff0000")))
 
     (face-spec-set 'thblt/mode-line--buffer-read-only
                    `((t
-                      :foreground ,read-only-fg)))
+                      :foreground "#ff0000")))
 
     ;; Narrowing indicator
     (face-spec-set 'thblt/mode-line--buffer-narrowed
                    `((t
-                      :inherit thblt/mode-line--buffer-id
-		                  :foreground ,narrow-fg)))
+                      :foreground "#888888")))
 
     ;; Minor mode lighter
     (face-spec-set 'thblt/mode-line--minor-mode
-                   `((t
-		                  :foreground ,minor-mode-fg)))
-
-    ;; Section delimiters (brackets)
-    (face-spec-set 'thblt/mode-line--section-delimiter
-                   `((t
-		                  :foreground ,section-delimiter-fg)))
+                   `((t)))
+                                        ;   :background nil
+                                        ;  :foreground ,(if dark "#aaccee" "#2061a2"))))
 
     ;; Server ON face
     (face-spec-set 'thblt/mode-line--server
                    `((t
-		                  :background ,server-bg
-		                  :foreground ,server-fg)))
+                      :background ,server-bg
+                      :foreground ,server-fg)))
 
     ;; Generate the various Evil-state-specific faces
     (mapc (lambda (state)
             (let* ((base-color (symbol-value (intern (format "evil-%s-state" state))))
-                   (fg-color (symbol-value (intern (format "evil-%s-state-fg" state)))))
+                   (fg-color (symbol-value (intern (format "evil-%s-state-fg" state))))
+                   (h (kurecolor-hex-get-hue base-color))
+                   (s (kurecolor-hex-get-saturation base-color))
+                   (v (kurecolor-hex-get-brightness base-color))
+                   (ml-bg-color (if dark
+                                    (kurecolor-hsv-to-hex h (/ s 4) (/ v 3))
+                                  (kurecolor-hsv-to-hex h (/ s 4) .4)))
+                   (ml-fg-color (if dark
+                                    (kurecolor-hsv-to-hex h (/ s 4) .9)
+                                  (kurecolor-hsv-to-hex h (/ s 4) 1)))
+                   (ml-outline-color (if dark ml-fg-color
+                                       (kurecolor-hsv-to-hex h (/ s 4) 0)))
+                   (delimiter-color (if dark
+                                        (kurecolor-hsv-to-hex h (/ s 4) .5)
+                                      (kurecolor-hsv-to-hex h (/ s 4) v)))
+                   (buffid-color (if dark
+                                     (kurecolor-hsv-to-hex h .4 .5)
+                                   ml-fg-color)))
 
-              ;; State indicator, active
+
+              ;; Modeline
+              (face-spec-set (intern (format "thblt/mode-line--%s" state))
+                             `((t
+                                :background ,ml-bg-color
+                                :foreground ,ml-fg-color
+                                :overline ,ml-outline-color
+                                :underline ,ml-outline-color)))
+
+              ;; Buffer ID
+              (face-spec-set (intern (format "thblt/mode-line--buffer-id-%s" state))
+                             `((t
+                                :foreground ,(if dark "#ffffff" "#000000")
+                                :background ,buffid-color
+                                :overline ,ml-outline-color
+                                :underline ,ml-outline-color)))
+
+              ;; Delimiter
+              (face-spec-set (intern (format "thblt/mode-line--delimiter-%s" state))
+                             `((t
+
+                                :background ,ml-bg-color
+                                :foreground ,ml-fg-color
+                                :overline ,ml-outline-color
+                                :underline ,ml-outline-color
+                                )))
+              ;; State indicator
               (face-spec-set (intern (format "thblt/mode-line--evil-%s-state" state))
                              `((t
                                 :background ,base-color
-                                :foreground ,fg-color )))
-
-              ;; Buffer ID segment, active
-              (face-spec-set (intern (format "thblt/mode-line--buffer-id-%s" state))
-                             `((t
-                                :background ,(let* ((h (kurecolor-hex-get-hue base-color))
-                                                    (s (kurecolor-hex-get-saturation base-color))
-                                                    (v (kurecolor-hex-get-brightness base-color)))
-                                               (kurecolor-hsv-to-hex h (/ s 4) (/ v 3) )
-                                               )
-                                :foreground ,buffer-id-fg )))
-              ))
-
+                                :overline ,ml-outline-color
+                                :underline ,ml-outline-color
+                                :foreground ,fg-color )))))
           '(emacs hybrid insert lisp motion nil normal operator replace visual))))
 
 ;;;;; Support code
@@ -430,7 +444,12 @@
 (advice-add 'load-theme :after 'thblt/mode-line-set-faces)
 
 (add-to-list 'after-make-frame-functions 'thblt/update-window-position-parameters)
-(thblt/update-window-position-parameters) ; This is apparently required for non-daemon instances.
+(unless (daemonp)
+  (thblt/update-window-position-parameters)) ; This is required for
+                                        ; non-daemon instances
+                                        ; where the frame is
+                                        ; created before init.el
+                                        ; gets to run.
 
 (thblt/powerline-theme)
 
@@ -526,6 +545,11 @@
 (popwin-mode)
 
 
+;;;;; Which-key
+
+(which-key-mode)
+(diminish 'which-key-mode)
+
 ;;;;; Windmove
 
 
@@ -561,14 +585,19 @@
 
 ;;;; Evil and friends
 
+(setq evil-disable-insert-state-bindings t)
+
 (require 'evil)
+
+(require 'evil-leader)
 (require 'evil-lisp-state)
 (require 'evil-matchit)
 (require 'evil-surround)
 
 (evil-mode)
-(global-evil-surround-mode)
+(global-evil-leader-mode)
 (global-evil-matchit-mode)
+(global-evil-surround-mode)
 
 ;;;; Spell checking
 
@@ -652,9 +681,6 @@
 ;; own config]], here it is, copy-pasted and slightly modified to suit
 ;; my needs:
 
-(add-hook 'minibuffer-setup-hook 'turn-on-smartparens-strict-mode)
-
-
 (general-define-key :map smartparens-mode-map
                     "C-M-f" 'sp-forward-sexp
 
@@ -697,7 +723,6 @@
 
                     "C-c f" (lambda () (interactive) (sp-beginning-of-sexp 2))
                     "C-c b" (lambda () (interactive) (sp-beginning-of-sexp -2)))
-
 
 ;; (bind-key "H-t" 'sp-prefix-tag-object smartparens-mode-map)
 ;; (bind-key "H-p" 'sp-prefix-pair-object smartparens-mode-map)
@@ -852,11 +877,16 @@
 ;;     (let ((o (sp--get-active-overlay)))
 ;;       (indent-region (overlay-start o) (overlay-end o)))))
 
+;;;;; Undo-Tree
+
+(global-undo-tree-mode)
+(diminish 'undo-tree-mode)
+
 ;;;;; Yasnippet
 
 (setq yas-snippet-dirs
-      `("~/.emacs.d/etc/snippets"
-        ,(borg-worktree "yasnippet-snippets/snippets")))
+      (list (expand-file-name "~/.emacs.d/etc/snippets" )
+            (borg-worktree "yasnippet-snippets/snippets")))
 
 (yas-global-mode)
 
@@ -1044,10 +1074,10 @@
 ;; Some basic settings...
 
 (setq-default comment-empty-lines nil
-	            tab-width 2
-	            c-basic-offset 2
-	            cperl-indent-level 2
-	            indent-tabs-mode nil)
+              tab-width 2
+              c-basic-offset 2
+              cperl-indent-level 2
+              indent-tabs-mode nil)
 
 ;; and a few mappings.
 
@@ -1091,7 +1121,7 @@
 ;; it can't alternate between commenting and commenting /out/ (adding
 ;; the comment delimiter at the start or the end of the line).
 
-(general-define-key "M-;"   'evilnc-comment-or-uncomment-line
+(general-define-key "M-;"   'evilnc-comment-or-uncomment-lines
                     "C-M-;" 'evilnc-comment-or-uncomment-paragraphs
                     "C-c l" 'evilnc-quick-comment-or-uncomment-to-the-line
                     "C-c c" 'evilnc-copy-and-comment-lines
@@ -1112,7 +1142,8 @@
 
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
-(diminish 'highlight-indent-guides-mode nil)
+(with-eval-after-load 'highlight-indent-guides
+  (diminish 'highlight-indent-guides-mode))
 
 ;;;;; Outline and Outshine
 
@@ -1163,7 +1194,7 @@
 (add-hook 'haskell-mode-hook 'intero-mode)
 ;; (intero-global-mode)
 
-(setq intero-blacklist '("~/.dotfiles"))
+(setq intero-blacklist '("~/.dotfiles" "~/.xmonad/"))
 
 (general-define-key :keymaps 'haskell-mode-map
                     "<f1> <f1>" 'hayoo-query)
@@ -1227,6 +1258,7 @@
       erc-nick-uniquifier  "`"
 
       erc-server-auto-reconnect t
+      erc-kill-buffer-on-part t
 
       erc-lurker-hide-list '("JOIN" "PART" "QUIT")
       erc-lurker-threshold-time 900 ; 15mn
@@ -1252,7 +1284,12 @@
 ;; Use Projectile projects as a source of repositories:
 
 (defun thblt/update-magit-repository-directories (&rest _)
-  (setq magit-repository-directories (mapcar (lambda (x) `(,x . 0)) projectile-known-projects)))
+  (setq magit-repository-directories
+        (-non-nil
+         (mapcar (lambda (x)
+                   (unless (string-prefix-p borg-drone-directory (expand-file-name x))
+                     (cons x 0)))
+                 projectile-known-projects))))
 
 (advice-add 'magit-status :before 'thblt/update-magit-repository-directories)
 (advice-add 'magit-list-repositories :before 'thblt/update-magit-repository-directories)
@@ -1269,7 +1306,7 @@
 (setq magit-repolist-columns
       '(
         ("Name"       25  magit-repolist-column-ident nil)
-        ("Branch"     10  magit-repolist-column-branch)
+        ("Branch"     16  magit-repolist-column-branch)
         ("Version" 25  magit-repolist-column-version nil)
         ("Upstream"   15  magit-repolist-column-upstream)
         ("↓U"         5   magit-repolist-column-unpulled-from-upstream)
@@ -1620,3 +1657,12 @@
 ;; obvious in daemon mode)
 
 (setq initial-scratch-message ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n")
+
+;;; Just testing stuff
+;;;; Another level
+;;;;; And a third
+;;;;;; Then a fourth
+;;;;;;; What about five?
+;;;;;;;; Now six!
+;;;;;;;;; Seven!!!
+;;;;;;;;;; and... fuck off!
