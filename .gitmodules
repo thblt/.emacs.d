@@ -337,6 +337,7 @@
 [submodule "ox-clip"]
 	path = lib/ox-clip
 	url = https://github.com/jkitchin/ox-clip
+	branch = master
 [submodule "package-lint"]
 	path = lib/package-lint
 	url = git@github.com:purcell/package-lint.git
