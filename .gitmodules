@@ -256,10 +256,6 @@
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
   branch = master
-[submodule "yasnippet-snippets"]
-	path = lib/yasnippet-snippets
-	url = https://github.com/AndreaCrotti/yasnippet-snippets
-  branch = master
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit
@@ -338,6 +334,9 @@
 	path = lib/outshine
 	url = https://github.com/alphapapa/outshine
   branch = master
+[submodule "ox-clip"]
+	path = lib/ox-clip
+	url = https://github.com/jkitchin/ox-clip
 [submodule "package-lint"]
 	path = lib/package-lint
 	url = git@github.com:purcell/package-lint.git
@@ -463,6 +462,10 @@
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/joaotavora/yasnippet
+  branch = master
+[submodule "yasnippet-snippets"]
+	path = lib/yasnippet-snippets
+	url = https://github.com/AndreaCrotti/yasnippet-snippets
   branch = master
 [submodule "znc"]
 	path = lib/znc
