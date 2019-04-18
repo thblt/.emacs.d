@@ -900,12 +900,8 @@
 
 ;;;;; TODO Autosave when losing focus
 
-;; This is the initial version, which works (almost) perfectly well:
-
-(add-hook 'focus-out-hook
-          (lambda ()
-            (save-some-buffers t)))
-
+(super-save-mode +1)
+(diminish 'super-save-mode "💾")
 ;; TODO: Autosave when switching Emacs windows
 
 ;;;;; Delete trailing whitespace when saving
