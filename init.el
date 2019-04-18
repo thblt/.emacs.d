@@ -38,6 +38,7 @@
       version-control t
       kept-new-versions 500
       kept-old-versions 500
+      delete-old-versions t
       ;; Don't lose the contents of system clipboard when killing from Emacs:
       save-interprogram-paste-before-kill t
       ;; Disable Customize by pointing it to =/dev/null=:
@@ -456,6 +457,7 @@
 ;;;; Projectile
 
 (projectile-global-mode)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (counsel-projectile-mode)
 
 ;; - globally ignore undo-files and similar byproducts.
@@ -1120,8 +1122,8 @@
 (general-define-key "M-;"   'evilnc-comment-or-uncomment-lines
                     "C-M-;" 'evilnc-comment-or-uncomment-paragraphs
                     "C-c l" 'evilnc-quick-comment-or-uncomment-to-the-line
-                    "C-c c" 'evilnc-copy-and-comment-lines
-                    "C-c p" 'evilnc-comment-or-uncomment-paragraphs)
+                    "C-c c" 'evilnc-copy-and-comment-lines)
+;; "C-c p" 'evilnc-comment-or-uncomment-paragraphs)
 
 ;;;;; Flycheck
 
@@ -1187,7 +1189,7 @@
 ;; Intero mode is a “complete interactive development program for
 ;; Haskell”:
 
-(add-hook 'haskell-mode-hook 'intero-mode)
+(add-hook 'haskell-mode-hook 'intero-mode-blacklist)
 ;; (intero-global-mode)
 
 (setq intero-blacklist '("~/.dotfiles" "~/.xmonad/"))
