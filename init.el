@@ -565,6 +565,111 @@
 ;; This chapter deals with /general/ text editing.  The next two configure
 ;; prose and code editing, respectively.
 
+;;;; The editor view hydra
+
+(defmacro thblt/hydra-indicator (desc active)
+  "Return DESC with a state indicator determined by ACTIVE.
+
+If at runtime ACTIVE is an unbound symbol it is interpreted as
+nil; otherwise it's evaluated normally."
+  `(format "[%s] %s" (if ,(if (symbolp active)
+                              `(bound-and-true-p ,active)
+                            active)
+                         (propertize "✔" 'face 'bold)
+                       (propertize "-" 'face 'shadow))
+           ,desc))
+
+(defhydra hydra-editor-appearance (:exit nil) ; :color blue)
+  ("b" text-scale-decrease "Size -" :column "Font and theme")
+  ("é" thblt/text-scale-reset (thblt/hydra-indicator "Default size"
+                                                     (not (bound-and-true-p text-scale-mode))))
+  ("p" text-scale-increase "Size +")
+  ("v" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
+  ("L" eziam-light (thblt/hydra-indicator"Light theme" (member 'eziam-light custom-enabled-themes)))
+  ("D" eziam-dark (thblt/hydra-indicator "Dark theme" (member 'eziam-dark custom-enabled-themes)))
+
+  ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
+  ("c" thblt/visual-fill-column-toggle-centering (thblt/hydra-indicator "Centering" visual-fill-column-center-text))
+  ("g" thblt/visual-fill-column-width-decrease "Width -")
+  ("h" thblt/visual-fill-column-width-increase "Width +")
+  ("l" visual-line-mode (thblt/hydra-indicator "Line wrap" visual-line-mode))
+  ("-" toggle-word-wrap (thblt/hydra-indicator "Word wrap" word-wrap))
+  ("M" rainbow-delimiters-mode (thblt/hydra-indicator "Rainbow delimiters" rainbow-delimiters-mode))
+  ("N" rainbow-mode (thblt/hydra-indicator "Rainbow" rainbow-mode))
+
+  ("W" superword-mode (thblt/hydra-indicator "super-word" superword-mode) :column "Behavior")
+  ("w" subword-mode (thblt/hydra-indicator "SubWord" subword-mode))
+
+  ("a" auto-fill-mode (thblt/hydra-indicator "Auto fill" auto-fill-function) :column "Elecricity")
+  ("A" refill-mode (thblt/hydra-indicator "Auto refill" refill-mode))
+  ("I" aggressive-indent-mode (thblt/hydra-indicator "Aggressive indent" aggressive-indent-mode))
+
+  ("!" flycheck-mode (thblt/hydra-indicator "Code" flycheck-mode) :column "Check")
+  ("?" flyspell-mode  (thblt/hydra-indicator "Spell" flyspell-mode))
+  ("F" thblt/ispell-use-french (thblt/hydra-indicator "Français" (string= (bound-and-true-p ispell-local-dictionary) "french")))
+  ("E" thblt/ispell-use-english (thblt/hydra-indicator "English" (string= (bound-and-true-p ispell-local-dictionary) "english")))
+
+  ("R" auto-revert-mode (thblt/hydra-indicator "Auto-revert" auto-revert-mode) :column "Misc"))
+
+(general-define-key "<f12>" 'hydra-editor-appearance/body)
+
+(defun thblt/visual-fill-column-reset (&optional activate)
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (when (or
+         activate
+         visual-fill-column-mode)
+    (visual-fill-column-mode -1)
+    (visual-fill-column-mode t)))
+
+(defun thblt/ispell-use-french ()
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (ispell-change-dictionary "french")
+  (when flyspell-mode (flyspell-buffer)))
+
+(defun thblt/ispell-use-english ()
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (ispell-change-dictionary "english")
+  (when flyspell-mode (flyspell-buffer)))
+
+(defun thblt/text-scale-reset ()
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (text-scale-set 0))
+
+(defun thblt/visual-fill-column-toggle-mode ()
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (setq visual-fill-column-center-text nil)
+  (call-interactively 'visual-fill-column-mode))
+
+(defun thblt/visual-fill-column-toggle-centering ()
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (setq visual-fill-column-center-text (not visual-fill-column-center-text))
+  (thblt/visual-fill-column-reset t))
+
+(defun thblt/visual-fill-column-width-adjust (delta)
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (setq visual-fill-column-width (+ delta
+                                    (or
+                                     visual-fill-column-width
+                                     fill-column)))
+  (thblt/visual-fill-column-reset))
+
+(defun thblt/visual-fill-column-width-increase ()
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (thblt/visual-fill-column-width-adjust 5))
+
+(defun thblt/visual-fill-column-width-decrease ()
+  "For use by `hydra-editor-appearance/body'."
+  (interactive)
+  (thblt/visual-fill-column-width-adjust -5))
+
 ;;;; Evil and friends
 
 (setq evil-disable-insert-state-bindings t)
