@@ -272,6 +272,8 @@
 
          (dark (< (kurecolor-hex-get-brightness default-bg) .5))
 
+         (inactive (if dark "#111111" "#dddddd"))
+
          ;; Evil state colors
          ;; (= evil-state-segment-bg)
          (evil-emacs-state                  (if dark "#ffffff" "#ffffff"))
@@ -295,29 +297,7 @@
          (evil-visual-state                 "#00E0F7")
          (evil-visual-state-fg              "#000000")
 
-         (section-delimiter-fg              "#666688")
-
-         ;; (read-only-fg                      "#ff0000")
-         ;; (modified-fg                       "#ff0000")
-         ;; (buffer-id-bg                      (if dark "#000000" "#ffffff"))
-         ;; (buffer-id-fg                      (if dark "#ffffff" "#000000"))
-         ;; (narrow-fg                         "#888888")
-         ;; (minor-mode-fg )
-
          ;; Vc states
-         (vc-added-state                    "#ffcc00")
-         (vc-conflict-state                 "#ff0000")
-         (vc-edited-state                   "#ffcc00")
-         (vc-ignored-state                  "#444444")
-         (vc-missing-state                  "#ff0000")
-         (vc-nil-state                      "#444444")
-         (vc-needs-state-merge              "#ffcc00")
-         (vc-needs-update-state             "#ffcc00")
-         (vc-removed-state                  "#ff0000")
-         (vc-unlocked-change-state          "#ff0000")
-         (vc-unregistered-state             "#444444")
-         (vc-up-to-date-state               "#ccff33")
-
          (server-bg                         "#520052")
          (server-fg                         "#ffffff")
          )
@@ -325,8 +305,8 @@
     ;; Inactive mode line (invisible)
     (face-spec-set 'mode-line-inactive
                    `((t
-                      :background ,default-bg
-                      :foreground ,default-bg
+                      :background ,inactive
+                      :foreground ,inactive
                       :overline ,default-bg
                       :underline ,default-bg
 
@@ -903,7 +883,7 @@
 ;;;;; TODO Autosave when losing focus
 
 (super-save-mode +1)
-(diminish 'super-save-mode "💾")
+(diminish 'super-save-mode " 💾")
 ;; TODO: Autosave when switching Emacs windows
 
 ;;;;; Delete trailing whitespace when saving
@@ -1110,7 +1090,7 @@
 ;;TODO BIND  :bind (:map company-mode-map
 ;; (("M-TAB" . company-complete-common)))
 (with-eval-after-load 'company
-  (diminish 'company-mode))
+  (diminish 'company-mode "⋯ "))
 
 ;;;;; Evil Nerd Commenter
 
@@ -1130,7 +1110,7 @@
 (add-hook 'prog-mode-hook 'flycheck-mode)
 
 (with-eval-after-load 'flycheck
-  (diminish 'flycheck-mode))
+  (diminish 'flycheck-mode "▲"))
 
 ;;;;; Highlight-indent-guides
 
@@ -1428,7 +1408,6 @@
                                  (visual-line-mode 1)
                                  (visual-fill-column-mode 1)))
 
-(general-define-key "<f12>"  'mu4e)
 (general-define-key :keymaps 'mu4e-headers-mode-map
                     "("      'mu4e-headers-prev-unread
                     ")"      'mu4e-headers-next-unread)
