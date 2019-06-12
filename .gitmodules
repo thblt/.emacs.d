@@ -124,30 +124,9 @@
 	path = lib/esxml
 	url = https://github.com/tali713/esxml
   branch = master
-[submodule "evil"]
-	path = lib/evil
-	url = https://github.com/emacs-evil/evil
-	branch = master
-[submodule "evil-leader"]
-	path = lib/evil-leader
-	url = https://github.com/cofi/evil-leader
-	branch = master
-[submodule "evil-lisp-state"]
-	path = lib/evil-lisp-state
-	url = https://github.com/syl20bnr/evil-lisp-state
-	branch = master
-[submodule "evil-matchit"]
-	path = lib/evil-matchit
-	url = https://github.com/redguardtoo/evil-matchit
-	branch = master
 [submodule "evil-nerd-commenter"]
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
-  branch = master
-[submodule "evil-surround"]
-	path = lib/evil-surround
-	url = https://github.com/emacs-evil/evil-surround
-	branch = master
 [submodule "eyebrowse"]
 	path = lib/eyebrowse
 	url = https://github.com/wasamasa/eyebrowse

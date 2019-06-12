@@ -133,19 +133,6 @@
 (setq x-underline-at-descent-line t
       powerline-gui-use-vcs-glyph t)
 
-(defvar thblt/mode-line-evil-state-indicators
-  '(
-    (emacs    . "")
-    (hybrid   . " HYBRID ")
-    (insert   . " INSERT ")
-    (lisp     . " LISP   ")
-    (motion   . " MOTION ")
-    (nil      . " ")
-    (normal   . " NORMAL ")
-    (operator . " WHERE ?")
-    (replace  . " REPLACE")
-    (visual   . " VISUAL ")))
-
 ;;;;; Theme
 
 (defun thblt/powerline-theme ()
@@ -162,12 +149,8 @@
    '("%e"
      (:eval
       (let* ((active (powerline-selected-window-active))
-             (face (if active (intern (format "thblt/mode-line--%s" evil-state))
-                     'mode-line-inactive))
-             (state-face (intern (format "thblt/mode-line--evil-%s-state" evil-state)))
-             (buffid-face (intern (format "thblt/mode-line--buffer-id-%s" evil-state)))
-             (state-name (cdr (assoc evil-state thblt/mode-line-evil-state-indicators)))
-             (last-face) ; The last face used, to show the
+             (face (if active 'mode-line 'mode-line-inactive))
+             (last-face) ; The last used face, to show the
                                         ; correct separator after conditional
                                         ; segments
              (separator-left (intern (format "powerline-%s-%s"
@@ -176,45 +159,38 @@
              (separator-right (intern (format "powerline-%s-%s"
                                               (powerline-current-separator)
                                               (cdr powerline-default-separator-dir))))
-             (delim-face (if active (intern (format "thblt/mode-line--delimiter-%s" evil-state)) face))
+             (delim-face (if active 'thblt/mode-line--delimiter face))
              (space (powerline-raw " " face))
              (open (powerline-raw " [" delim-face))
              (open* (powerline-raw "[" delim-face))
              (close (powerline-raw "]" delim-face))
              (lhs
               (list
-               ;; Evil state
-               (progn
-                 (setq last-face (if active state-face face))
-                 (powerline-raw state-name last-face 'r))
-
-               (when last-face
-                 (funcall separator-left last-face buffid-face))
 
                ;; Buffer id
                ;; Modified?
                (when (and buffer-file-name (buffer-modified-p))
-                 (powerline-raw " ●"  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-modified)))
+                 (powerline-raw " ●"  'thblt/mode-line--buffer-modified))
                ;; Read-only?
                (when buffer-read-only
-                 (powerline-raw " "  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-read-only)))
+                 (powerline-raw " "  'thblt/mode-line--buffer-read-only))
                ;; Not read-only, has a file, but isn't modified: spaces where the modified marker will appear
                (when (and buffer-file-name
                           (not (or (buffer-modified-p)
                                    buffer-read-only)))
                  ;; @Notice: we're borrowing the narrow face here
-                 (powerline-raw " -"  `(:inherit ,buffid-face :inherit thblt/mode-line--buffer-narrowed)))
+                 (powerline-raw " -" 'thblt/mode-line--buffer-narrowed))
 
                ;; Buffer name
                (progn
-                 (setq last-face buffid-face)
+                 (setq last-face 'thblt/mode-line--buffer-id)
                  ( powerline-raw
                    " %[%b%] "
-                   `(:weight ,(if buffer-file-name 'bold 'normal) :inherit ,buffid-face)))
+                   `(:weight ,(if buffer-file-name 'bold 'normal) :inherit thblt/mode-line--buffer-id)))
 
                ;; Narrowing indicator
                (when (buffer-narrowed-p)
-                 (powerline-raw "[Narrow] " `(:inherit thblt/mode-line--buffer-narrowed :inherit ,buffid-face )))
+                 (powerline-raw "[Narrow] " `(:inherit thblt/mode-line--buffer-narrowed :inherit thblt/mode-line--buffer-id )))
 
                (funcall separator-left last-face face)
                ;; Position
@@ -247,13 +223,10 @@
 
                    space
                    (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
-                     (funcall separator-right face state-face))
-                   (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
                      (powerline-raw
                       (if server-process
                           (format " %s  " server-name)
-                        "")
-                      state-face)))
+                        ""))))
 
                   ))
 
@@ -261,7 +234,7 @@
                 (powerline-fill face (powerline-width rhs))
                 (powerline-render rhs)))))))
 
-;;;;; Faces
+;;;;; Faces (and cursor!)
 
 (defun thblt/mode-line-set-faces (&rest _) ; I'm hooking this on theme change so it needs to accept arg
   "Configure faces for the mode-line."
@@ -272,35 +245,21 @@
 
          (dark (< (kurecolor-hex-get-brightness default-bg) .5))
 
-         (inactive (if dark "#111111" "#dddddd"))
+         (buffid-bg (if dark "#000000" "#ffffff"))
 
-         ;; Evil state colors
-         ;; (= evil-state-segment-bg)
-         (evil-emacs-state                  (if dark "#ffffff" "#ffffff"))
-         (evil-emacs-state-fg               "#000000")
-         (evil-hybrid-state                 "#aabbcc")
-         (evil-hybrid-state-fg              "#000000")
-         (evil-insert-state                 "#ffcc33")
-         (evil-insert-state-fg              "#000000")
-         (evil-lisp-state                   "#850085")
-         (evil-lisp-state-fg                "#ffffff")
-         (evil-motion-state                 "#aabbcc")
-         (evil-motion-state-fg              "#000000")
-         (evil-nil-state                    evil-emacs-state)
-         (evil-nil-state-fg                 evil-emacs-state-fg)
-         (evil-normal-state                 "#00dd00")
-         (evil-normal-state-fg              "#000000")
-         (evil-operator-state               "#aabbcc")
-         (evil-operator-state-fg            "#000000")
-         (evil-replace-state                "#ff0000")
-         (evil-replace-state-fg             "#ffffff")
-         (evil-visual-state                 "#00E0F7")
-         (evil-visual-state-fg              "#000000")
+         (inactive (if dark "#111111" "#dddddd"))
 
          ;; Vc states
          (server-bg                         "#520052")
-         (server-fg                         "#ffffff")
-         )
+         (server-fg                         "#ffffff"))
+
+    ;; Modeline
+    (face-spec-set 'mode-line
+                   `((t
+                      :background ,(if dark "#ffffff" "#000022")
+                      :foreground ,(if dark "black" "white")
+                      :overline ,(if dark "black" "white")
+                      :underline ,(if dark "black" "white"))))
 
     ;; Inactive mode line (invisible)
     (face-spec-set 'mode-line-inactive
@@ -314,22 +273,23 @@
 
     (face-spec-set 'thblt/mode-line--buffer-modified
                    `((t
+                      :background ,buffid-bg
                       :foreground "#ff0000")))
 
     (face-spec-set 'thblt/mode-line--buffer-read-only
                    `((t
-                      :foreground "#ff0000")))
+                      :background ,buffid-bg
+                      :foreground "#ff0000"))) ;
 
     ;; Narrowing indicator
     (face-spec-set 'thblt/mode-line--buffer-narrowed
                    `((t
+                      :background ,buffid-bg
                       :foreground "#888888")))
 
     ;; Minor mode lighter
     (face-spec-set 'thblt/mode-line--minor-mode
                    `((t)))
-                                        ;   :background nil
-                                        ;  :foreground ,(if dark "#aaccee" "#2061a2"))))
 
     ;; Server ON face
     (face-spec-set 'thblt/mode-line--server
@@ -337,64 +297,17 @@
                       :background ,server-bg
                       :foreground ,server-fg)))
 
-    ;; Generate the various Evil-state-specific faces
-    (mapc (lambda (state)
-            (let* ((base-color (symbol-value (intern (format "evil-%s-state" state))))
-                   (fg-color (symbol-value (intern (format "evil-%s-state-fg" state))))
-                   (h (kurecolor-hex-get-hue base-color))
-                   (s (kurecolor-hex-get-saturation base-color))
-                   (v (kurecolor-hex-get-brightness base-color))
-                   (ml-bg-color (if dark
-                                    (kurecolor-hsv-to-hex h (/ s 4) (/ v 3))
-                                  (kurecolor-hsv-to-hex h (/ s 4) .4)))
-                   (ml-fg-color (if dark
-                                    (kurecolor-hsv-to-hex h (/ s 4) .9)
-                                  (kurecolor-hsv-to-hex h (/ s 4) 1)))
-                   (ml-outline-color (if dark ml-fg-color
-                                       (kurecolor-hsv-to-hex h (/ s 4) 0)))
-                   (delimiter-color (if dark
-                                        (kurecolor-hsv-to-hex h (/ s 4) .5)
-                                      (kurecolor-hsv-to-hex h (/ s 4) v)))
-                   (buffid-color (if dark
-                                     (kurecolor-hsv-to-hex h .4 .5)
-                                   ml-fg-color)))
+    ;; Buffer ID
+    (face-spec-set 'thblt/mode-line--buffer-id
+                   `((t
+                      :background ,buffid-bg
+                      :foreground ,(if dark "white" "black"))))
+    ;; Delimiter
+    (face-spec-set 'thblt/mode-line--delimiter
+                   `((t)))
+    ))
 
-
-              ;; Modeline
-              (face-spec-set (intern (format "thblt/mode-line--%s" state))
-                             `((t
-                                :background ,ml-bg-color
-                                :foreground ,ml-fg-color
-                                :overline ,ml-outline-color
-                                :underline ,ml-outline-color)))
-
-              ;; Buffer ID
-              (face-spec-set (intern (format "thblt/mode-line--buffer-id-%s" state))
-                             `((t
-                                :foreground ,(if dark "#ffffff" "#000000")
-                                :background ,buffid-color
-                                :overline ,ml-outline-color
-                                :underline ,ml-outline-color)))
-
-              ;; Delimiter
-              (face-spec-set (intern (format "thblt/mode-line--delimiter-%s" state))
-                             `((t
-
-                                :background ,ml-bg-color
-                                :foreground ,ml-fg-color
-                                :overline ,ml-outline-color
-                                :underline ,ml-outline-color
-                                )))
-              ;; State indicator
-              (face-spec-set (intern (format "thblt/mode-line--evil-%s-state" state))
-                             `((t
-                                :background ,base-color
-                                :overline ,ml-outline-color
-                                :underline ,ml-outline-color
-                                :foreground ,fg-color )))))
-          '(emacs hybrid insert lisp motion nil normal operator replace visual))))
-
-;;;;; Support code
+;;       '(emacs insert lisp motion nil normal operator replace visual))))
 
 ;;;;;; Window position tracker
 
@@ -675,22 +588,6 @@ nil; otherwise it's evaluated normally."
   "For use by `hydra-editor-appearance/body'."
   (interactive)
   (thblt/visual-fill-column-width-adjust -5))
-
-;;;; Evil and friends
-
-(setq evil-disable-insert-state-bindings t)
-
-(require 'evil)
-
-(require 'evil-leader)
-(require 'evil-lisp-state)
-(require 'evil-matchit)
-(require 'evil-surround)
-
-(evil-mode)
-(global-evil-leader-mode)
-(global-evil-matchit-mode)
-(global-evil-surround-mode)
 
 ;;;; Spell checking
 
@@ -1205,23 +1102,16 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; Evil Nerd Commenter
 
-;; A good replacement for ~comment-dwim~, but unline
-;; [[https://github.com/remyferre/comment-dwim-2][~comment-dwim2~]],
-;; it can't alternate between commenting and commenting /out/ (adding
-;; the comment delimiter at the start or the end of the line).
-
-(general-define-key "M-;"   'evilnc-comment-or-uncomment-lines
-                    "C-M-;" 'evilnc-comment-or-uncomment-paragraphs
-                    "C-c l" 'evilnc-quick-comment-or-uncomment-to-the-line
-                    "C-c c" 'evilnc-copy-and-comment-lines)
-;; "C-c p" 'evilnc-comment-or-uncomment-paragraphs)
+(require 'evil-nerd-commenter)
+(general-define-key "M-,"   'evilnc-comment-or-uncomment-lines
+                    "C-M-," 'evilnc-comment-or-uncomment-paragraphs)
 
 ;;;;; Flycheck
 
-(add-hook 'prog-mode-hook 'flycheck-mode)
+;; (add-hook 'prog-mode-hook 'flycheck-mode)
 
-(with-eval-after-load 'flycheck
-  (diminish 'flycheck-mode "▲"))
+;; (with-eval-after-load 'flycheck
+;; (diminish 'flycheck-mode "▲"))
 
 ;;;;; Highlight-indent-guides
 
