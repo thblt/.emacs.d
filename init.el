@@ -503,6 +503,12 @@
 (require 'eyebrowse)
 (eyebrowse-mode)
 
+;;;;; Hydra
+
+(with-eval-after-load 'hydra
+  (require 'posframe)
+  (setq hydra-hint-display-type 'posframe))
+
 ;;;;; Ivy
 
 (setq ivy-use-virtual-buffers t)

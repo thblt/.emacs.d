@@ -372,6 +372,9 @@
 	path = lib/popwin
 	url = https://github.com/m2ym/popwin-el
   branch = master
+[submodule "posframe"]
+	path = lib/posframe
+	url = https://github.com/tumashu/posframe
 [submodule "powerline"]
 	path = lib/powerline
 	url = https://github.com/milkypostman/powerline
