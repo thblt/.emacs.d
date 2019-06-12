@@ -279,6 +279,9 @@
   build-nix-shell-packages = gnumake autoconf automake m4 libtool pkgconfig glib gmime3 xapian emacs texinfo
   build-step = ./autogen.sh
   build-step = make
+	build-step = borg-update-autoloads
+	build-step = borg-byte-compile
+	build-step = borg-makeinfo
   load-path = mu4e
   info-path = mu4e
 [submodule "mwim"]
