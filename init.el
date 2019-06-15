@@ -115,13 +115,16 @@
 
 ;; And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]].
 
-(setq eziam-scale-headings nil)
-(load-theme 'eziam-dark t)
+(setq eziam-scale-headings nil
+      eziam-heading-style 'gray-blocks)
+
+(load-theme 'eziam-light t)
 
 ;; Create some shortcut commands to load the Eziam themes:
 (defun eziam-dark () (interactive) (load-theme 'eziam-dark t))
-(defun eziam-light () (interactive) (load-theme 'eziam-light t))
 (defun eziam-dusk () (interactive) (load-theme 'eziam-dusk t))
+(defun eziam-light () (interactive) (load-theme 'eziam-light t))
+(defun eziam-white () (interactive) (load-theme 'eziam-white t))
 
 ;;;; Modeline
 ;;;;; Variables
@@ -498,14 +501,16 @@ nil; otherwise it's evaluated normally."
                        (propertize "-" 'face 'shadow))
            ,desc))
 
-(defhydra hydra-editor-appearance (:exit nil) ; :color blue)
+(defhydra hydra-editor-appearance ()
   ("b" text-scale-decrease "Size -" :column "Font and theme")
   ("é" thblt/text-scale-reset (thblt/hydra-indicator "Default size"
                                                      (not (bound-and-true-p text-scale-mode))))
   ("p" text-scale-increase "Size +")
-  ("v" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
-  ("L" eziam-light (thblt/hydra-indicator"Light theme" (member 'eziam-light custom-enabled-themes)))
-  ("D" eziam-dark (thblt/hydra-indicator "Dark theme" (member 'eziam-dark custom-enabled-themes)))
+  ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
+  ("t w" (lambda () (interactive) (load-theme 'eziam-white t)) (thblt/hydra-indicator"White theme" (member 'eziam-white custom-enabled-themes)))
+  ("t l" (lambda () (interactive) (load-theme 'eziam-light t)) (thblt/hydra-indicator"Light theme" (member 'eziam-light custom-enabled-themes)))
+  ("t u" (lambda () (interactive) (load-theme 'eziam-dusk t)) (thblt/hydra-indicator"Dusk theme" (member 'eziam-dusk custom-enabled-themes)))
+  ("t d" (lambda () (interactive) (load-theme 'eziam-dark t)) (thblt/hydra-indicator"Dark theme" (member 'eziam-dark custom-enabled-themes)))
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
   ("c" thblt/visual-fill-column-toggle-centering (thblt/hydra-indicator "Centering" visual-fill-column-center-text))
@@ -513,17 +518,19 @@ nil; otherwise it's evaluated normally."
   ("h" thblt/visual-fill-column-width-increase "Width +")
   ("l" visual-line-mode (thblt/hydra-indicator "Line wrap" visual-line-mode))
   ("-" toggle-word-wrap (thblt/hydra-indicator "Word wrap" word-wrap))
-  ("M" rainbow-delimiters-mode (thblt/hydra-indicator "Rainbow delimiters" rainbow-delimiters-mode))
-  ("N" rainbow-mode (thblt/hydra-indicator "Rainbow" rainbow-mode))
 
-  ("W" superword-mode (thblt/hydra-indicator "super-word" superword-mode) :column "Behavior")
+  ("v d" rainbow-delimiters-mode (thblt/hydra-indicator "Rainbow delimiters" rainbow-delimiters-mode) :column "Helpers")
+  ("v r" rainbow-mode (thblt/hydra-indicator "Rainbow" rainbow-mode))
+  ("v i" highlight-indent-guides-mode (thblt/hydra-indicator "Highlight indent" highlight-indent-guides-mode))
+
+  ("W" superword-mode (thblt/hydra-indicator "super-word" superword-mode))
   ("w" subword-mode (thblt/hydra-indicator "SubWord" subword-mode))
 
   ("a" auto-fill-mode (thblt/hydra-indicator "Auto fill" auto-fill-function) :column "Elecricity")
   ("A" refill-mode (thblt/hydra-indicator "Auto refill" refill-mode))
   ("I" aggressive-indent-mode (thblt/hydra-indicator "Aggressive indent" aggressive-indent-mode))
 
-  ("!" flycheck-mode (thblt/hydra-indicator "Code" flycheck-mode) :column "Check")
+  ("!" flycheck-mode (thblt/hydra-indicator "Code" flycheck-mode) :column "Utility")
   ("?" flyspell-mode  (thblt/hydra-indicator "Spell" flyspell-mode))
   ("F" thblt/ispell-use-french (thblt/hydra-indicator "Français" (string= (bound-and-true-p ispell-local-dictionary) "french")))
   ("E" thblt/ispell-use-english (thblt/hydra-indicator "English" (string= (bound-and-true-p ispell-local-dictionary) "english")))
@@ -924,9 +931,6 @@ nil; otherwise it's evaluated normally."
 
 (require 'visual-fill-column)
 
-(dolist (hook '(markdown-mode-hook org-mode-hook))
-  (add-hook hook (lambda () (setq visual-fill-column-center-text t))))
-
 ;;;; Major modes
 
 ;;;;; AucTex
@@ -954,14 +958,11 @@ nil; otherwise it's evaluated normally."
             (?o . "\\citepr[]{%l}")
             (?n . "\\nocite{%l}")))))
 
-
 ;;;;; Org-mode
-
-;; (htmlize is a dependency of Org)
 
 (setq org-catch-invisible-edits t
       org-hide-leading-stars t
-      org-hide-emphasis-markers t
+      org-hide-emphasis-markers nil
       org-html-htmlize-output-type 'css
       org-imenu-depth 8
       org-src-fontify-natively t
@@ -975,8 +976,7 @@ nil; otherwise it's evaluated normally."
                            (which-function-mode t)))
 
 (with-eval-after-load 'org-indent
-  (diminish 'org-indent-mode)
-  )
+  (diminish 'org-indent-mode))
 
 
 
@@ -1074,9 +1074,10 @@ nil; otherwise it's evaluated normally."
 ;;;;; Aggressive indent
 
 (add-hook 'emacs-lisp-mode-hook 'aggressive-indent-mode)
+(with-eval-after-load 'aggressive-indent
+  (diminish 'aggressive-indent-mode "⭾"))
 
 ;;;;; Color-identifiers
-
 
 (add-hook 'prog-mode-hook 'color-identifiers-mode)
 (advice-add 'load-theme :after (lambda (&rest _)
@@ -1635,12 +1636,3 @@ nil; otherwise it's evaluated normally."
 ;; obvious in daemon mode)
 
 (setq initial-scratch-message ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n")
-
-;;; Just testing stuff
-;;;; Another level
-;;;;; And a third
-;;;;;; Then a fourth
-;;;;;;; What about five?
-;;;;;;;; Now six!
-;;;;;;;;; Seven!!!
-;;;;;;;;;; and... fuck off!
