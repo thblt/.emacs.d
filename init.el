@@ -1573,34 +1573,32 @@ nil; otherwise it's evaluated normally."
 ;; If we're running on a HiDPI machine, we replace the flycheck fringe
 ;; bitmap with a larger version.
 
-(when (string-prefix-p  "maladict" system-name)
-  (setq fringe-mode-explicit t)
-  (set-fringe-mode '(16 . 0))
+;; (when (string-prefix-p  "maladict" system-name)
 
-  (with-eval-after-load "flycheck"
-    (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
-      (vector
-       #b1000000000
-       #b1100000000
-       #b1110000000
-       #b1111000000
-       #b1111100000
-       #b1111110000
-       #b1111111000
-       #b1111111100
-       #b1111111110
-       #b1111111111
-       #b1111111111
-       #b1111111110
-       #b1111111100
-       #b1111111000
-       #b1111110000
-       #b1111100000
-       #b1111000000
-       #b1110000000
-       #b1100000000
-       #b1000000000)
-      20 10 'center)))
+;;   (with-eval-after-load "flycheck"
+;;     (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
+;;       (vector
+;;        #b1000000000
+;;        #b1100000000
+;;        #b1110000000
+;;        #b1111000000
+;;        #b1111100000
+;;        #b1111110000
+;;        #b1111111000
+;;        #b1111111100
+;;        #b1111111110
+;;        #b1111111111
+;;        #b1111111111
+;;        #b1111111110
+;;        #b1111111100
+;;        #b1111111000
+;;        #b1111110000
+;;        #b1111100000
+;;        #b1111000000
+;;        #b1110000000
+;;        #b1100000000
+;;        #b1000000000)
+;;       20 10 'center)))
 
 ;;;; Server configuration
 
