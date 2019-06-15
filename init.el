@@ -1178,6 +1178,10 @@ Interactively, work on active buffer"
 (with-eval-after-load "outshine"
   (diminish 'outshine-mode))
 
+(with-eval-after-load 'outshine
+  (define-key outshine-mode-map (kbd "M-<up>") nil)
+  (define-key outshine-mode-map (kbd "M-<down>") nil))
+
 ;;;;; Rainbow mode
 
 ;; Rainbow mode is similar to Atom's Pigments plugin or something.
