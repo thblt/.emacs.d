@@ -891,15 +891,39 @@ nil; otherwise it's evaluated normally."
 
 ;;;; Misc customizations
 
-;;;;; Use C-h as backspace
+;; From https://www.emacswiki.org/emacs/CopyingWholeLines
+(defun copy-line (arg)
+  "Copy lines (as many as prefix argument) in the kill ring.
+      Ease of use features:
+      - Move to start of next line.
+      - Appends the copy on sequential calls.
+      - Use newline as last char even on the last line of the buffer.
+      - If region is active, copy its lines."
+  (interactive "p")
+  (let ((beg (line-beginning-position))
+        (end (line-end-position arg)))
+    (when mark-active
+      (if (> (point) (mark))
+          (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+        (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+    (if (eq last-command 'copy-line)
+        (kill-append (buffer-substring beg end) (< end beg))
+      (kill-ring-save beg end)))
+  (kill-append "\n" nil)
+  (beginning-of-line (or (and arg (1+ arg)) 2))
+  (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 
-(general-define-key "C-h" 'delete-backward-char)
 
-;;;;; TODO Autosave when losing focus
+;;;;; Bindings
+
+(global-set-key (kbd "C-S-k") 'kill-whole-line)
+(global-set-key (kbd "C-S-y") 'copy-line)
+(global-set-key (kbd "C-h") 'delete-backward-char)
+
+;;;;; Autosave when losing focus
 
 (super-save-mode +1)
 (diminish 'super-save-mode " 💾")
-;; TODO: Autosave when switching Emacs windows
 
 ;;;;; Delete trailing whitespace when saving
 
