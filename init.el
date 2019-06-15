@@ -1002,11 +1002,15 @@ nil; otherwise it's evaluated normally."
 (with-eval-after-load 'org-indent
   (diminish 'org-indent-mode))
 
+;;;;;; Export
 
+(with-eval-after-load 'org
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines)))
 
 ;;;;;; PDF export
 
-(setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdf %f"))
+(setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
 
 (sp-with-modes 'org-mode
   (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
