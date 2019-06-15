@@ -1164,7 +1164,7 @@ Interactively, work on active buffer"
       highlight-indent-guides-character ?┃
       highlight-indent-guides-auto-character-face-perc 25)
 
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+;; (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
 (with-eval-after-load 'highlight-indent-guides
   (diminish 'highlight-indent-guides-mode))
