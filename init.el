@@ -1098,6 +1098,22 @@ nil; otherwise it's evaluated normally."
 (global-set-key (kbd "<f8>") 'ffap)
 (global-set-key (kbd "<f5>") 'recompile)
 
+
+;;;; Reformatting
+
+(defvar-local format-buffer-function nil
+  "The function used to reformat this buffer")
+
+(defun format-buffer (buffer)
+  "Reformat BUFFER.
+
+Interactively, work on active buffer"
+  (interactive (list (current-buffer)))
+  (with-current-buffer buffer
+    (if format-buffer-function
+        (funcall format-buffer-function)
+      (message "Please set `format-buffer-function' first!"))))
+
 ;;;; Minor modes
 ;;;;; Aggressive indent
 
@@ -1194,6 +1210,9 @@ nil; otherwise it's evaluated normally."
           (lambda ()
             (local-set-key (kbd "C-c o") 'ff-find-other-file)))
 
+(add-hook 'c-mode-common-hook (lambda nil (setq-local
+                                           format-buffer-function 'clang-format)))
+
 ;;;;; Haskell
 
 ;; Intero mode is a “complete interactive development program for
@@ -1206,6 +1225,11 @@ nil; otherwise it's evaluated normally."
 
 (general-define-key :keymaps 'haskell-mode-map
                     "<f1> <f1>" 'hayoo-query)
+
+;;;;; Nix
+
+(with-eval-after-load 'nix-mode
+  (add-hook 'nix-mode-hook (lambda nil (setq format-buffer-function 'nix-mode-format))))
 
 ;;;;; Rust
 
