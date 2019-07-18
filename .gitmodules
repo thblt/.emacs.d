@@ -99,10 +99,6 @@
 	path = lib/diminish
 	url = https://github.com/myrjola/diminish.el
 	branch = master
-[submodule "dired+"]
-	path = lib/dired+
-	url = https://github.com/emacsmirror/dired-plus
-	branch = master
 [submodule "ebib"]
 	path = lib/ebib
 	url = https://github.com/joostkremers/ebib
