@@ -1332,11 +1332,8 @@ Interactively, work on active buffer"
 
 ;;;; TODO Magit and Git
 
-(general-define-key
- "C-x g s" 'magit-status
- "C-x g r" 'magit-list-repositories
- "C-x g t" 'git-timemachine)
 
+(global-magit-file-mode)
 
 ;; Use Projectile projects as a source of repositories:
 
@@ -1350,7 +1347,6 @@ Interactively, work on active buffer"
 
 (advice-add 'magit-status :before 'thblt/update-magit-repository-directories)
 (advice-add 'magit-list-repositories :before 'thblt/update-magit-repository-directories)
-
 
 ;;;;; magit-list-repositories
 
