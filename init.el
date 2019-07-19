@@ -441,6 +441,11 @@
 
  "C-x 8 RET" 'counsel-unicode-char)
 
+(require 'ivy-posframe)
+(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+(ivy-posframe-mode 1)
+(diminish 'ivy-posframe-mode)
+
 ;;;;; Popwin
 
 ;; Popwin “makes you free from the hell of annoying buffers”:
@@ -1144,6 +1149,11 @@ Interactively, work on active buffer"
 ;; (("M-TAB" . company-complete-common)))
 (with-eval-after-load 'company
   (diminish 'company-mode "⋯ "))
+
+(require 'company-posframe)
+(add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
+(with-eval-after-load 'company-posframe
+  (diminish 'company-posframe-mode))
 
 ;;;;; Evil Nerd Commenter
 

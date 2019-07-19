@@ -87,6 +87,9 @@
 	path = lib/company-irony-c-headers
 	url = https://github.com/hotpxl/company-irony-c-headers
 	branch = master
+[submodule "company-posframe"]
+	path = lib/company-posframe
+	url = https://github.com/tumashu/company-posframe
 [submodule "counsel-projectile"]
 	path = lib/counsel-projectile
 	url = https://github.com/ericdanan/counsel-projectile
@@ -227,6 +230,9 @@
 	path = lib/ivy
 	url = https://github.com/abo-abo/swiper
 	branch = master
+[submodule "ivy-posframe"]
+	path = lib/ivy-posframe
+	url = https://github.com/tumashu/ivy-posframe
 [submodule "kurecolor"]
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
