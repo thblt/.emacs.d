@@ -1195,10 +1195,7 @@ Interactively, work on active buffer"
               (call-interactively 'outline-move-subtree-down))
              (t (call-interactively 'move-text-down))))
 
-(define-key outshine-mode-map (kbd "M-<up>") nil)
-(define-key outshine-mode-map (kbd "M-<down>") nil)
-
-(with-eval-after-load "outshine"
+(with-eval-after-load 'outshine
   (diminish 'outshine-mode)
   (define-key global-map (kbd "M-<up>") 'thblt/m-up-dwim)
   (define-key global-map (kbd "M-<down>") 'thblt/m-down-dwim))
