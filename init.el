@@ -1184,8 +1184,6 @@ Interactively, work on active buffer"
 (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
 
 (diminish 'outline-minor-mode)
-(with-eval-after-load "outshine"
-  (diminish 'outshine-mode))
 
 (defun thblt/m-up-dwim () (interactive)
        (cond ((and outshine-mode (outline-on-heading-p))
@@ -1200,8 +1198,10 @@ Interactively, work on active buffer"
 (define-key outshine-mode-map (kbd "M-<up>") nil)
 (define-key outshine-mode-map (kbd "M-<down>") nil)
 
-(define-key global-map (kbd "M-<up>") 'thblt/m-up-dwim)
-(define-key global-map (kbd "M-<down>") 'thblt/m-down-dwim)
+(with-eval-after-load "outshine"
+  (diminish 'outshine-mode)
+  (define-key global-map (kbd "M-<up>") 'thblt/m-up-dwim)
+  (define-key global-map (kbd "M-<down>") 'thblt/m-down-dwim))
 
 ;;;;; Rainbow mode
 
