@@ -661,9 +661,8 @@ nil; otherwise it's evaluated normally."
 ;;;;; Move text
 
 ;; Move lines of text with =M-<up>= and =M-<down>=.
-
-
-(move-text-default-bindings)
+;; (move-text-default-bindings)
+;; Configured with Outshine to DWIM on Outshine headings
 
 ;;;;; Recentf
 
@@ -1188,9 +1187,21 @@ Interactively, work on active buffer"
 (with-eval-after-load "outshine"
   (diminish 'outshine-mode))
 
-(with-eval-after-load 'outshine
-  (define-key outshine-mode-map (kbd "M-<up>") nil)
-  (define-key outshine-mode-map (kbd "M-<down>") nil))
+(defun thblt/m-up-dwim () (interactive)
+       (cond ((and outshine-mode (outline-on-heading-p))
+              (call-interactively 'outline-move-subtree-up))
+             (t (call-interactively 'move-text-up))))
+
+(defun thblt/m-down-dwim () (interactive)
+       (cond ((and outshine-mode (outline-on-heading-p))
+              (call-interactively 'outline-move-subtree-down))
+             (t (call-interactively 'move-text-down))))
+
+(define-key outshine-mode-map (kbd "M-<up>") nil)
+(define-key outshine-mode-map (kbd "M-<down>") nil)
+
+(define-key global-map (kbd "M-<up>") 'thblt/m-up-dwim)
+(define-key global-map (kbd "M-<down>") 'thblt/m-down-dwim)
 
 ;;;;; Rainbow mode
 
