@@ -1327,10 +1327,9 @@ Interactively, work on active buffer"
 (advice-add 'load-theme :after (lambda (&rest _) (when (functionp 'erc-hl-nicks-reset-face-table)
                                                    (erc-hl-nicks-reset-face-table))))
 
-;;;; TODO Magit and Git
+;;;; Magit and Git
 
-
-(global-magit-file-mode)
+(define-key global-map (kbd "C-x g") 'magit-status)
 
 ;; Use Projectile projects as a source of repositories:
 
