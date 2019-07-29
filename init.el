@@ -544,7 +544,7 @@ nil; otherwise it's evaluated normally."
 
   ("R" auto-revert-mode (thblt/hydra-indicator "Auto-revert" auto-revert-mode) :column "Misc"))
 
-(general-define-key "<f12>" 'hydra-editor-appearance/body)
+(general-define-key "C-c l" 'hydra-editor-appearance/body)
 
 (defun thblt/visual-fill-column-reset (&optional activate)
   "For use by `hydra-editor-appearance/body'."
