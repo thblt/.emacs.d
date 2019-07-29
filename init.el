@@ -42,7 +42,9 @@
       ;; Don't lose the contents of system clipboard when killing from Emacs:
       save-interprogram-paste-before-kill t
       ;; Disable Customize by pointing it to =/dev/null=:
-      custom-file "/dev/null")
+      custom-file "/dev/null"
+
+      inhibit-compacting-font-caches (eq 'system-type 'windows-nt)) ; This prevents slowdown when using strange characters.
 
 ;;;; Defaults
 
