@@ -1615,9 +1615,9 @@ Interactively, work on active buffer"
 ;; before it runs, and restored afterwards.
 
 (defun thblt/scpaste-without-noise (f &rest args)
-  (let ((hig highlight-indent-guides-mode)
-        (flyc flycheck-mode)
-        (flys flyspell-mode))
+  (let ((hig (bound-and-true-p highlight-indent-guides-mode))
+        (flyc (bound-and-true-p flycheck-mode))
+        (flys (bound-and-true-p flyspell-mode)))
     (highlight-indent-guides-mode -1)
     (flycheck-mode -1)
     (flyspell-mode -1)
