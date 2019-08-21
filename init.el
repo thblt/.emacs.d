@@ -489,6 +489,55 @@
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
+;;;; BÉPO adjustments
+
+;;;;; Unshifted digit argument
+
+(defmacro thblt/digit-argument-with-value (char)
+  "Return an anonymous lambda that calls `digit-argument' as if CHAR had been pressed.
+
+This can be used to update the digit argument from arbitrary keys."
+  `(lambda () (interactive)
+     (prefix-command-preserve-state)
+     (let ((last-command-event ,char))
+       (call-interactively 'digit-argument))))
+
+(define-key global-map (kbd "C-\"") (thblt/digit-argument-with-value ?1))
+(define-key global-map (kbd "M-\"") (thblt/digit-argument-with-value ?1))
+(define-key universal-argument-map (kbd "\"") (thblt/digit-argument-with-value ?1))
+(define-key global-map (kbd "C-«") (thblt/digit-argument-with-value ?2))
+(define-key global-map (kbd "M-«") (thblt/digit-argument-with-value ?2))
+(define-key universal-argument-map (kbd "«") (thblt/digit-argument-with-value ?2))
+(define-key global-map (kbd "C-»") (thblt/digit-argument-with-value ?3))
+(define-key global-map (kbd "M-»") (thblt/digit-argument-with-value ?3))
+(define-key universal-argument-map (kbd "»") (thblt/digit-argument-with-value ?3))
+(define-key global-map (kbd "C-(") (thblt/digit-argument-with-value ?4))
+(define-key global-map (kbd "M-(") (thblt/digit-argument-with-value ?4))
+(define-key universal-argument-map (kbd "(") (thblt/digit-argument-with-value ?4))
+(define-key global-map (kbd "C-)") (thblt/digit-argument-with-value ?5))
+(define-key global-map (kbd "M-)") (thblt/digit-argument-with-value ?5))
+(define-key universal-argument-map (kbd ")") (thblt/digit-argument-with-value ?5))
+(define-key global-map (kbd "C-@") (thblt/digit-argument-with-value ?6))
+(define-key global-map (kbd "M-@") (thblt/digit-argument-with-value ?6))
+(define-key universal-argument-map (kbd "@") (thblt/digit-argument-with-value ?6))
+(define-key global-map (kbd "C-+") (thblt/digit-argument-with-value ?7))
+(define-key global-map (kbd "M-+") (thblt/digit-argument-with-value ?7))
+(define-key universal-argument-map (kbd "+") (thblt/digit-argument-with-value ?7))
+(define-key global-map (kbd "C--") (thblt/digit-argument-with-value ?8))
+(define-key global-map (kbd "M--") (thblt/digit-argument-with-value ?8))
+(define-key universal-argument-map (kbd "-") (thblt/digit-argument-with-value ?8))
+(define-key global-map (kbd "C-/") (thblt/digit-argument-with-value ?9))
+(define-key global-map (kbd "M-/") (thblt/digit-argument-with-value ?9))
+(define-key universal-argument-map (kbd "/") (thblt/digit-argument-with-value ?9))
+(define-key global-map (kbd "C-0") (thblt/digit-argument-with-value ?0))
+(define-key global-map (kbd "M-0") (thblt/digit-argument-with-value ?0))
+(define-key universal-argument-map (kbd "0") (thblt/digit-argument-with-value ?0))
+
+;;;;; Beginning and end of buffer
+
+(define-key global-map(kbd "M-ê") 'beginning-of-buffer)
+(define-key global-map (kbd "M-Ê") 'end-of-buffer)
+
 ;;; Editing text
 
 ;; This chapter deals with /general/ text editing.  The next two configure
