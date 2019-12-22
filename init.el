@@ -502,35 +502,35 @@ This can be used to update the digit argument from arbitrary keys."
      (let ((last-command-event ,char))
        (call-interactively 'digit-argument))))
 
-(define-key global-map (kbd "C-\"") (thblt/digit-argument-with-value ?1))
-(define-key global-map (kbd "M-\"") (thblt/digit-argument-with-value ?1))
+;; (define-key global-map (kbd "C-\"") (thblt/digit-argument-with-value ?1))
+;; (define-key global-map (kbd "M-\"") (thblt/digit-argument-with-value ?1))
 (define-key universal-argument-map (kbd "\"") (thblt/digit-argument-with-value ?1))
-(define-key global-map (kbd "C-«") (thblt/digit-argument-with-value ?2))
-(define-key global-map (kbd "M-«") (thblt/digit-argument-with-value ?2))
+;; (define-key global-map (kbd "C-«") (thblt/digit-argument-with-value ?2))
+;; (define-key global-map (kbd "M-«") (thblt/digit-argument-with-value ?2))
 (define-key universal-argument-map (kbd "«") (thblt/digit-argument-with-value ?2))
-(define-key global-map (kbd "C-»") (thblt/digit-argument-with-value ?3))
-(define-key global-map (kbd "M-»") (thblt/digit-argument-with-value ?3))
+;; (define-key global-map (kbd "C-»") (thblt/digit-argument-with-value ?3))
+;; (define-key global-map (kbd "M-»") (thblt/digit-argument-with-value ?3))
 (define-key universal-argument-map (kbd "»") (thblt/digit-argument-with-value ?3))
-(define-key global-map (kbd "C-(") (thblt/digit-argument-with-value ?4))
-(define-key global-map (kbd "M-(") (thblt/digit-argument-with-value ?4))
+;; (define-key global-map (kbd "C-(") (thblt/digit-argument-with-value ?4))
+;; (define-key global-map (kbd "M-(") (thblt/digit-argument-with-value ?4))
 (define-key universal-argument-map (kbd "(") (thblt/digit-argument-with-value ?4))
-(define-key global-map (kbd "C-)") (thblt/digit-argument-with-value ?5))
-(define-key global-map (kbd "M-)") (thblt/digit-argument-with-value ?5))
+;; (define-key global-map (kbd "C-)") (thblt/digit-argument-with-value ?5))
+;; (define-key global-map (kbd "M-)") (thblt/digit-argument-with-value ?5))
 (define-key universal-argument-map (kbd ")") (thblt/digit-argument-with-value ?5))
-(define-key global-map (kbd "C-@") (thblt/digit-argument-with-value ?6))
-(define-key global-map (kbd "M-@") (thblt/digit-argument-with-value ?6))
+;; (define-key global-map (kbd "C-@") (thblt/digit-argument-with-value ?6))
+;; (define-key global-map (kbd "M-@") (thblt/digit-argument-with-value ?6))
 (define-key universal-argument-map (kbd "@") (thblt/digit-argument-with-value ?6))
-(define-key global-map (kbd "C-+") (thblt/digit-argument-with-value ?7))
-(define-key global-map (kbd "M-+") (thblt/digit-argument-with-value ?7))
+;; (define-key global-map (kbd "C-+") (thblt/digit-argument-with-value ?7))
+;; (define-key global-map (kbd "M-+") (thblt/digit-argument-with-value ?7))
 (define-key universal-argument-map (kbd "+") (thblt/digit-argument-with-value ?7))
-(define-key global-map (kbd "C--") (thblt/digit-argument-with-value ?8))
-(define-key global-map (kbd "M--") (thblt/digit-argument-with-value ?8))
+;; (define-key global-map (kbd "C--") (thblt/digit-argument-with-value ?8))
+;; (define-key global-map (kbd "M--") (thblt/digit-argument-with-value ?8))
 (define-key universal-argument-map (kbd "-") (thblt/digit-argument-with-value ?8))
-(define-key global-map (kbd "C-/") (thblt/digit-argument-with-value ?9))
-(define-key global-map (kbd "M-/") (thblt/digit-argument-with-value ?9))
+;; (define-key global-map (kbd "C-/") (thblt/digit-argument-with-value ?9))
+;; (define-key global-map (kbd "M-/") (thblt/digit-argument-with-value ?9))
 (define-key universal-argument-map (kbd "/") (thblt/digit-argument-with-value ?9))
-(define-key global-map (kbd "C-0") (thblt/digit-argument-with-value ?0))
-(define-key global-map (kbd "M-0") (thblt/digit-argument-with-value ?0))
+;; (define-key global-map (kbd "C-0") (thblt/digit-argument-with-value ?0))
+;; (define-key global-map (kbd "M-0") (thblt/digit-argument-with-value ?0))
 (define-key universal-argument-map (kbd "0") (thblt/digit-argument-with-value ?0))
 
 ;;;;; Beginning and end of buffer
@@ -834,13 +834,14 @@ nil; otherwise it's evaluated normally."
 ;;   (sp-local-pair "``" "``"))
 
 ;; ;;; org-mode
-;; (sp-with-modes 'org-mode
-;;   (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
-;;   (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
-;;   (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-;;   (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-;;   (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-;;   (sp-local-pair "«" "»"))
+(sp-with-modes 'org-mode
+  (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+  (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
+  (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+  (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+  (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+  (sp-local-pair "«" "»")
+  (sp-local-pair "“" "”"))
 
 ;; (defun sp--org-skip-asterisk (ms mb me)
 ;;   (or (and (= (line-beginning-position) mb)
@@ -945,6 +946,8 @@ nil; otherwise it's evaluated normally."
 (diminish 'yas-minor-mode)
 
 ;;;; Misc customizations
+
+(setq shift-select-mode nil)
 
 ;; From https://www.emacswiki.org/emacs/CopyingWholeLines
 (defun copy-line (arg)
@@ -1054,6 +1057,13 @@ nil; otherwise it's evaluated normally."
                            (visual-line-mode t)
                            (which-function-mode t)))
 
+;; Use shift-arrow for window navigation when not on an heading
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
+
+
 (with-eval-after-load 'org-indent
   (diminish 'org-indent-mode))
 
@@ -1066,6 +1076,7 @@ nil; otherwise it's evaluated normally."
 ;;;;;; PDF export
 
 (setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
+(setq org-latex-pdf-process (list "latexmk -f -pdfxe -xelatex %f"))
 
 (sp-with-modes 'org-mode
   (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
@@ -1515,15 +1526,14 @@ Interactively, work on active buffer"
                             (:thread-subject . nil)
                             )
 
-      mu4e-user-mail-address-list '(
-                                    "thblt@thb.lt"
+      mu4e-user-mail-address-list '("thblt@thb.lt"
+                                    "thibault.polge@ac-amiens.fr"
                                     "thibault.polge@ac-orleans-tours.fr"
                                     "thibault.polge@etu.univ-paris1.fr"
                                     "thibault.polge@malix.univ-paris1.fr"
                                     "thibault.polge@univ-paris1.fr"
                                     "thibault@thb.lt"
-                                    "tpolge@gmail.com"
-                                    ))
+                                    "tpolge@gmail.com"))
 
 (add-hook 'mu4e-view-mode-hook (lambda ()
                                  (setq visual-fill-column-width 80)
@@ -1560,42 +1570,41 @@ Interactively, work on active buffer"
 (setq mu4e-context-policy 'pick-first
       mu4e-compose-context-policy 'ask)
 
+(with-eval-after-load 'mu4e
+  (setq mu4e-contexts `(
+                        ,(make-mu4e-context
+                          :name "OVH"
+                          :enter-func (lambda () (mu4e-message "OVH"))
+                          :match-func (lambda (msg)
+                                        (when msg
+                                          (mu4e-message-maildir-matches msg "^/OVH/")))
+                          :vars '(( user-mail-address   . "thibault@thb.lt"  )
+                                  ( mu4e-sent-folder        . "/OVH/Sent" )
+                                  ( mu4e-drafts-folder      . "/OVH/Drafts" )
+                                  ( mu4e-trash-folder       . "/OVH/Trash" )
+                                  ;; ( mu4e-refile-folder      . "/OVH/Archive" )
+                                  ( smtpmail-local-domain   . "thb.lt" )
+                                  ( smtpmail-smtp-server    . "ssl0.ovh.net" )
+                                  ( smtpmail-smtp-user      . "thibault@thb.lt" )
+                                  ( smtpmail-stream-type    . tls )
+                                  ( smtpmail-smtp-service   . 465 )))
 
-(eval-after-load 'mu4e
-  '(setq mu4e-contexts `(
-                         ,(make-mu4e-context
-                           :name "OVH"
-                           :enter-func (lambda () (mu4e-message "OVH"))
-                           :match-func (lambda (msg)
-                                         (when msg
-                                           (mu4e-message-maildir-matches msg "^/OVH/")))
-                           :vars '(( user-mail-address   . "thibault@thb.lt"  )
-                                   ( mu4e-sent-folder        . "/OVH/Sent" )
-                                   ( mu4e-drafts-folder      . "/OVH/Drafts" )
-                                   ( mu4e-trash-folder       . "/OVH/Trash" )
-                                   ;; ( mu4e-refile-folder      . "/OVH/Archive" )
-                                   ( smtpmail-local-domain   . "thb.lt" )
-                                   ( smtpmail-smtp-server    . "ssl0.ovh.net" )
-                                   ( smtpmail-smtp-user      . "thibault@thb.lt" )
-                                   ( smtpmail-stream-type    . tls )
-                                   ( smtpmail-smtp-service   . 465 )))
-
-                         ,(make-mu4e-context
-                           :name "Académie"
-                           :enter-func (lambda () (mu4e-message "Académie"))
-                           :match-func (lambda (msg)
-                                         (when msg
-                                           (mu4e-message-maildir-matches msg "^/OVH/")))
-                           :vars '(( user-mail-address   . "thibault.polge@ac-orleans-tours.fr"  )
-                                   ( mu4e-sent-folder        . "/Ac/Sent" )
-                                   ( mu4e-drafts-folder      . "/Ac/Drafts" )
-                                   ( mu4e-trash-folder       . "/Ac/Trash" )
-                                   ;; ( mu4e-refile-folder      . "/OVH/Archive" )
-                                   ( smtpmail-local-domain   . "ac-orleans-tours.fr" )
-                                   ( smtpmail-smtp-server    . "smtps.ac-orleans-tours.fr" )
-                                   ( smtpmail-smtp-user      . "tpolge" )
-                                   ( smtpmail-stream-type    . tls )
-                                   ( smtpmail-smtp-service   . 465 ))))))
+                        ,(make-mu4e-context
+                          :name "Académie"
+                          :enter-func (lambda () (mu4e-message "Académie"))
+                          :match-func (lambda (msg)
+                                        (when msg
+                                          (mu4e-message-maildir-matches msg "^/Académique/")))
+                          :vars '(( user-mail-address   . "thibault.polge@ac-amiens.fr"  )
+                                  ( mu4e-sent-folder        . "/Académique/Sent" )
+                                  ( mu4e-drafts-folder      . "/Académique/Drafts" )
+                                  ( mu4e-trash-folder       . "/Académique/Trash" )
+                                  ;; ( mu4e-refile-folder      . "/OVH/Archive" )
+                                  ( smtpmail-local-domain   . "ac-amiens.fr" )
+                                  ( smtpmail-smtp-server    . "smtp.ac-amiens.fr" )
+                                  ( smtpmail-smtp-user      . "tpolge" )
+                                  ( smtpmail-stream-type    . tls )
+                                  ( smtpmail-smtp-service   . 465 ))))))
 
 ;; =================
 ;; IMPORTANT.  Si tu ajoutes un contexte (ou plusieurs), il faut modifier dans dotemacs.org la ligne
@@ -1607,11 +1616,15 @@ Interactively, work on active buffer"
 
 ;;;;; Bookmarks
 
-(setq mu4e-bookmarks `(("(m:/OVH/INBOX) or (m:/Ac/INBOX)"     "Global inbox" ?i)
-                       ("(m:/OVH/Archive) or (m:/Ac/Archive)" "Archives"     ?a)
-                       ("(flag:flagged)"                      "Flagged"      ?f)
-                       ("(m:/OVH/Sent) or (m:/Ac/Sent)"       "Sent"         ?s)
-                       ("(m:/OVH/Drafts) or (m:/Ac/Drafts)"   "Drafts"       ?d)))
+(setq mu4e-bookmarks `(("(m:/OVH/INBOX) or (m:/Académique/INBOX) or (m:/Ac/INBOX)"
+                        "Global inbox" ?i)
+                       ("(m:/OVH/Archive) or (m:/Académique/Archive) or (m:/Ac/Archive)"
+                        "Archives" ?a)
+                       ("(flag:flagged)" "Flagged" ?f)
+                       ("(m:/OVH/Sent) or (m:/Académique/Sent) or (m:/Ac/Sent)"
+                        "Sent" ?s)
+                       ("(m:/OVH/Drafts) or (m:/Académique/Drafts) or (m:/Ac/Drafts)"
+                        "Drafts"       ?d)))
 
 ;;;; Password management (password-store)
 

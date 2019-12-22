@@ -164,7 +164,7 @@
 	branch = master
 [submodule "geiser"]
 	path = lib/geiser
-	url = https://github.com/jaor/geiser
+	url = https://gitlab.com/jaor/geiser/
 	branch = master
 	load-path = elisp
 [submodule "general"]
@@ -276,10 +276,6 @@
 [submodule "nix-mode"]
 	path = lib/nix-mode
 	url = https://github.com/NixOS/nix-mode
-	branch = master
-[submodule "nixpkgs"]
-	path = lib/nixpkgs
-	url = https://github.com/thblt/nixpkgs.el
 	branch = master
 [submodule "no-littering"]
 	path = lib/no-littering
