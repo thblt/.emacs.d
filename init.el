@@ -1649,6 +1649,8 @@ Interactively, work on active buffer"
 (general-define-key :keymaps 'pdf-view-mode-map
                     "s a" 'pdf-view-auto-slice-minor-mode)
 
+(with-eval-after-load 'pdf-tools
+  (add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode))))
 
 ;;;; Regular expression builder
 
