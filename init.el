@@ -4,24 +4,42 @@
 ;; general settings and sane defaults.  It's a bit messy, since it's
 ;; mostly made up of all the bits that don't fit anywhere else.
 
-;; Let's start by saying hello.  Beyond being polite, when starting
-;; daemon it helps identifying when the literate configuration has
-;; started running.
-
-;;;; Things to do before everything else
+;;;; First things first
 
 ;; Never load bytecode if .el is more recent
 (setq load-prefer-newer t)
 
-;; Load the package manager
+;;;;; Package managers
+
+;;;;;; package.el
+
+(require 'package)
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+			 ("melpa-stable" . "https://melpa.org/packages/")))
+(package-initialize)
+
+(setq package-archive-priorities '(("gnu"          . 100)
+                                   ("melpa"        . 50)
+                                   ("melpa-stable" . 10)))
+
+;;;;;; Borg
+
+;; Borg comes second, because it comes first.  The second initialized
+;; manager will be the first in load-path.
+
 (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
 (require 'borg)
 (borg-initialize)
 
-;; Recompile what needs recompiling
-(auto-compile-on-load-mode)
+;;;;; Fundamentals
 
-;; Put things where it makes sense.
+;; Recompile what needs recompiling
+(use-package auto-compile
+  :defer nil
+  :init (require 'auto-compile)
+  (auto-compile-on-load-mode))
+
 (require 'no-littering)
 
 ;;;; Settings
@@ -62,6 +80,8 @@
  major-mode 'text-mode)
 
 (load custom-file t)
+
+;;;; MELPA and package.el
 
 ;;; User interface
 
@@ -110,17 +130,12 @@
 (set-face-attribute 'default nil
                     :height 100)
 
-
 (defadvice load-theme (before theme-dont-propagate activate)
   "Disable active themes before loading a new one."
   (mapc #'disable-theme custom-enabled-themes))
 
-;; And load the default theme: [[https://github.com/thblt/eziam-theme-emacs][Eziam]].
-
 (setq eziam-scale-headings nil
       eziam-heading-style 'gray-blocks)
-
-(load-theme 'eziam-light t)
 
 ;; Create some shortcut commands to load the Eziam themes:
 (defun eziam-dark () (interactive) (load-theme 'eziam-dark t))
@@ -128,8 +143,9 @@
 (defun eziam-light () (interactive) (load-theme 'eziam-light t))
 (defun eziam-white () (interactive) (load-theme 'eziam-white t))
 
+(load-theme 'eziam-dark t)
+
 ;;;; Modeline
-;;;;; Variables
 
 (require 'kurecolor)
 (require 'powerline)
@@ -138,6 +154,76 @@
 (setq x-underline-at-descent-line t
       powerline-gui-use-vcs-glyph t)
 
+;;;;; Faces (and cursor!)
+
+(defun thblt/mode-line-set-faces (&rest _) ; I'm hooking this on theme change so it needs to accept arguments
+  "Configure faces for the mode-line."
+  (interactive)
+  (pl/reset-cache)
+
+  (let* ((dark (< (kurecolor-hex-get-brightness (face-attribute 'default :background)) .5))
+
+         (buffid-bg (if dark "#fff" "#000"))
+
+         (inactive (if dark "#111111" "#dddddd")))
+
+    ;; Modeline
+    (face-spec-set 'mode-line
+                   `((t
+                      :background ,(if dark "#334" "#667")
+                      :foreground ,(if dark "#ffe" "#ffe")
+                      :overline ,(if dark "#667" "#334")
+                      :underline ,(if dark "#667" "#334"))))
+
+    ;; Inactive mode line (invisible)
+    (face-spec-set 'mode-line-inactive
+                   `((t
+                      :background ,inactive
+                      :foreground ,inactive
+                      :overline ,(if dark "#444" "#fff")
+                      :underline ,(if dark "#444" "#fff"))))
+
+    (face-spec-set 'thblt/mode-line--buffer-modified
+                   `((t
+                      :background ,buffid-bg
+                      :foreground "#ff0000")))
+
+    (face-spec-set 'thblt/mode-line--buffer-modified-inactive
+                   `((t
+                      :inherit thblt-mode-line--buffer-modified
+                      :background nil)))
+
+    (face-spec-set 'thblt/mode-line--buffer-read-only
+                   `((t
+                      :background ,buffid-bg
+                      :foreground "#ff0000"))) ;
+
+    ;; Narrowing indicator
+    (face-spec-set 'thblt/mode-line--buffer-narrowed
+                   `((t
+                      :background ,buffid-bg
+                      :foreground "#888888")))
+
+    ;; Minor mode lighter
+    (face-spec-set 'thblt/mode-line--minor-mode
+                   `((t)))
+
+    ;; Server ON face
+    (face-spec-set 'thblt/mode-line--server
+                   `((t
+                      :foreground "#fe3"
+                      :weight bold)))
+
+    ;; Buffer ID
+    (face-spec-set 'thblt/mode-line--buffer-id
+                   `((t
+                      :background ,buffid-bg
+                      :foreground ,(if dark "#000" "#fff"))))
+    ;; Delimiter
+    (face-spec-set 'thblt/mode-line--delimiter
+                   `((t
+                      :foreground "#97978D")))))
+
 ;;;;; Theme
 
 (defun thblt/powerline-theme ()
@@ -145,8 +231,8 @@
 
   ;; MAINTENANCE NOTES
   ;;
-  ;;  - the `mode-line' face isn't used, because the whole modeline
-  ;;  - color is determined by the current Evil mode.
+  ;; the `mode-line' face isn't used, because the whole modeline color
+  ;; is determined by the current Evil mode.
 
   (interactive)
   (setq-default
@@ -171,7 +257,6 @@
              (close (powerline-raw "]" delim-face))
              (lhs
               (list
-
                ;; Buffer id
                ;; Modified?
                (when (and buffer-file-name (buffer-modified-p))
@@ -190,7 +275,7 @@
                (progn
                  (setq last-face 'thblt/mode-line--buffer-id)
                  ( powerline-raw
-                   " %[%b%] "
+                   "  %b "
                    `(:weight ,(if buffer-file-name 'bold 'normal) :inherit thblt/mode-line--buffer-id)))
 
                ;; Narrowing indicator
@@ -230,7 +315,7 @@
                    (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
                      (powerline-raw
                       (if server-process
-                          (format " %s  " server-name)
+                          (propertize (format " [%s] " server-name) 'face 'thblt/mode-line--server)
                         ""))))
 
                   ))
@@ -239,133 +324,61 @@
                 (powerline-fill face (powerline-width rhs))
                 (powerline-render rhs)))))))
 
-;;;;; Faces (and cursor!)
+;;;;; Window position tracker
 
-(defun thblt/mode-line-set-faces (&rest _) ; I'm hooking this on theme change so it needs to accept arg
-  "Configure faces for the mode-line."
-  (pl/reset-cache)
+       (defun thblt/window-at-bottom-left-p (win)
+         "Return non-nil if WIN is at the bottom left of the frame."
+         (not (or
+               (window-in-direction 'below win)
+               (window-in-direction 'left win))))
 
-  (let* ((default-bg (face-attribute 'default :background))
-         (default-fg (face-attribute 'default :foreground))
+       (defun thblt/window-at-bottom-right-p (win)
+         "Return non-nil if WIN is at the bottom right of the frame."
+         (not (or
+               (window-in-direction 'below win)
+               (window-in-direction 'right win))))
 
-         (dark (< (kurecolor-hex-get-brightness default-bg) .5))
+       (defun thblt/update-window-position-parameters (&optional frame)
+         (unless frame (setq frame (selected-frame)))
+         (mapc (lambda (win)
+                 (set-window-parameter win 'thblt/window-at-bottom-left (thblt/window-at-bottom-left-p win))
+                 (set-window-parameter win 'thblt/window-at-bottom-right (thblt/window-at-bottom-right-p win)))
+               (window-list frame nil)))
 
-         (buffid-bg (if dark "#000000" "#ffffff"))
-
-         (inactive (if dark "#111111" "#dddddd"))
-
-         ;; Vc states
-         (server-bg                         "#520052")
-         (server-fg                         "#ffffff"))
-
-    ;; Modeline
-    (face-spec-set 'mode-line
-                   `((t
-                      :background ,(if dark "#ffffff" "#000022")
-                      :foreground ,(if dark "black" "white")
-                      :overline ,(if dark "black" "white")
-                      :underline ,(if dark "black" "white"))))
-
-    ;; Inactive mode line (invisible)
-    (face-spec-set 'mode-line-inactive
-                   `((t
-                      :background ,inactive
-                      :foreground ,inactive
-                      :overline ,default-bg
-                      :underline ,default-bg
-
-                      )))
-
-    (face-spec-set 'thblt/mode-line--buffer-modified
-                   `((t
-                      :background ,buffid-bg
-                      :foreground "#ff0000")))
-
-    (face-spec-set 'thblt/mode-line--buffer-read-only
-                   `((t
-                      :background ,buffid-bg
-                      :foreground "#ff0000"))) ;
-
-    ;; Narrowing indicator
-    (face-spec-set 'thblt/mode-line--buffer-narrowed
-                   `((t
-                      :background ,buffid-bg
-                      :foreground "#888888")))
-
-    ;; Minor mode lighter
-    (face-spec-set 'thblt/mode-line--minor-mode
-                   `((t)))
-
-    ;; Server ON face
-    (face-spec-set 'thblt/mode-line--server
-                   `((t
-                      :background ,server-bg
-                      :foreground ,server-fg)))
-
-    ;; Buffer ID
-    (face-spec-set 'thblt/mode-line--buffer-id
-                   `((t
-                      :background ,buffid-bg
-                      :foreground ,(if dark "white" "black"))))
-    ;; Delimiter
-    (face-spec-set 'thblt/mode-line--delimiter
-                   `((t)))
-    ))
-
-;;       '(emacs insert lisp motion nil normal operator replace visual))))
-
-;;;;;; Window position tracker
-
-(defun thblt/window-at-bottom-left-p (win)
-  "Return non-nil if WIN is at the bottom left of the frame."
-  (not (or
-        (window-in-direction 'below win)
-        (window-in-direction 'left win))))
-
-(defun thblt/window-at-bottom-right-p (win)
-  "Return non-nil if WIN is at the bottom right of the frame."
-  (not (or
-        (window-in-direction 'below win)
-        (window-in-direction 'right win))))
-
-(defun thblt/update-window-position-parameters (&optional frame)
-  (unless frame (setq frame (selected-frame)))
-  (mapc (lambda (win)
-          (set-window-parameter win 'thblt/window-at-bottom-left (thblt/window-at-bottom-left-p win))
-          (set-window-parameter win 'thblt/window-at-bottom-right (thblt/window-at-bottom-right-p win)))
-        (window-list frame nil)))
-
-(add-hook 'window-configuration-change-hook 'thblt/update-window-position-parameters)
+       (add-hook 'window-configuration-change-hook 'thblt/update-window-position-parameters)
 
 ;;;;; Installation
 
-(thblt/mode-line-set-faces)
-(advice-add 'load-theme :after 'thblt/mode-line-set-faces)
+       (thblt/mode-line-set-faces)
+       (advice-add 'load-theme :after 'thblt/mode-line-set-faces)
 
-(add-to-list 'after-make-frame-functions 'thblt/update-window-position-parameters)
-(unless (daemonp)
-  (thblt/update-window-position-parameters)) ; This is required for
+       (add-to-list 'after-make-frame-functions 'thblt/update-window-position-parameters)
+       (unless (daemonp)
+         (thblt/update-window-position-parameters)) ; This is required for
                                         ; non-daemon instances
                                         ; where the frame is
                                         ; created before init.el
                                         ; gets to run.
 
-(thblt/powerline-theme)
+       (thblt/powerline-theme)
 
 ;;;; Projectile
 
-(projectile-global-mode)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(counsel-projectile-mode)
+       (use-package projectile
+         :init (projectile-global-mode)
+         (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
-;; - globally ignore undo-files and similar byproducts.
-(setq projectile-globally-ignored-file-suffixes (append '(
-                                                          ".un~"
-                                                          ".~undo-tree~"
-                                                          )
-                                                        projectile-globally-ignored-files))
+       (use-package counsel-projectile
+         :init (with-eval-after-load 'projectile (counsel-projectile-mode)))
 
-(diminish 'projectile-mode)
+       ;; - globally ignore undo-files and similar byproducts.
+       (setq projectile-globally-ignored-file-suffixes (append '(
+                                                                 ".un~"
+                                                                 ".~undo-tree~"
+                                                                 )
+                                                               projectile-globally-ignored-files))
+
+       (diminish 'projectile-mode)
 
 ;; I prefer to treat submodules as separate projects, so don't include
 ;; then in the main file listing:
@@ -376,16 +389,18 @@
 
 ;;;;; Ace-window
 
-(with-eval-after-load 'ace-window
-  ;; We make use of aw-ignored-buffers, so we need the eval-after-load
-  (setq aw-scope 'frame
-        aw-background nil
+(use-package ace-window
+  :bind (("C-x o" . ace-window)
+         ("M-0" . thblt/switch-to-minibuffer))
+  ;; We use of aw-ignored-buffers, so we need the eval-after-load
+  :config (setq aw-scope 'frame
+                aw-background t
+                aw-ignore-on t
+                aw-ignored-buffers (append aw-ignored-buffers
+                                           (mapcar (lambda (n) (format " *Minibuf-%s*" n))
+                                                   (number-sequence 0 20)))))
 
-        aw-ignore-on t
-
-        aw-ignored-buffers (append aw-ignored-buffers
-                                   (mapcar (lambda (n) (format " *Minibuf-%s*" n))
-                                           (number-sequence 0 20)))))
+(defvar thblt/window-hydra-mode 'swap)
 
 (defun thblt/aw-switch-to-numbered-window (number)
   (aw-switch-to-window (nth (- number 1) (aw-window-list))))
@@ -397,87 +412,54 @@
       (select-window (active-minibuffer-window))
     (error "Minibuffer is not active")))
 
-(general-define-key "C-x o" 'ace-window
-                    ;; Emulate window-numbering
-                    "M-0" 'thblt/switch-to-minibuffer)
-;; "M-1" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 1))
-;; "M-2" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 2))
-;; "M-3" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 3))
-;; "M-4" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 4))
-;; "M-5" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 5))
-;; "M-6" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 6))
-;; "M-7" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 7))
-;; "M-8" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 8))
-;; "M-9" (lambda () (interactive) (thblt/aw-switch-to-numbered-window 9)))
-
 ;;;;; Buffer management (ibuffer)
 
 ;; Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-;;;;; Eyebrowse
-
-(require 'eyebrowse)
-(eyebrowse-mode)
-
 ;;;;; Hydra
 
-(with-eval-after-load 'hydra
-  (require 'posframe)
-  (setq hydra-hint-display-type 'posframe))
+(use-package hydra
+  :config (setq hydra-hint-display-type 'posframe))
 
 ;;;;; Ivy
 
-(setq ivy-use-virtual-buffers t)
+(use-package counsel
+  :config (setq ivy-use-virtual-buffers t)
+  :init  (ivy-mode)
+  :bind (("M-i" . counsel-imenu)
+         ("M-x" . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         ("C-S-s" . swiper)
+         ("C-x 8 RET" . counsel-unicode-char))
+  :diminish ivy-mode)
 
-(ivy-mode)
-(diminish 'ivy-mode)
+(use-package ivy-posframe
+  :init (ivy-posframe-mode 1)
+  :config (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
 
-(general-define-key
- "M-i"     'counsel-imenu
- "M-x"     'counsel-M-x
- "C-x C-f" 'counsel-find-file
-
- "C-S-s"   'swiper
-
- "C-x 8 RET" 'counsel-unicode-char)
-
-(require 'ivy-posframe)
-(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
-(ivy-posframe-mode 1)
-(diminish 'ivy-posframe-mode)
+  :diminish ivy-posframe-mode)
 
 ;;;;; Popwin
 
 ;; Popwin “makes you free from the hell of annoying buffers”:
-
-(require 'popwin)
-(popwin-mode)
-
-
-;;;;; Which-key
-
-(which-key-mode)
-(diminish 'which-key-mode)
+(use-package popwin
+  :init (require 'popwin)
+  (popwin-mode))
 
 ;;;;; Windmove
 
-
-(setq windmove-wrap-around t)
-
-(general-define-key
- "S-<up>" 'windmove-up
- "S-<left>" 'windmove-left
- "S-<right>" 'windmove-right
- "S-<down>" 'windmove-down)
-
+(use-package windmove
+  :config (setq windmove-wrap-around t)
+  :bind (("S-<up>" . windmove-up)
+         ("S-<left>" . windmove-left)
+         ("S-<right>" . windmove-right)
+         ("S-<down>" . windmove-down)))
 
 ;;;;; Winner
 
-
 (winner-mode)
-
 
 ;;;;; Customization helper
 
@@ -502,35 +484,15 @@ This can be used to update the digit argument from arbitrary keys."
      (let ((last-command-event ,char))
        (call-interactively 'digit-argument))))
 
-;; (define-key global-map (kbd "C-\"") (thblt/digit-argument-with-value ?1))
-;; (define-key global-map (kbd "M-\"") (thblt/digit-argument-with-value ?1))
 (define-key universal-argument-map (kbd "\"") (thblt/digit-argument-with-value ?1))
-;; (define-key global-map (kbd "C-«") (thblt/digit-argument-with-value ?2))
-;; (define-key global-map (kbd "M-«") (thblt/digit-argument-with-value ?2))
 (define-key universal-argument-map (kbd "«") (thblt/digit-argument-with-value ?2))
-;; (define-key global-map (kbd "C-»") (thblt/digit-argument-with-value ?3))
-;; (define-key global-map (kbd "M-»") (thblt/digit-argument-with-value ?3))
 (define-key universal-argument-map (kbd "»") (thblt/digit-argument-with-value ?3))
-;; (define-key global-map (kbd "C-(") (thblt/digit-argument-with-value ?4))
-;; (define-key global-map (kbd "M-(") (thblt/digit-argument-with-value ?4))
 (define-key universal-argument-map (kbd "(") (thblt/digit-argument-with-value ?4))
-;; (define-key global-map (kbd "C-)") (thblt/digit-argument-with-value ?5))
-;; (define-key global-map (kbd "M-)") (thblt/digit-argument-with-value ?5))
 (define-key universal-argument-map (kbd ")") (thblt/digit-argument-with-value ?5))
-;; (define-key global-map (kbd "C-@") (thblt/digit-argument-with-value ?6))
-;; (define-key global-map (kbd "M-@") (thblt/digit-argument-with-value ?6))
 (define-key universal-argument-map (kbd "@") (thblt/digit-argument-with-value ?6))
-;; (define-key global-map (kbd "C-+") (thblt/digit-argument-with-value ?7))
-;; (define-key global-map (kbd "M-+") (thblt/digit-argument-with-value ?7))
 (define-key universal-argument-map (kbd "+") (thblt/digit-argument-with-value ?7))
-;; (define-key global-map (kbd "C--") (thblt/digit-argument-with-value ?8))
-;; (define-key global-map (kbd "M--") (thblt/digit-argument-with-value ?8))
 (define-key universal-argument-map (kbd "-") (thblt/digit-argument-with-value ?8))
-;; (define-key global-map (kbd "C-/") (thblt/digit-argument-with-value ?9))
-;; (define-key global-map (kbd "M-/") (thblt/digit-argument-with-value ?9))
 (define-key universal-argument-map (kbd "/") (thblt/digit-argument-with-value ?9))
-;; (define-key global-map (kbd "C-0") (thblt/digit-argument-with-value ?0))
-;; (define-key global-map (kbd "M-0") (thblt/digit-argument-with-value ?0))
 (define-key universal-argument-map (kbd "0") (thblt/digit-argument-with-value ?0))
 
 ;;;;; Beginning and end of buffer
@@ -563,10 +525,10 @@ nil; otherwise it's evaluated normally."
                                                      (not (bound-and-true-p text-scale-mode))))
   ("p" text-scale-increase "Size +")
   ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
-  ("t w" (lambda () (interactive) (load-theme 'eziam-white t)) (thblt/hydra-indicator"White theme" (member 'eziam-white custom-enabled-themes)))
-  ("t l" (lambda () (interactive) (load-theme 'eziam-light t)) (thblt/hydra-indicator"Light theme" (member 'eziam-light custom-enabled-themes)))
-  ("t u" (lambda () (interactive) (load-theme 'eziam-dusk t)) (thblt/hydra-indicator"Dusk theme" (member 'eziam-dusk custom-enabled-themes)))
-  ("t d" (lambda () (interactive) (load-theme 'eziam-dark t)) (thblt/hydra-indicator"Dark theme" (member 'eziam-dark custom-enabled-themes)))
+  ("t w" (lambda () (interactive) (load-theme 'eziam-white t)) (thblt/hydra-indicator "White theme" (member 'eziam-white custom-enabled-themes)))
+  ("t l" (lambda () (interactive) (load-theme 'eziam-light t)) (thblt/hydra-indicator "Light theme" (member 'eziam-light custom-enabled-themes)))
+  ("t u" (lambda () (interactive) (load-theme 'eziam-dusk t)) (thblt/hydra-indicator "Dusk theme" (member 'eziam-dusk custom-enabled-themes)))
+  ("t d" (lambda () (interactive) (load-theme 'eziam-dark t)) (thblt/hydra-indicator "Dark theme" (member 'eziam-dark custom-enabled-themes)))
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
   ("c" thblt/visual-fill-column-toggle-centering (thblt/hydra-indicator "Centering" visual-fill-column-center-text))
@@ -593,7 +555,7 @@ nil; otherwise it's evaluated normally."
 
   ("R" auto-revert-mode (thblt/hydra-indicator "Auto-revert" auto-revert-mode) :column "Misc"))
 
-(general-define-key "C-c l" 'hydra-editor-appearance/body)
+(define-key global-map (kbd "C-c l") 'hydra-editor-appearance/body)
 
 (defun thblt/visual-fill-column-reset (&optional activate)
   "For use by `hydra-editor-appearance/body'."
@@ -662,45 +624,54 @@ nil; otherwise it's evaluated normally."
 (diminish 'flyspell-mode "Fly")
 
 ;; Correct words using Ivy instead of default method:
-(require 'flyspell-correct-ivy)
-(general-define-key :keymaps 'flyspell-mode-map
-                    "M-$" 'flyspell-auto-correct-previous-word
-                    "C-;" 'flyspell-correct-previous-word-generic)
+(use-package flyspell-correct-ivy
+  :bind (:map flyspell-mode-map
+              ("M-$" . flyspell-auto-correct-previous-word)
+              ("C-;" . flyspell-correct-previous-word-generic)))
 
 ;;;; Moving around
 
+(define-key global-map (kbd "M-\"") 'backward-paragraph)
+(define-key global-map (kbd "M-«") 'forward-paragraph)
+
+(define-key global-map (kbd "C-M-\"") 'beginning-of-defun)
+(define-key global-map (kbd "C-M-«") 'end-of-defun)
+
+
 ;;;;; avy
 
-(general-define-key "C-:" 'avy-goto-char-timer
-                    "M-g f" 'avy-goto-line)
+(use-package avy
+  :bind  (("C-:" . avy-goto-char-timer)
+          ("M-g f" . avy-goto-line)))
 
 ;;;;; beginend
 
-(require 'beginend)
-(beginend-global-mode)
-(mapc (lambda (m) (diminish (cdr m)))
-      beginend-modes)
-(diminish 'beginend-global-mode)
+(use-package beginend
+  :init (beginend-global-mode)
+  :config (mapc (lambda (m) (diminish (cdr m)))
+                beginend-modes)
+  :diminish 'beginend-global-mode)
 
 ;;;;; mwim
 
-(global-set-key (kbd "C-a") 'mwim-beginning-of-code-or-line)
-(global-set-key (kbd "C-e") 'mwim-end-of-code-or-line)
-(global-set-key (kbd "<home>") 'mwim-beginning-of-line-or-code)
-(global-set-key (kbd "<end>") 'mwim-end-of-line-or-code)
+(use-package mwim
+  :bind (("C-a" . mwim-beginning-of-code-or-line)
+	 ("C-e" . mwim-end-of-code-or-line)
+	 ("<home>" . mwim-beginning-of-line-or-code)
+	 ("<end>" . mwim-end-of-line-or-code)))
 
 ;;;;; nav-flash (don't get lost)
 
-(require 'nav-flash)
-(face-spec-set 'nav-flash-face '((t (:inherit pulse-highlight-face))))
-(advice-add 'recenter-top-bottom :after (lambda (x) (nav-flash-show)))
+(use-package nav-flash
+  :config (face-spec-set 'nav-flash-face '((t (:inherit pulse-highlight-face :extend t))))
+  (advice-add 'recenter-top-bottom :after (lambda (x) (nav-flash-show))))
 
 ;;;; Replace
 
-(general-define-key
- "C-M-%" 'vr/query-replace
- "C-c r" 'vr/replace
- "C-c m" 'vr/mc-mark)
+(use-package visual-regexp
+  :bind (("C-M-%" . vr/query-replace)
+         ("C-c r" . vr/replace)
+         ("C-c m" . vr/mc-mark)))
 
 ;;;; Minor modes
 
@@ -712,7 +683,7 @@ nil; otherwise it's evaluated normally."
 ;;;;; Move text
 
 ;; Move lines of text with =M-<up>= and =M-<down>=.
-;; (move-text-default-bindings)
+(move-text-default-bindings)
 ;; Configured with Outshine to DWIM on Outshine headings
 
 ;;;;; Recentf
@@ -721,231 +692,77 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; TODO Smartparens
 
-(require 'smartparens-config) ;; Load default config
-(smartparens-global-mode)
-(show-smartparens-global-mode)
-(diminish 'smartparens-mode)
+(use-package smartparens
+  :init  (require 'smartparens-config) ;; Load default config
+  (smartparens-global-mode)
+  (show-smartparens-global-mode)
+  :config (sp-with-modes 'org-mode
+            (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+            (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
+            (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+            (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+            (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+            (sp-local-pair "«" "»")
+            (sp-local-pair "“" "”"))
+  :bind (:map smartparens-mode-map
+              ("C-M-f" . sp-forward-sexp)
 
-;;;;;; Bindings
+              ("C-M-b" . sp-backward-sexp)
 
-;; Since the author of Smartparens released
-;; [[https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el][his
-;; own config]], here it is, copy-pasted and slightly modified to suit
-;; my needs:
+              ("C-M-d" . sp-down-sexp)
+              ("C-M-a" . sp-backward-down-sexp)
+              ("C-S-d" . sp-beginning-of-sexp)
+              ("C-S-a" . sp-end-of-sexp)
 
-(general-define-key :map smartparens-mode-map
-                    "C-M-f" 'sp-forward-sexp
+              ("C-M-e" . sp-up-sexp)
+              ("C-M-u" . sp-backward-up-sexp)
+              ("C-M-t" . sp-transpose-sexp)
 
-                    "C-M-b" 'sp-backward-sexp
+              ("C-M-n" . sp-next-sexp)
+              ("C-M-p" . sp-previous-sexp)
 
-                    "C-M-d" 'sp-down-sexp
-                    "C-M-a" 'sp-backward-down-sexp
-                    "C-S-d" 'sp-beginning-of-sexp
-                    "C-S-a" 'sp-end-of-sexp
+              ("C-M-k" . sp-kill-sexp)
+              ("C-M-w" . sp-copy-sexp)
 
-                    "C-M-e" 'sp-up-sexp
-                    "C-M-u" 'sp-backward-up-sexp
-                    "C-M-t" 'sp-transpose-sexp
+              ("M-<delete>" . sp-unwrap-sexp)
+              ("M-<backspace>" . sp-backward-unwrap-sexp)
 
-                    "C-M-n" 'sp-next-sexp
-                    "C-M-p" 'sp-previous-sexp
+              ("C-<right>" . sp-forward-slurp-sexp)
+              ("C-<left>" . sp-forward-barf-sexp)
+              ("C-M-<left>" . sp-backward-slurp-sexp)
+              ("C-M-<right>" . sp-backward-barf-sexp)
 
-                    "C-M-k" 'sp-kill-sexp
-                    "C-M-w" 'sp-copy-sexp
+              ("M-D" . sp-splice-sexp)
+              ("C-M-<delete>" . sp-splice-sexp-killing-forward)
+              ("C-M-<backspace>" . sp-splice-sexp-killing-backward)
+              ("C-S-<backspace>" . sp-splice-sexp-killing-around)
 
-                    "M-<delete>" 'sp-unwrap-sexp
-                    "M-<backspace>" 'sp-backward-unwrap-sexp
+              ("C-]" . sp-select-next-thing-exchange)
+              ("C-<left_bracket>" . sp-select-previous-thing)
+              ("C-M-]" . sp-select-next-thing)
+              ("M-F" . sp-forward-symbol)
+              ("M-B" . sp-backward-symbol))
+  ;; ("C-c f" . (lambda () (interactive) (sp-beginning-of-sexp 2)))
+  ;; ("C-c b" (lambda () (interactive) (sp-beginning-of-sexp -2))))
 
-                    "C-<right>" 'sp-forward-slurp-sexp
-                    "C-<left>" 'sp-forward-barf-sexp
-                    "C-M-<left>" 'sp-backward-slurp-sexp
-                    "C-M-<right>" 'sp-backward-barf-sexp
-
-                    "M-D" 'sp-splice-sexp
-                    "C-M-<delete>" 'sp-splice-sexp-killing-forward
-                    "C-M-<backspace>" 'sp-splice-sexp-killing-backward
-                    "C-S-<backspace>" 'sp-splice-sexp-killing-around
-
-                    "C-]" 'sp-select-next-thing-exchange
-                    "C-<left_bracket>" 'sp-select-previous-thing
-                    "C-M-]" 'sp-select-next-thing
-
-                    "M-F" 'sp-forward-symbol
-                    "M-B" 'sp-backward-symbol
-
-                    "C-c f" (lambda () (interactive) (sp-beginning-of-sexp 2))
-                    "C-c b" (lambda () (interactive) (sp-beginning-of-sexp -2)))
-
-;; (bind-key "H-t" 'sp-prefix-tag-object smartparens-mode-map)
-;; (bind-key "H-p" 'sp-prefix-pair-object smartparens-mode-map)
-;; (bind-key "H-y" 'sp-prefix-symbol-object smartparens-mode-map)
-;; (bind-key "H-h" 'sp-highlight-current-sexp smartparens-mode-map)
-;; (bind-key "H-e" 'sp-prefix-save-excursion smartparens-mode-map)
-;; (bind-key "H-s c" 'sp-convolute-sexp smartparens-mode-map)
-;; (bind-key "H-s a" 'sp-absorb-sexp smartparens-mode-map)
-;; (bind-key "H-s e" 'sp-emit-sexp smartparens-mode-map)
-;; (bind-key "H-s p" 'sp-add-to-previous-sexp smartparens-mode-map)
-;; (bind-key "H-s n" 'sp-add-to-next-sexp smartparens-mode-map)
-;; (bind-key "H-s j" 'sp-join-sexp smartparens-mode-map)
-;; (bind-key "H-s s" 'sp-split-sexp smartparens-mode-map)
-;; (bind-key "H-s r" 'sp-rewrap-sexp smartparens-mode-map)
-;; (defvar hyp-s-x-map)
-;; (define-prefix-command 'hyp-s-x-map)
-;; (bind-key "H-s x" hyp-s-x-map smartparens-mode-map)
-;; (bind-key "H-s x x" 'sp-extract-before-sexp smartparens-mode-map)
-;; (bind-key "H-s x a" 'sp-extract-after-sexp smartparens-mode-map)
-;; (bind-key "H-s x s" 'sp-swap-enclosing-sexp smartparens-mode-map)
-
-;; (bind-key "C-x C-t" 'sp-transpose-hybrid-sexp smartparens-mode-map)
-
-;; (bind-key ";" 'sp-comment emacs-lisp-mode-map)
-
-;; (bind-key [remap c-electric-backspace] 'sp-backward-delete-char smartparens-strict-mode-map)
-
-;; ;;;;;;;;;;;;;;;;;;
-;; ;; pair management
-
-;; (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
-;; (bind-key "C-(" 'sp---wrap-with-40 minibuffer-local-map)
-
-;;  markdown-mode
-;; (sp-with-modes '(markdown-mode gfm-mode rst-mode)
-;;   (sp-local-pair "*" "*"
-;;                  :wrap "C-*"
-;;                  :unless '(sp--gfm-point-after-word-p sp-point-at-bol-p)
-;;                  :post-handlers '(("[d1]" "SPC"))
-;;                  :skip-match 'sp--gfm-skip-asterisk)
-;;   (sp-local-pair "**" "**")
-;;   (sp-local-pair "_" "_" :wrap "C-_" :unless '(sp-point-after-word-p)))
-
-;; (defun sp--gfm-point-after-word-p (id action context)
-;;   "Return t if point is after a word, nil otherwise.
-;; This predicate is only tested on \"insert\" action."
-;;   (when (eq action 'insert)
-;;     (sp--looking-back-p (concat "\\(\\sw\\)" (regexp-quote id)))))
-
-;; (defun sp--gfm-skip-asterisk (ms mb me)
-;;   (save-excursion
-;;     (goto-char mb)
-;;     (save-match-data (looking-at "^\\* "))))
-
-;; ;;; rst-mode
-;; (sp-with-modes 'rst-mode
-;;   (sp-local-pair "``" "``"))
-
-;; ;;; org-mode
-(sp-with-modes 'org-mode
-  (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
-  (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
-  (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-  (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-  (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-  (sp-local-pair "«" "»")
-  (sp-local-pair "“" "”"))
-
-;; (defun sp--org-skip-asterisk (ms mb me)
-;;   (or (and (= (line-beginning-position) mb)
-;;            (eq 32 (char-after (1+ mb))))
-;;       (and (= (1+ (line-beginning-position)) me)
-;;            (eq 32 (char-after me)))))
-
-;; ;;; tex-mode latex-mode
-;; (sp-with-modes '(tex-mode plain-tex-mode latex-mode)
-;;   (sp-local-tag "i" "\"<" "\">"))
-
-;; ;;; lisp modes
-;; (sp-with-modes sp--lisp-modes
-;;   (sp-local-pair "(" nil
-;;                  :wrap "C-("
-;;                  :pre-handlers '(my-add-space-before-sexp-insertion)
-;;                  :post-handlers '(my-add-space-after-sexp-insertion)))
-
-
-
-;; (defun my-add-space-after-sexp-insertion (id action _context)
-;;   (when (eq action 'insert)
-;;     (save-excursion
-;;       (forward-char (sp-get-pair id :cl-l))
-;;       (when (or (eq (char-syntax (following-char)) ?w)
-;;                 (looking-at (sp--get-opening-regexp)))
-;;         (insert " ")))))
-
-;; (defun my-add-space-before-sexp-insertion (id action _context)
-;;   (when (eq action 'insert)
-;;     (save-excursion
-;;       (backward-char (length id))
-;;       (when (or (eq (char-syntax (preceding-char)) ?w)
-;;                 (and (looking-back (sp--get-closing-regexp))
-;;                      (not (eq (char-syntax (preceding-char)) ?'))))
-;;         (insert " ")))))
-
-;; ;;; C++
-;; (sp-with-modes '(malabar-mode c++-mode)
-;;   (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET"))))
-;; (sp-local-pair 'c++-mode "/*" "*/" :post-handlers '((" | " "SPC")
-;;                                                     ("* ||\n[i]" "RET")))
-
-;; ;;; PHP
-;; (sp-with-modes '(php-mode)
-;;   (sp-local-pair "/**" "*/" :post-handlers '(("| " "SPC")
-;;                                              (my-php-handle-docstring "RET")))
-;;   (sp-local-pair "/*." ".*/" :post-handlers '(("| " "SPC")))
-;;   (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET")))
-;;   (sp-local-pair "(" nil :prefix "\\(\\sw\\|\\s_\\)*"))
-
-;; (defun my-php-handle-docstring (&rest _ignored)
-;;   (-when-let (line (save-excursion
-;;                      (forward-line)
-;;                      (thing-at-point 'line)))
-;;     (cond
-;;      ;; variable
-;;      ((string-match (rx (or "private" "protected" "public" "var") (1+ " ") (group "$" (1+ alnum))) line)
-;;       (let ((var-name (match-string 1 line))
-;;             (type ""))
-;;         ;; try to guess the type from the constructor
-;;         (-when-let (constructor-args (my-php-get-function-args "__construct" t))
-;;           (setq type (or (cdr (assoc var-name constructor-args)) "")))
-;;         (insert "* @var " type)
-;;         (save-excursion
-;;           (insert "\n"))))
-;;      ((string-match-p "function" line)
-;;       (save-excursion
-;;         (let ((args (save-excursion
-;;                       (forward-line)
-;;                       (my-php-get-function-args nil t))))
-;;           (--each args
-;;             (when (my-php-should-insert-type-annotation (cdr it))
-;;               (insert (format "* @param %s%s\n"
-;;                               (my-php-translate-type-annotation (cdr it))
-;;                               (car it))))))
-;;         (let ((return-type (save-excursion
-;;                              (forward-line)
-;;                              (my-php-get-function-return-type))))
-;;           (when (my-php-should-insert-type-annotation return-type)
-;;             (insert (format "* @return %s\n" (my-php-translate-type-annotation return-type))))))
-;;       (re-search-forward (rx "@" (or "param" "return") " ") nil t))
-;;      ((string-match-p ".*class\\|interface" line)
-;;       (save-excursion (insert "\n"))
-;;       (insert "* ")))
-;;     (let ((o (sp--get-active-overlay)))
-;;       (indent-region (overlay-start o) (overlay-end o)))))
+  :diminish smartparens-mode)
 
 ;;;;; Undo-Tree
 
-(global-undo-tree-mode)
-(diminish 'undo-tree-mode)
+(use-package undo-tree
+  :init (global-undo-tree-mode)
+  :diminish undo-tree-mode)
 
 ;;;;; Yasnippet
 
-(setq yas-snippet-dirs
-      (list (expand-file-name "~/.emacs.d/etc/snippets" )
-            (borg-worktree "yasnippet-snippets/snippets")))
+(use-package yasnippet
+  :init (yas-global-mode)
+  :config (setq yas-snippet-dirs
+                (list (expand-file-name "~/.emacs.d/etc/snippets" )
+                      (borg-worktree "yasnippet-snippets/snippets")))
+  :diminish yas-minor-mode)
 
-(yas-global-mode)
-
-(diminish 'yas-minor-mode)
-
-;;;; Misc customizations
+;;;; Misc
 
 (setq shift-select-mode nil)
 
@@ -971,6 +788,15 @@ nil; otherwise it's evaluated normally."
   (beginning-of-line (or (and arg (1+ arg)) 2))
   (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 
+(defun kill-duplicate-blank-lines ()
+  (interactive)
+  (let ((regexp (rx bol (* whitespace) eol)))
+    (save-excursion
+      (beginning-of-buffer)
+      (while (re-search-forward regexp nil t)
+        (forward-line 1)
+        (while (looking-at-p regexp)
+          (kill-whole-line 1)))))) ; t because kill-line returns nil
 
 ;;;;; Bindings
 
@@ -980,8 +806,9 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; Autosave when losing focus
 
-(super-save-mode +1)
-(diminish 'super-save-mode " 💾")
+(use-package super-save
+  :init (super-save-mode +1)
+  :diminish (super-save-mode . " 💾"))
 
 ;;;;; Delete trailing whitespace when saving
 
@@ -1004,74 +831,58 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; Unfill
 
-(general-define-key "M-Q" 'unfill-paragraph)
+(define-key global-map (kbd "M-Q") 'unfill-paragraph)
 
 ;;;;; Wordwrap/visual line/visual-fill-column
 
-(with-eval-after-load 'simple
-  (diminish 'visual-line-mode))
-
-(require 'visual-fill-column)
+(use-package visual-fill-column
+  :diminish 'visual-line-mode)
 
 ;;;; Major modes
 
 ;;;;; AucTex
 
-(require 'tex-site)
+(use-package tex-site
+  :init (add-hook 'LaTeX-mode-hook (lambda ()
+                                     (visual-line-mode t)
+                                     (TeX-fold-mode t)))
 
-(add-hook 'LaTeX-mode-hook (lambda ()
+  :config (setq-default TeX-save-query nil ; Autosave
+                        TeX-parse-self t
+                        TeX-engine 'xetex
+                        TeX-source-correlate-mode t))
+
+;;;;; Org-Mode
+
+(use-package org
+  :config (setq org-catch-invisible-edits t
+		            org-hide-leading-stars t
+		            org-hide-emphasis-markers nil
+		            org-html-htmlize-output-type 'css
+		            org-imenu-depth 8
+		            org-src-fontify-natively t
+		            org-ellipsis " ▼"
+		            org-special-ctrl-a/e t
+		            org-special-ctrl-k t)
+
+  (add-hook 'org-mode-hook (lambda ()
+                             (org-indent-mode t)
                              (visual-line-mode t)
-                             (TeX-fold-mode t)))
+                             (which-function-mode t)))
 
-(progn
-  (setq-default TeX-save-query nil      ; Autosave
-                TeX-parse-self t
-                TeX-engine 'xetex
-                TeX-source-correlate-mode t)) ;; Synctex on
+  ;; Use shift-arrow for window navigation when not on an heading
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right)
 
-(with-eval-after-load 'reftex-vars
-  (progn
-    ;; (also some other reftex-related customizations)
-    (setq reftex-cite-format
-          '((?\C-m . "\\cite[]{%l}")
-            (?f . "\\footcite[][]{%l}")
-            (?t . "\\textcite[q]{%l}")
-            (?p . "\\parencite[]{%l}")
-            (?o . "\\citepr[]{%l}")
-            (?n . "\\nocite{%l}")))))
-
-;;;;; Org-mode
-
-(setq org-catch-invisible-edits t
-      org-hide-leading-stars t
-      org-hide-emphasis-markers nil
-      org-html-htmlize-output-type 'css
-      org-imenu-depth 8
-      org-src-fontify-natively t
-      org-ellipsis " ▼"
-      org-special-ctrl-a/e t
-      org-special-ctrl-k t)
-
-(add-hook 'org-mode-hook (lambda ()
-                           (org-indent-mode t)
-                           (visual-line-mode t)
-                           (which-function-mode t)))
-
-;; Use shift-arrow for window navigation when not on an heading
-(add-hook 'org-shiftup-final-hook 'windmove-up)
-(add-hook 'org-shiftleft-final-hook 'windmove-left)
-(add-hook 'org-shiftdown-final-hook 'windmove-down)
-(add-hook 'org-shiftright-final-hook 'windmove-right)
-
-
-(with-eval-after-load 'org-indent
-  (diminish 'org-indent-mode))
+  (with-eval-after-load 'org-indent
+    (diminish 'org-indent-mode)))
 
 ;;;;;; Export
 
-(with-eval-after-load 'org
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines)))
+(require 'ox-extra)
+(ox-extras-activate '(ignore-headlines))
 
 ;;;;;; PDF export
 
@@ -1088,19 +899,8 @@ nil; otherwise it's evaluated normally."
 (defun sp--org-skip-asterisk (ms mb me)
   (or (and (= (line-beginning-position) mb)
            (eq 32 (char-after (1+ mb))))
-      (and (= (1+ (line-beginning-position)) me)
+	    (and (= (1+ (line-beginning-position)) me)
            (eq 32 (char-after me)))))
-
-
-;; Some cool org extensions:
-
-;; - =toc-org= provides, guess what, automatic TOC generation for
-;;   org-mode.  This is better
-;;   [[https://github.com/snosov1/toc-org/issues/20#issuecomment-276407541][pinned
-;;   to melpa-stable]].
-
-(add-hook 'org-mode-hook 'toc-org-enable)
-
 
 ;; Identify position in buffer:
 
@@ -1109,15 +909,14 @@ nil; otherwise it's evaluated normally."
   (interactive)
   (let (headers)
     (save-excursion
-      (while (condition-case nil
+	    (while (condition-case nil
                  (progn
                    (push (nth 4 (org-heading-components)) headers)
                    (outline-up-heading 1))
-               (error nil))))
+		           (error nil))))
     (message (mapconcat #'identity headers " > "))))
 
-(general-define-key :keymaps 'org-mode-map
-                    "<f1> <f1>" 'thblt/org-where-am-i)
+(define-key org-mode-map (kbd  "<f1> <f1>") 'thblt/org-where-am-i)
 
 ;; The *emphasize selected* bindings:
 
@@ -1128,7 +927,7 @@ nil; otherwise it's evaluated normally."
 ;;;;;; Org-agenda:
 
 (setq org-agenda-files (list "~/Documents/LOG.org")
-      org-default-notes-file "~/Documents/LOG.org")
+	    org-default-notes-file "~/Documents/LOG.org")
 
 ;;;;;; Org-babel
 
@@ -1139,14 +938,9 @@ nil; otherwise it's evaluated normally."
 
 ;;;;;; Org-ref
 
-;; (=helm-bibtex= and =biblio= are dependencies of =org-ref=)
-
 (setq org-ref-completion-library 'org-ref-ivy-cite
-      bibtex-dialect 'biblatex)
-
-;; org-ref must have been (require)d to work.
-
-(add-hook 'org-mode-hook (lambda () (require 'org-ref)))
+	    bibtex-dialect 'biblatex)
+(add-hook 'org-mode-hook (lambda () (require 'org-ref nil t)))
 
 ;;; Writing code
 ;;;; Settings
@@ -1154,16 +948,23 @@ nil; otherwise it's evaluated normally."
 ;; Some basic settings...
 
 (setq-default comment-empty-lines nil
-              tab-width 2
-              c-basic-offset 2
-              cperl-indent-level 2
-              indent-tabs-mode nil)
+		          tab-width 2
+		          c-basic-offset 2
+		          cperl-indent-level 2
+		          indent-tabs-mode nil)
 
 ;; and a few mappings.
 
-(global-set-key (kbd "<f8>") 'ffap)
-(global-set-key (kbd "<f5>") 'recompile)
+(defvar-local thblt/compile-command nil)
 
+(defvar thblt/default-compile-command-alist
+  '((haskell-mode . "stack build")
+    (c-mode       . "cmake")))
+
+;; TODO
+
+(global-set-key (kbd "<f8>") 'ffap)
+(global-set-key (kbd "<f5>") 'thblt/compile)
 
 ;;;; Reformatting
 
@@ -1178,49 +979,50 @@ Interactively, work on active buffer"
   (with-current-buffer buffer
     (if format-buffer-function
         (funcall format-buffer-function)
-      (message "Please set `format-buffer-function' first!"))))
+	    (message "Please set `format-buffer-function' first!"))))
 
 ;;;; Minor modes
 ;;;;; Aggressive indent
 
-(add-hook 'emacs-lisp-mode-hook 'aggressive-indent-mode)
-(with-eval-after-load 'aggressive-indent
-  (diminish 'aggressive-indent-mode "⭾"))
+(use-package aggressive-indent
+  :init (add-hook 'emacs-lisp-mode-hook 'aggressive-indent-mode)
+  :diminish aggressive-indent-mode "⭾")
 
 ;;;;; Color-identifiers
 
-(add-hook 'prog-mode-hook 'color-identifiers-mode)
-(advice-add 'load-theme :after (lambda (&rest _)
-                                 (color-identifiers:regenerate-colors)
-                                 (color-identifiers:refresh)))
-(with-eval-after-load 'color-identifiers-mode
+(use-package color-identifiers-mode
+  :init
+  (add-hook 'prog-mode-hook 'color-identifiers-mode)
+  :config
+  (advice-add 'load-theme :after (lambda (&rest _)
+                                   (color-identifiers:regenerate-colors)
+                                   (color-identifiers:refresh)))
   (add-to-list
    'color-identifiers:modes-alist'
    `(haskell-mode . ("[^.][[:space:]]*"
                      "\\_<\\([[:lower:][:upper:]]\\([_]??[[:lower:][:upper:]\\$0-9]+\\)*\\(_+[#:<=>@!%&*+/?\\\\^|~-]+\\|_\\)?\\)"
-                     (nil scala-font-lock:var-face font-lock-variable-name-face)))))
-
-(with-eval-after-load 'color-identifiers-mode
-  (diminish 'color-identifiers-mode))
+                     (nil scala-font-lock:var-face font-lock-variable-name-face))))
+  :diminish 'color-identifiers-mode)
 
 ;;;;; Company
 
-(add-hook 'prog-mode-hook 'company-mode)
-;;TODO BIND  :bind (:map company-mode-map
-;; (("M-TAB" . company-complete-common)))
-(with-eval-after-load 'company
-  (diminish 'company-mode "⋯ "))
+(use-package company
+  :init
+  (add-hook 'prog-mode-hook 'company-mode)
+  ;;TODO BIND  :bind (:map company-mode-map
+  ;; (("M-TAB" . company-complete-common)))
+  :diminish company-mode "⋯ ")
 
-(require 'company-posframe)
-(add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
-(with-eval-after-load 'company-posframe
-  (diminish 'company-posframe-mode))
+(use-package company-posframe
+  :init
+  (add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
+  :diminish 'company-posframe-mode)
 
 ;;;;; Evil Nerd Commenter
 
-(require 'evil-nerd-commenter)
-(general-define-key "M-,"   'evilnc-comment-or-uncomment-lines
-                    "C-M-," 'evilnc-comment-or-uncomment-paragraphs)
+(use-package evil-nerd-commenter
+  :bind (("M-," . evilnc-comment-or-uncomment-lines)
+	       ("C-M-," . evilnc-comment-or-uncomment-paragraphs)))
 
 ;;;;; Flycheck
 
@@ -1231,64 +1033,49 @@ Interactively, work on active buffer"
 
 ;;;;; Highlight-indent-guides
 
-(setq highlight-indent-guides-method 'fill
-      highlight-indent-guides-character ?┃
-      highlight-indent-guides-auto-character-face-perc 25)
-
-;; (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-
-(with-eval-after-load 'highlight-indent-guides
-  (diminish 'highlight-indent-guides-mode))
+(use-package highlight-indent-guides
+  :disabled t
+  :config
+  (setq highlight-indent-guides-method 'fill
+        highlight-indent-guides-character ?┃
+        highlight-indent-guides-auto-character-face-perc 25)
+  :diminish highlight-indent-guides-mode)
 
 ;;;;; Outline and Outshine
 
+(provide 'outorg)
 (add-hook 'prog-mode-hook 'outshine-mode)
 (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
-
 (diminish 'outline-minor-mode)
 
 (defun thblt/m-up-dwim () (interactive)
-       (cond ((and outshine-mode (outline-on-heading-p))
-              (call-interactively 'outline-move-subtree-up))
+	     (cond ((and outshine-mode (outline-on-heading-p))
+		          (call-interactively 'outline-move-subtree-up))
              (t (call-interactively 'move-text-up))))
 
 (defun thblt/m-down-dwim () (interactive)
-       (cond ((and outshine-mode (outline-on-heading-p))
-              (call-interactively 'outline-move-subtree-down))
+	     (cond ((and outshine-mode (outline-on-heading-p))
+		          (call-interactively 'outline-move-subtree-down))
              (t (call-interactively 'move-text-down))))
 
 (with-eval-after-load 'outshine
   (diminish 'outshine-mode)
-  (define-key global-map (kbd "M-<up>") 'thblt/m-up-dwim)
-  (define-key global-map (kbd "M-<down>") 'thblt/m-down-dwim))
+  (define-key outshine-mode-map (kbd "M-<up>") 'thblt/m-up-dwim)
+  (define-key outshine-mode-map (kbd "M-<down>") 'thblt/m-down-dwim))
 
 ;;;;; Rainbow mode
 
 ;; Rainbow mode is similar to Atom's Pigments plugin or something.
-(add-hook 'prog-mode-hook (rainbow-mode))
-(add-hook 'css-mode-hook 'rainbow-mode)
-(add-hook 'scss-mode-hook 'rainbow-mode)
-
-(with-eval-after-load 'rainbow-mode
-  (diminish 'rainbow-mode))
+(use-package rainbow-mode
+  :init
+  (add-hook 'prog-mode-hook (rainbow-mode))
+  (add-hook 'css-mode-hook 'rainbow-mode)
+  (add-hook 'scss-mode-hook 'rainbow-mode)
+  :diminish rainbow-mode)
 
 ;;;; Programming languages
 
-;;;;; C/C++
-
-(add-hook 'c-mode-common-hook 'irony-mode)
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-
-(setq irony-server-install-prefix (expand-file-name "build" (borg-worktree "irony")))
-
-(with-eval-after-load 'flycheck
-  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
-
-(with-eval-after-load 'company
-  (add-to-list 'company-backends 'company-irony))
-
-(with-eval-after-load 'irony
-  (diminish' irony-mode))
+;;;;; C and friends
 
 (add-hook 'c-mode-common-hook
           (lambda ()
@@ -1296,44 +1083,20 @@ Interactively, work on active buffer"
 
 (add-hook 'c-mode-common-hook (lambda nil (setq-local
                                            format-buffer-function 'clang-format)))
-
 ;;;;; Haskell
 
-;; Intero mode is a “complete interactive development program for
-;; Haskell”:
-
-(add-hook 'haskell-mode-hook 'intero-mode-blacklist)
-;; (intero-global-mode)
-
-(setq intero-blacklist '("~/.dotfiles" "~/.xmonad/"))
-
-(general-define-key :keymaps 'haskell-mode-map
-                    "<f1> <f1>" 'hayoo-query)
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
 ;;;;; Nix
 
 (with-eval-after-load 'nix-mode
   (add-hook 'nix-mode-hook (lambda nil (setq format-buffer-function 'nix-mode-format))))
 
-;;;;; Rust
-
-(with-eval-after-load 'rust-mode
-  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
-  )
-
-(add-hook 'rust-mode-hook
-          (lambda nil (setq-local compile-command "cargo build")))
-
 ;;; Tools
 
-;; This section deals with tools which don't edit anything.
+;; This section deals with tools that aren't editors.
 
-;;;; Borg and their Queen
-
-(defun thblt/borg-build-all nil
-  (interactive)
-  (mapc (lambda (x) (borg-build x))
-        (borg-drones)))
+;;;; Borg
 
 (defun thblt/borg-fix-branch-declarations ()
   "Verify that all Borg drones have a branch declared in .gitmodules."
@@ -1341,15 +1104,14 @@ Interactively, work on active buffer"
   (let ((errors))
     (mapc (lambda (drone)
             (unless (borg-get drone "branch")
-              (add-to-list 'errors drone)
-              (call-process "git" nil nil nil
+		          (add-to-list 'errors drone)
+		          (call-process "git" nil nil nil
                             "config" "-f" borg-gitmodules-file "--add" (format "submodule.%s.branch" drone) "master")))
           (borg-drones))
     (when errors
-      (borg--sort-submodule-sections borg-gitmodules-file)
+	    (borg--sort-submodule-sections borg-gitmodules-file)
                                         ; (sort errors 'string<)
-      (message "These modules were updated: %s" errors))))
-
+	    (message "These modules were updated: %s" errors))))
 
 (defun thblt/borg-check-urls ()
   "Verify that all Borg drones remote URLs begin with http."
@@ -1357,29 +1119,21 @@ Interactively, work on active buffer"
   (mapc (lambda (drone)
           (let ((url (borg-get drone "url")))
             (unless (string-prefix-p "http" url)
-              (message "Bad remote URL on %s: %s" drone url))))
+		          (message "Bad remote URL on %s: %s" drone url))))
         (borg-drones)))
-
-
-
-;;;; Ebib
-
-(setq ebib-bibtex-dialect 'biblatex)
 
 ;;;; ERC
 
-(setq erc-server "irc.freenode.net"
-      erc-port 7000
-      erc-nick "thblt"
-      erc-nick-uniquifier  "`"
+(use-package erc-hl-nicks)
+(use-package znc)
 
-      erc-server-auto-reconnect t
-      erc-kill-buffer-on-part t
+(setq  erc-server-auto-reconnect t
+	     erc-kill-buffer-on-part t
 
-      erc-lurker-hide-list '("JOIN" "PART" "QUIT")
-      erc-lurker-threshold-time 900 ; 15mn
+	     erc-lurker-hide-list '("JOIN" "PART" "QUIT")
+	     erc-lurker-threshold-time 900 ; 15mn
 
-      erc-header-line-format nil)
+	     erc-header-line-format nil)
 
 (add-hook 'erc-mode-hook (lambda ()
                            (visual-line-mode)
@@ -1388,6 +1142,27 @@ Interactively, work on active buffer"
 
 (advice-add 'load-theme :after (lambda (&rest _) (when (functionp 'erc-hl-nicks-reset-face-table)
                                                    (erc-hl-nicks-reset-face-table))))
+
+;; ZNC doesn't know how to use auth-source, and I'm too lazy to
+;; implement it.  Instead, this function will initialize znc-servers
+;; on first start, reading the password from auth-source.
+
+(defun znc ()
+  "A quick and dirty function to read ZNC password before connecting"
+  (interactive)
+  (unless znc-servers
+    (setq znc-servers
+          `(("k9.thb.lt" 2002 t
+             ((freenode "thblt"
+                        ,(funcall
+                          (plist-get (car
+                                      (auth-source-search
+                                       :max 1
+                                       :host "znc.thb.lt"
+                                       )) :secret))))))))
+  (call-interactively 'znc-all))
+
+
 
 ;;;; Magit and Git
 
@@ -1413,9 +1188,8 @@ Interactively, work on active buffer"
 ;;
 ;; First, let's configure the view.
 
-
 (setq magit-repolist-columns
-      '(
+	    '(
         ("Name"       25  magit-repolist-column-ident nil)
         ("Branch"     16  magit-repolist-column-branch)
         ("Version" 25  magit-repolist-column-version nil)
@@ -1429,7 +1203,6 @@ Interactively, work on active buffer"
 
 ;; An extra feature: update all remotes.  Probably very dirty.
 
-(require 'cl)
 (require 'magit-repos)
 
 (defun thblt/magit-repolist-fetch-all ()
@@ -1446,11 +1219,6 @@ Interactively, work on active buffer"
 
 ;;;; Mu4e
 
-;; mu4e is loaded as a regular Emacs package, complete with its binary,
-;; built through usual Borg mechanisms.
-
-(setq mu4e-mu-binary (expand-file-name "mu/mu" (borg-worktree "mu4e")))
-
 ;; Each of my accounts is synced (by =mbsync=) to a folder at the root
 ;; of the Maildir (eg, =~/.Mail/Academic/=).  We then need a function
 ;; to switch contexts based on a regular expression on the current
@@ -1459,12 +1227,15 @@ Interactively, work on active buffer"
 ;; [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from
 ;; here]].
 
+(use-package mu4e
+:load-path "lib/mu4e/mu4e"
+:config
 (defun mu4e-message-maildir-matches (msg rx)
   (when rx
-    (if (listp rx)
+	  (if (listp rx)
         ;; if rx is a list, try each one for a match
         (or (mu4e-message-maildir-matches msg (car rx))
-            (mu4e-message-maildir-matches msg (cdr rx)))
+		        (mu4e-message-maildir-matches msg (cdr rx)))
       ;; not a list, check rx
       (string-match rx (mu4e-message-field msg :maildir)))))
 
@@ -1475,6 +1246,7 @@ Interactively, work on active buffer"
 (setq mu4e-completing-read-function 'ivy-completing-read
 
       ;; General settings
+      mu4e-mu-binary (expand-file-name "mu/mu" (borg-worktree "mu4e"))
       message-send-mail-function 'smtpmail-send-it
       message-kill-buffer-on-exit t
       mu4e-change-filenames-when-moving t  ; Required for mbsync
@@ -1519,104 +1291,67 @@ Interactively, work on active buffer"
       mu4e-headers-has-child-prefix '("+" . "╰┬")
 
       mu4e-headers-fields '(
-                            (:flags          . 5)
-                            (:mailing-list   . 18)
-                            (:human-date     . 12)
-                            (:from-or-to     . 25)
-                            (:thread-subject . nil)
-                            )
+				                    (:flags          . 5)
+				                    (:mailing-list   . 18)
+				                    (:human-date     . 12)
+				                    (:from-or-to     . 25)
+				                    (:thread-subject . nil)
+				                    )
 
       mu4e-user-mail-address-list '("thblt@thb.lt"
-                                    "thibault.polge@ac-amiens.fr"
-                                    "thibault.polge@ac-orleans-tours.fr"
-                                    "thibault.polge@etu.univ-paris1.fr"
-                                    "thibault.polge@malix.univ-paris1.fr"
-                                    "thibault.polge@univ-paris1.fr"
-                                    "thibault@thb.lt"
-                                    "tpolge@gmail.com"))
+					                          "thibault.polge@ac-amiens.fr"
+					                          "thibault.polge@ac-orleans-tours.fr"
+					                          "thibault.polge@etu.univ-paris1.fr"
+					                          "thibault.polge@malix.univ-paris1.fr"
+					                          "thibault.polge@univ-paris1.fr"
+					                          "thibault@thb.lt"
+					                          "tpolge@gmail.com")
+      mu4e-refile-folder (lambda (msg)
+                           (let ((maildir (mu4e-message-field msg :maildir)))
+				                     (message "This is in %s" maildir)
+				                     (if (string-suffix-p "/Inbox" maildir)
+                                 (concat (substring maildir 0 -5) "Archive")
+                               maildir)))
 
-(add-hook 'mu4e-view-mode-hook (lambda ()
-                                 (setq visual-fill-column-width 80)
-                                 (visual-line-mode 1)
-                                 (visual-fill-column-mode 1)))
+      mu4e-context-policy 'pick-first
+      mu4e-compose-context-policy 'ask
 
-(general-define-key :keymaps 'mu4e-headers-mode-map
-                    "("      'mu4e-headers-prev-unread
-                    ")"      'mu4e-headers-next-unread)
-(general-define-key :keymaps 'mu4e-view-mode-map
-                    "("      'mu4e-view-headers-prev-unread
-                    ")"      'mu4e-view-headers-next-unread
-                    "c"      'visual-fill-column-mode)
+      mu4e-contexts `(
+                      ,(make-mu4e-context
+                        :name "OVH"
+                        :enter-func (lambda () (mu4e-message "OVH"))
+                        :match-func (lambda (msg)
+                                      (when msg
+                                        (mu4e-message-maildir-matches msg "^/OVH/")))
+                        :vars '(( user-mail-address   . "thibault@thb.lt"  )
+                                ( mu4e-sent-folder        . "/OVH/Sent" )
+                                ( mu4e-drafts-folder      . "/OVH/Drafts" )
+                                ( mu4e-trash-folder       . "/OVH/Trash" )
+                                ;; ( mu4e-refile-folder      . "/OVH/Archive" )
+                                ( smtpmail-local-domain   . "thb.lt" )
+                                ( smtpmail-smtp-server    . "ssl0.ovh.net" )
+                                ( smtpmail-smtp-user      . "thibault@thb.lt" )
+                                ( smtpmail-stream-type    . tls )
+                                ( smtpmail-smtp-service   . 465 )))
 
-;; Compose messages with org-mode tables and lists (using =orgalist=):
+                      ,(make-mu4e-context
+                        :name "Académie"
+                        :enter-func (lambda () (mu4e-message "Académie"))
+                        :match-func (lambda (msg)
+                                      (when msg
+                                        (mu4e-message-maildir-matches msg "^/Académique/")))
+                        :vars '(( user-mail-address   . "thibault.polge@ac-amiens.fr"  )
+                                ( mu4e-sent-folder        . "/Académique/Sent" )
+                                ( mu4e-drafts-folder      . "/Académique/Drafts" )
+                                ( mu4e-trash-folder       . "/Académique/Trash" )
+                                ;; ( mu4e-refile-folder      . "/OVH/Archive" )
+                                ( smtpmail-local-domain   . "ac-amiens.fr" )
+                                ( smtpmail-smtp-server    . "smtp.ac-amiens.fr" )
+                                ( smtpmail-smtp-user      . "tpolge" )
+                                ( smtpmail-stream-type    . tls )
+                                ( smtpmail-smtp-service   . 465 ))))
 
-(add-hook 'message-mode-hook 'turn-on-orgtbl)
-(add-hook 'message-mode-hook 'orgalist-mode)
-
-;; Refiling messages: if a message is in =*/INBOX=, refile to =*/Archive=,
-;; otherwise leave it where it is.
-
-(setq mu4e-refile-folder
-      (lambda (msg)
-        (let ((maildir (mu4e-message-field msg :maildir)))
-          (message "This is in %s" maildir)
-          (if (string-suffix-p "/Inbox" maildir)
-              (concat (substring maildir 0 -5) "Archive")
-            maildir))))
-
-
-;;;;; Contexts
-
-(setq mu4e-context-policy 'pick-first
-      mu4e-compose-context-policy 'ask)
-
-(with-eval-after-load 'mu4e
-  (setq mu4e-contexts `(
-                        ,(make-mu4e-context
-                          :name "OVH"
-                          :enter-func (lambda () (mu4e-message "OVH"))
-                          :match-func (lambda (msg)
-                                        (when msg
-                                          (mu4e-message-maildir-matches msg "^/OVH/")))
-                          :vars '(( user-mail-address   . "thibault@thb.lt"  )
-                                  ( mu4e-sent-folder        . "/OVH/Sent" )
-                                  ( mu4e-drafts-folder      . "/OVH/Drafts" )
-                                  ( mu4e-trash-folder       . "/OVH/Trash" )
-                                  ;; ( mu4e-refile-folder      . "/OVH/Archive" )
-                                  ( smtpmail-local-domain   . "thb.lt" )
-                                  ( smtpmail-smtp-server    . "ssl0.ovh.net" )
-                                  ( smtpmail-smtp-user      . "thibault@thb.lt" )
-                                  ( smtpmail-stream-type    . tls )
-                                  ( smtpmail-smtp-service   . 465 )))
-
-                        ,(make-mu4e-context
-                          :name "Académie"
-                          :enter-func (lambda () (mu4e-message "Académie"))
-                          :match-func (lambda (msg)
-                                        (when msg
-                                          (mu4e-message-maildir-matches msg "^/Académique/")))
-                          :vars '(( user-mail-address   . "thibault.polge@ac-amiens.fr"  )
-                                  ( mu4e-sent-folder        . "/Académique/Sent" )
-                                  ( mu4e-drafts-folder      . "/Académique/Drafts" )
-                                  ( mu4e-trash-folder       . "/Académique/Trash" )
-                                  ;; ( mu4e-refile-folder      . "/OVH/Archive" )
-                                  ( smtpmail-local-domain   . "ac-amiens.fr" )
-                                  ( smtpmail-smtp-server    . "smtp.ac-amiens.fr" )
-                                  ( smtpmail-smtp-user      . "tpolge" )
-                                  ( smtpmail-stream-type    . tls )
-                                  ( smtpmail-smtp-service   . 465 ))))))
-
-;; =================
-;; IMPORTANT.  Si tu ajoutes un contexte (ou plusieurs), il faut modifier dans dotemacs.org la ligne
-;; > mu4e-compose-context-policy 'pick-first)
-;; en
-;; > mu4e-compose-context-policy 'ask)
-;; =================
-
-
-;;;;; Bookmarks
-
-(setq mu4e-bookmarks `(("(m:/OVH/INBOX) or (m:/Académique/INBOX) or (m:/Ac/INBOX)"
+      mu4e-bookmarks `(("(m:/OVH/INBOX) or (m:/Académique/INBOX) or (m:/Ac/INBOX)"
                         "Global inbox" ?i)
                        ("(m:/OVH/Archive) or (m:/Académique/Archive) or (m:/Ac/Archive)"
                         "Archives" ?a)
@@ -1624,78 +1359,87 @@ Interactively, work on active buffer"
                        ("(m:/OVH/Sent) or (m:/Académique/Sent) or (m:/Ac/Sent)"
                         "Sent" ?s)
                        ("(m:/OVH/Drafts) or (m:/Académique/Drafts) or (m:/Ac/Drafts)"
-                        "Drafts"       ?d)))
+                        "Drafts"       ?d))
+      )
+
+(add-hook 'mu4e-view-mode-hook (lambda ()
+                                 (setq visual-fill-column-width 80)
+                                 (visual-line-mode 1)
+                                 (visual-fill-column-mode 1)))
+
+:bind (:map mu4e-headers-mode-map
+		        ("(" . mu4e-headers-prev-unread)
+		        (")" . mu4e-headers-next-unread)
+		        :map mu4e-view-mode-map
+		        ("(" . mu4e-view-headers-prev-unread)
+		        (")" . mu4e-view-headers-next-unread)
+		        ("c" . visual-fill-column-mode)))
 
 ;;;; Password management (password-store)
 
-(auth-source-pass-enable)
+(use-package auth-source-pass
+  :init (auth-source-pass-enable))
 
 ;;;; PDF Tools
 
-;; (=tablist= is a dependency of =pdf-tools=)
+;; (setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
 
-
-(setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
-
-(pdf-tools-install)
-
-(with-eval-after-load 'tex
-  (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
-    (add-to-list 'TeX-view-program-list-builtin
-                 '("PDF Tools" TeX-pdf-tools-sync-view)))
-  (add-to-list 'TeX-view-program-selection
-               '(output-pdf "PDF Tools")))
-
-(general-define-key :keymaps 'pdf-view-mode-map
-                    "s a" 'pdf-view-auto-slice-minor-mode)
-
-(with-eval-after-load 'pdf-tools
-  (add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode))))
+(use-package pdf-tools
+  :init (pdf-tools-install)
+  (with-eval-after-load 'tex
+    (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
+	    (add-to-list 'TeX-view-program-list-builtin
+                   '("PDF Tools" TeX-pdf-tools-sync-view)))
+    (add-to-list 'TeX-view-program-selection
+                 '(output-pdf "PDF Tools")))
+  :config (add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode)))
+  (setq pdf-misc-print-programm (executable-find "lpr")
+        pdf-misc-print-programm-args '("-o media=A4" "-o fitplot"))
+  :bind ((:map pdf-view-mode-map
+		           ("s a" . pdf-view-auto-slice-minor-mode)
+		           ("s r" . pdf-view-reset-slice))))
 
 ;;;; Regular expression builder
 
-;; We use the =string= syntax, as advised on
-;; [[https://www.masteringemacs.org/article/re-builder-interactive-regexp-builder][this
-;; Mastering Emacs' article]].
-
 (setq reb-re-syntax 'string)
-
 
 ;;;; scpaste
 
-;; Technomancy's =scpaste= is a replacement for pastebin, paste.lisp.org,
-;; and similar services.  It generates a HTML page out of a buffer or
-;; region and moves it over to a server using scp.
+;; Technomancy's scpaste is a replacement for pastebin,
+;; paste.lisp.org, and similar services.  It generates a HTML page out
+;; of a buffer or region and publishes it using scp.
 
-(setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
-      scpaste-http-destination "https://paste.thb.lt"
-      scpaste-user-address "https://thb.lt"
+(use-package scpaste
+  :config
+  (setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
+        scpaste-http-destination "https://paste.thb.lt"
+        scpaste-user-address "https://thb.lt"
+        scpaste-make-name-function 'scpaste-make-name-from-timestamp)
 
-      scpaste-make-name-function 'scpaste-make-name-from-timestamp)
+  (defun scpaste-footer (&rest _) "")
 
+  ;; A lot of packages add overlays which are useful when editing, noisy
+  ;; when reading.  We advise scpaste so a few minor modes get disabled
+  ;; before it runs, and restored afterwards.
+  (defun thblt/scpaste-without-noise (f &rest args)
+    (let ((hig (bound-and-true-p highlight-indent-guides-mode))
+          (flyc (bound-and-true-p flycheck-mode))
+          (flys (bound-and-true-p flyspell-mode)))
+	    (when hig
+        (highlight-indent-guides-mode -1))
+	    (when flyc
+        (flycheck-mode -1))
+	    (flyspell-mode -1)
+	    (apply f args)
+	    (when hig
+        (highlight-indent-guides-mode 1))
+	    (when flyc
+        (flycheck-mode 1))
+	    (when flys
+        (flyspell-mode 1))))
 
-;; A lot of packages add overlays which are useful when editing, noisy
-;; when reading.  We advise scpaste so a few minor modes get disabled
-;; before it runs, and restored afterwards.
-
-(defun thblt/scpaste-without-noise (f &rest args)
-  (let ((hig (bound-and-true-p highlight-indent-guides-mode))
-        (flyc (bound-and-true-p flycheck-mode))
-        (flys (bound-and-true-p flyspell-mode)))
-    (highlight-indent-guides-mode -1)
-    (flycheck-mode -1)
-    (flyspell-mode -1)
-    (apply f args)
-    (when hig
-      (highlight-indent-guides-mode 1))
-    (when flyc
-      (flycheck-mode 1))
-    (when flys
-      (flyspell-mode 1))))
-
-(advice-add 'scpaste :around 'thblt/scpaste-without-noise)
-(advice-add 'scpaste-region :around 'thblt/scpaste-without-noise)
-
+  (advice-add 'scpaste :around 'thblt/scpaste-without-noise)
+  (advice-add 'scpaste-region :around 'thblt/scpaste-without-noise))
 
 ;;; Conclusion
 
@@ -1752,7 +1496,7 @@ Interactively, work on active buffer"
   (interactive)
   (dolist (instance (directory-files server-socket-dir nil (rx bol (not (any ".")))))
     (unless (equal instance server-name)
-      (async-shell-command (format "emacsclient -s %s --eval \"(thblt/reload-emacs)\"" instance)))))
+	    (async-shell-command (format "emacsclient -s %s --eval \"(thblt/reload-emacs)\"" instance)))))
 
 ;; Also, some utility function:
 

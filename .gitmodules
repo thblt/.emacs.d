@@ -11,10 +11,6 @@
 	url = https://github.com/jwiegley/emacs-async
 	branch = master
 	signingkey = DE55B769FC578A14A5BE5430C144D8F4F19FE630
-[submodule "atomic-chrome"]
-	path = lib/atomic-chrome
-	url = https://github.com/alpha22jp/atomic-chrome
-	branch = master
 [submodule "auctex"]
 	path = lib/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
@@ -42,10 +38,6 @@
 	path = lib/beginend
 	url = https://github.com/DamienCassou/beginend
 	branch = master
-[submodule "biblio"]
-	path = lib/biblio
-	url = https://github.com/cpitclaudel/biblio.el
-	branch = master
 [submodule "bind-map"]
 	path = lib/bind-map
 	url = https://github.com/justbur/emacs-bind-map/
@@ -58,10 +50,6 @@
 [submodule "borg-nix-shell"]
 	path = lib/borg-nix-shell
 	url = https://github.com/thblt/borg-nix-shell
-	branch = master
-[submodule "bug-hunter"]
-	path = lib/bug-hunter
-	url = https://github.com/Malabarba/elisp-bug-hunter
 	branch = master
 [submodule "closql"]
 	path = lib/closql
@@ -79,17 +67,10 @@
 	path = lib/company-auctex
 	url = https://github.com/alexeyr/company-auctex
 	branch = master
-[submodule "company-irony"]
-	path = lib/company-irony
-	url = https://github.com/Sarcasm/company-irony
-	branch = master
-[submodule "company-irony-c-headers"]
-	path = lib/company-irony-c-headers
-	url = https://github.com/hotpxl/company-irony-c-headers
-	branch = master
 [submodule "company-posframe"]
 	path = lib/company-posframe
 	url = https://github.com/tumashu/company-posframe
+	branch = master
 [submodule "counsel-projectile"]
 	path = lib/counsel-projectile
 	url = https://github.com/ericdanan/counsel-projectile
@@ -101,10 +82,6 @@
 [submodule "diminish"]
 	path = lib/diminish
 	url = https://github.com/myrjola/diminish.el
-	branch = master
-[submodule "ebib"]
-	path = lib/ebib
-	url = https://github.com/joostkremers/ebib
 	branch = master
 [submodule "emacsql"]
 	path = lib/emacsql
@@ -119,16 +96,9 @@
 	path = lib/erc-hl-nicks
 	url = https://github.com/leathekd/erc-hl-nicks
 	branch = master
-[submodule "esxml"]
-	path = lib/esxml
-	url = https://github.com/tali713/esxml
-	branch = master
 [submodule "evil-nerd-commenter"]
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
-[submodule "eyebrowse"]
-	path = lib/eyebrowse
-	url = https://github.com/wasamasa/eyebrowse
 	branch = master
 [submodule "eziam-theme-emacs"]
 	path = lib/eziam-theme-emacs
@@ -146,62 +116,13 @@
 	path = lib/flycheck
 	url = https://github.com/flycheck/flycheck
 	branch = master
-[submodule "flycheck-irony"]
-	path = lib/flycheck-irony
-	url = https://github.com/Sarcasm/flycheck-irony
-	branch = master
-[submodule "flycheck-rust"]
-	path = lib/flycheck-rust
-	url = https://github.com/flycheck/flycheck-rust/
-	branch = master
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct
 	branch = master
-[submodule "forge"]
-	path = lib/forge
-	url = https://github.com/magit/forge
-	branch = master
-[submodule "geiser"]
-	path = lib/geiser
-	url = https://gitlab.com/jaor/geiser/
-	branch = master
-	load-path = elisp
-[submodule "general"]
-	path = lib/general
-	url = https://github.com/noctuid/general.el
-	branch = master
-[submodule "ghub"]
-	path = lib/ghub
-	url = https://github.com/magit/ghub
-	branch = master
-[submodule "goto-chg"]
-	path = lib/goto-chg
-	url = https://github.com/emacs-evil/goto-chg
-	branch = master
-[submodule "graphql"]
-	path = lib/graphql
-	url = https://github.com/vermiculus/graphql.el
-	branch = master
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	url = https://github.com/haskell/haskell-mode
-	branch = master
-[submodule "helm"]
-	path = lib/helm
-	url = https://github.com/emacs-helm/helm
-	branch = master
-[submodule "helm-bibtex"]
-	path = lib/helm-bibtex
-	url = https://github.com/tmalsburg/helm-bibtex
-	branch = master
-[submodule "highlight-indent-guides"]
-	path = lib/highlight-indent-guides
-	url = https://github.com/DarthFennec/highlight-indent-guides
-	branch = master
-[submodule "hlint-refactor"]
-	path = lib/hlint-refactor
-	url = https://github.com/mpickering/hlint-refactor-mode
 	branch = master
 [submodule "htmlize"]
 	path = lib/htmlize
@@ -211,21 +132,6 @@
 	path = lib/hydra
 	url = https://github.com/abo-abo/hydra
 	branch = master
-[submodule "intero"]
-	path = lib/intero
-	url = https://github.com/commercialhaskell/intero
-	branch = master
-	load-path = elisp
-[submodule "irony"]
-	path = lib/irony
-	url = https://github.com/Sarcasm/irony-mode
-	branch = master
-	build-nix-shell-packages = cmake llvmPackages.clang.cc
-	build-step = mkdir build
-	build-step = "cd build; cmake ../server; make"
-	build-step = borg-update-autoloads
-	build-step = borg-byte-compile
-	build-step = borg-makeinfo
 [submodule "ivy"]
 	path = lib/ivy
 	url = https://github.com/abo-abo/swiper
@@ -233,6 +139,7 @@
 [submodule "ivy-posframe"]
 	path = lib/ivy-posframe
 	url = https://github.com/tumashu/ivy-posframe
+	branch = master
 [submodule "kurecolor"]
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
@@ -244,10 +151,6 @@
 [submodule "magit-popup"]
 	path = lib/magit-popup
 	url = https://github.com/magit/magit-popup
-	branch = master
-[submodule "markdown-mode"]
-	path = lib/markdown-mode
-	url = https://github.com/jrblevin/markdown-mode
 	branch = master
 [submodule "move-text"]
 	path = lib/move-text
@@ -273,17 +176,9 @@
 	path = lib/nav-flash
 	url = https://github.com/rolandwalker/nav-flash
 	branch = master
-[submodule "nix-mode"]
-	path = lib/nix-mode
-	url = https://github.com/NixOS/nix-mode
-	branch = master
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = https://github.com/tarsius/no-littering
-	branch = master
-[submodule "nov"]
-	path = lib/nov
-	url = https://github.com/wasamasa/nov.el
 	branch = master
 [submodule "org"]
 	path = lib/org
@@ -294,29 +189,13 @@
 	info-path = doc
 	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
-[submodule "org-ref"]
-	path = lib/org-ref
-	url = https://github.com/jkitchin/org-ref
-	branch = master
-[submodule "orgalist"]
-	path = lib/orgalist
-	url = https://github.com/emacsmirror/orgalist
-	branch = master
 [submodule "origami"]
 	path = lib/origami
 	url = https://github.com/gregsexton/origami.el/blob/master/origami.el
 	branch = master
-[submodule "outorg"]
-	path = lib/outorg
-	url = https://github.com/alphapapa/outorg
-	branch = master
 [submodule "outshine"]
 	path = lib/outshine
 	url = https://github.com/alphapapa/outshine
-	branch = master
-[submodule "ox-clip"]
-	path = lib/ox-clip
-	url = https://github.com/jkitchin/ox-clip
 	branch = master
 [submodule "package-lint"]
 	path = lib/package-lint
@@ -325,10 +204,6 @@
 [submodule "packed"]
 	path = lib/packed
 	url = https://github.com/tarsius/packed
-	branch = master
-[submodule "parsebib"]
-	path = lib/parsebib
-	url = https://github.com/joostkremers/parsebib
 	branch = master
 [submodule "pass"]
 	path = lib/pass
@@ -355,6 +230,7 @@
 [submodule "posframe"]
 	path = lib/posframe
 	url = https://github.com/tumashu/posframe
+	branch = master
 [submodule "powerline"]
 	path = lib/powerline
 	url = https://github.com/milkypostman/powerline
@@ -367,17 +243,9 @@
 	path = lib/queue
 	url = https://github.com/emacsmirror/queue
 	branch = master
-[submodule "rainbow-delimiters"]
-	path = lib/rainbow-delimiters
-	url = https://github.com/Fanael/rainbow-delimiters
-	branch = master
 [submodule "rainbow-mode"]
 	path = lib/rainbow-mode
 	url = https://github.com/emacsmirror/rainbow-mode
-	branch = master
-[submodule "rust-mode"]
-	path = lib/rust-mode
-	url = https://github.com/rust-lang/rust-mode
 	branch = master
 [submodule "s"]
 	path = lib/s
@@ -387,10 +255,6 @@
 	path = lib/scpaste
 	url = https://github.com/technomancy/scpaste
 	branch = master
-[submodule "selected"]
-	path = lib/selected
-	url = https://github.com/Kungsgeten/selected.el
-	branch = master
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
@@ -398,25 +262,14 @@
 [submodule "super-save"]
 	path = lib/super-save
 	url = https://github.com/bbatsov/super-save
+	branch = master
 [submodule "tablist"]
 	path = lib/tablist
 	url = https://github.com/politza/tablist
 	branch = master
-[submodule "toc-org"]
-	path = lib/toc-org
-	url = https://github.com/snosov1/toc-org
-	branch = master
 [submodule "transient"]
 	path = lib/transient
 	url = https://github.com/magit/transient
-	branch = master
-[submodule "treepy"]
-	path = lib/treepy
-	url = https://github.com/volrath/treepy.el
-	branch = master
-[submodule "undo-propose"]
-	path = lib/undo-propose
-	url = https://github.com/jackkamm/undo-propose-el
 	branch = master
 [submodule "undo-tree"]
 	path = lib/undo-tree
@@ -426,6 +279,10 @@
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
 	branch = master
+[submodule "use-package"]
+	path = lib/use-package
+	url = https://github.com/jwiegley/use-package
+	branch = master
 [submodule "visual-fill-column"]
 	path = lib/visual-fill-column
 	url = https://github.com/joostkremers/visual-fill-column
@@ -433,14 +290,6 @@
 [submodule "visual-regexp"]
 	path = lib/visual-regexp
 	url = https://github.com/benma/visual-regexp.el
-	branch = master
-[submodule "websocket"]
-	path = lib/websocket
-	url = https://github.com/ahyatt/emacs-websocket
-	branch = master
-[submodule "which-key"]
-	path = lib/which-key
-	url = https://github.com/justbur/emacs-which-key/
 	branch = master
 [submodule "with-editor"]
 	path = lib/with-editor
