@@ -62,22 +62,20 @@
       ;; Disable Customize by pointing it to =/dev/null=:
       custom-file "/dev/null"
 
-      inhibit-compacting-font-caches (eq 'system-type 'windows-nt)) ; This prevents slowdown when using strange characters.
+      inhibit-compacting-font-caches (eq 'system-type 'windows-nt) ; This prevents slowdown when using strange characters.
 
-;;;; Defaults
+      ;; Use default browser from the system. Using =setsid xdg-open=
+      ;; prevents Emacs from killing xdg-open before it actually opened
+      ;; anything. See
+      ;; [[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
+      browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "setsid"
+      browse-url-generic-args '("xdg-open"))
 
-(setq-default
- ;; Use default browser from the system. Using =setsid xdg-open=
- ;; prevents Emacs from killing xdg-open before it actually opened
- ;; anything. See
- ;; [[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
- browse-url-browser-function 'browse-url-generic
- browse-url-generic-program "setsid"
- browse-url-generic-args '("xdg-open")
+(setq-default  major-mode 'text-mode)
 
- ;; Change the default major mode to =text-mode= instead of
- ;; =fundamental-mode=.  Fundamental has no hooks.
- major-mode 'text-mode)
+(define-key input-decode-map [?\C-m] [C-m])
+(define-key input-decode-map [?\C-i] [C-i])
 
 (load custom-file t)
 
@@ -88,7 +86,6 @@
 ;;;; Settings and general configuration
 
 (setq-default
- cursor-type '(bar . 5)
  enable-recursive-minibuffers t
  inhibit-startup-screen t
  use-dialog-box nil
@@ -97,6 +94,15 @@
  truncate-lines t
 
  disabled-command-function nil)
+
+;; Cursor configuration
+(setq-default  cursor-type 'box)
+(defun thblt/update-cursor-color ()
+  (set-cursor-color (if overwrite-mode "#ff0000" "#ffffff")))
+(add-hook 'overwrite-mode-hook 'thblt/update-cursor-color)
+(thblt/update-cursor-color)
+(blink-cursor-mode)
+; @FIXME Set color per-buffer
 
 ;; Never use the "safe" ~yes-or-no~ function:
 (fset 'yes-or-no-p 'y-or-n-p)
