@@ -141,7 +141,8 @@
   "Disable active themes before loading a new one."
   (mapc #'disable-theme custom-enabled-themes))
 
-(setq eziam-scale-headings nil
+(setq eziam-color-comments t
+      eziam-scale-headings nil
       eziam-heading-style 'gray-blocks)
 
 ;; Create some shortcut commands to load the Eziam themes:
@@ -1138,6 +1139,8 @@ Interactively, work on active buffer"
 
 	     erc-lurker-hide-list '("JOIN" "PART" "QUIT")
 	     erc-lurker-threshold-time 900 ; 15mn
+
+       erc-hl-nicks-skip-nicks '("thblt")
 
 	     erc-header-line-format nil)
 
