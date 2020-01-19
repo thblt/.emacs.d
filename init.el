@@ -121,12 +121,13 @@
       scroll-step 1)
 
 ;; Rebind =C-x k= to kill the /current/ buffer.
-
 (global-set-key (kbd "C-x k") (lambda () (interactive) (kill-buffer (current-buffer))))
 
 ;; And force leave the minibuffer with =C-M-]=
-
 (global-set-key (kbd "C-M-à") 'abort-recursive-edit)
+
+;; Fringes are pointless (by default)
+(fringe-mode 0)
 
 ;;;; Fonts and themes
 
@@ -281,7 +282,7 @@
                (progn
                  (setq last-face 'thblt/mode-line--buffer-id)
                  ( powerline-raw
-                   "  %b "
+                   " %b "
                    `(:weight ,(if buffer-file-name 'bold 'normal) :inherit thblt/mode-line--buffer-id)))
 
                ;; Narrowing indicator
@@ -970,7 +971,6 @@ nil; otherwise it's evaluated normally."
 ;; TODO
 
 (global-set-key (kbd "<f8>") 'ffap)
-(global-set-key (kbd "<f5>") 'thblt/compile)
 
 ;;;; Reformatting
 
@@ -996,19 +996,19 @@ Interactively, work on active buffer"
 
 ;;;;; Color-identifiers
 
-(use-package color-identifiers-mode
-  :init
-  (add-hook 'prog-mode-hook 'color-identifiers-mode)
-  :config
-  (advice-add 'load-theme :after (lambda (&rest _)
-                                   (color-identifiers:regenerate-colors)
-                                   (color-identifiers:refresh)))
-  (add-to-list
-   'color-identifiers:modes-alist'
-   `(haskell-mode . ("[^.][[:space:]]*"
-                     "\\_<\\([[:lower:][:upper:]]\\([_]??[[:lower:][:upper:]\\$0-9]+\\)*\\(_+[#:<=>@!%&*+/?\\\\^|~-]+\\|_\\)?\\)"
-                     (nil scala-font-lock:var-face font-lock-variable-name-face))))
-  :diminish 'color-identifiers-mode)
+(add-hook 'prog-mode-hook 'color-identifiers-mode)
+
+(with-eval-after-load 'color-identifiers-mode
+    (advice-add 'load-theme :after (lambda (&rest _)
+                                     (color-identifiers:regenerate-colors)
+                                     (color-identifiers:refresh)))
+    (add-to-list
+     'color-identifiers:modes-alist'
+     `(haskell-mode . ("[^.][[:space:]]*"
+                       "\\_<\\([[:lower:][:upper:]]\\([_]??[[:lower:][:upper:]\\$0-9]+\\)*\\(_+[#:<=>@!%&*+/?\\\\^|~-]+\\|_\\)?\\)"
+                       (nil scala-font-lock:var-face font-lock-variable-name-face)))))
+
+(diminish 'color-identifiers-mode)
 
 ;;;;; Company
 
@@ -1161,11 +1161,12 @@ Interactively, work on active buffer"
           `(("k9.thb.lt" 2002 t
              ((freenode "thblt"
                         ,(funcall
-                          (plist-get (car
-                                      (auth-source-search
-                                       :max 1
-                                       :host "znc.thb.lt"
-                                       )) :secret))))))))
+                          (plist-get
+                           (car
+                            (auth-source-search
+                             :max 1
+                             :host "znc.thb.lt"))
+                           :secret))))))))
   (call-interactively 'znc-all))
 
 
