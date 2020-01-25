@@ -6,7 +6,7 @@
 
 ;;;; First things first
 
-;; Never load bytecode if .el is more recent
+;; Never load bytecode if .el is more recent(
 (setq load-prefer-newer t)
 
 ;;;;; Package managers
@@ -35,10 +35,8 @@
 ;;;;; Fundamentals
 
 ;; Recompile what needs recompiling
-(use-package auto-compile
-  :defer nil
-  :init (require 'auto-compile)
-  (auto-compile-on-load-mode))
+(require 'auto-compile)
+(auto-compile-on-load-mode)
 
 (require 'no-littering)
 
@@ -75,6 +73,7 @@
 (setq-default  major-mode 'text-mode)
 
 (define-key input-decode-map [?\C-m] [C-m])
+(define-key input-decode-map [?\C-i] [C-i])
 (define-key input-decode-map [?\C-i] [C-i])
 
 (load custom-file t)
@@ -334,59 +333,55 @@
 
 ;;;;; Window position tracker
 
-       (defun thblt/window-at-bottom-left-p (win)
-         "Return non-nil if WIN is at the bottom left of the frame."
-         (not (or
-               (window-in-direction 'below win)
-               (window-in-direction 'left win))))
+(defun thblt/window-at-bottom-left-p (win)
+  "Return non-nil if WIN is at the bottom left of the frame."
+  (not (or
+        (window-in-direction 'below win)
+        (window-in-direction 'left win))))
 
-       (defun thblt/window-at-bottom-right-p (win)
-         "Return non-nil if WIN is at the bottom right of the frame."
-         (not (or
-               (window-in-direction 'below win)
-               (window-in-direction 'right win))))
+(defun thblt/window-at-bottom-right-p (win)
+  "Return non-nil if WIN is at the bottom right of the frame."
+  (not (or
+        (window-in-direction 'below win)
+        (window-in-direction 'right win))))
 
-       (defun thblt/update-window-position-parameters (&optional frame)
-         (unless frame (setq frame (selected-frame)))
-         (mapc (lambda (win)
-                 (set-window-parameter win 'thblt/window-at-bottom-left (thblt/window-at-bottom-left-p win))
-                 (set-window-parameter win 'thblt/window-at-bottom-right (thblt/window-at-bottom-right-p win)))
-               (window-list frame nil)))
+(defun thblt/update-window-position-parameters (&optional frame)
+  (unless frame (setq frame (selected-frame)))
+  (mapc (lambda (win)
+          (set-window-parameter win 'thblt/window-at-bottom-left (thblt/window-at-bottom-left-p win))
+          (set-window-parameter win 'thblt/window-at-bottom-right (thblt/window-at-bottom-right-p win)))
+        (window-list frame nil)))
 
-       (add-hook 'window-configuration-change-hook 'thblt/update-window-position-parameters)
+(add-hook 'window-configuration-change-hook 'thblt/update-window-position-parameters)
 
 ;;;;; Installation
 
-       (thblt/mode-line-set-faces)
-       (advice-add 'load-theme :after 'thblt/mode-line-set-faces)
+(thblt/mode-line-set-faces)
+(advice-add 'load-theme :after 'thblt/mode-line-set-faces)
 
-       (add-to-list 'after-make-frame-functions 'thblt/update-window-position-parameters)
-       (unless (daemonp)
-         (thblt/update-window-position-parameters)) ; This is required for
+(add-to-list 'after-make-frame-functions 'thblt/update-window-position-parameters)
+(unless (daemonp)
+  (thblt/update-window-position-parameters)) ; This is required for
                                         ; non-daemon instances
                                         ; where the frame is
                                         ; created before init.el
                                         ; gets to run.
 
-       (thblt/powerline-theme)
+(thblt/powerline-theme)
 
 ;;;; Projectile
 
-       (use-package projectile
-         :init (projectile-global-mode)
-         (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+(projectile-global-mode)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(counsel-projectile-mode)
 
-       (use-package counsel-projectile
-         :init (with-eval-after-load 'projectile (counsel-projectile-mode)))
+;; - globally ignore undo-files and similar byproducts.
+(setq projectile-globally-ignored-file-suffixes (append '(
+                                                          ".un~"
+                                                          ".~undo-tree~")
+                                                        projectile-globally-ignored-files))
 
-       ;; - globally ignore undo-files and similar byproducts.
-       (setq projectile-globally-ignored-file-suffixes (append '(
-                                                                 ".un~"
-                                                                 ".~undo-tree~"
-                                                                 )
-                                                               projectile-globally-ignored-files))
-
-       (diminish 'projectile-mode)
+(diminish 'projectile-mode)
 
 ;; I prefer to treat submodules as separate projects, so don't include
 ;; then in the main file listing:
@@ -397,16 +392,18 @@
 
 ;;;;; Ace-window
 
-(use-package ace-window
-  :bind (("C-x o" . ace-window)
-         ("M-0" . thblt/switch-to-minibuffer))
-  ;; We use of aw-ignored-buffers, so we need the eval-after-load
-  :config (setq aw-scope 'frame
-                aw-background t
-                aw-ignore-on t
-                aw-ignored-buffers (append aw-ignored-buffers
-                                           (mapcar (lambda (n) (format " *Minibuf-%s*" n))
-                                                   (number-sequence 0 20)))))
+(define-key global-map (kbd "C-x o") 'ace-window)
+(define-key global-map (kbd "M-0") 'thblt/switch-to-minibuffer)
+
+;; We use the value of aw-ignored-buffers, so we need the
+;; eval-after-load
+(with-eval-after-load 'ace-window
+  (setq aw-scope 'frame
+        aw-background t
+        aw-ignore-on t
+        aw-ignored-buffers (append aw-ignored-buffers
+                                   (mapcar (lambda (n) (format " *Minibuf-%s*" n))
+                                           (number-sequence 0 20)))))
 
 (defvar thblt/window-hydra-mode 'swap)
 
@@ -428,42 +425,49 @@
 
 ;;;;; Hydra
 
-(use-package hydra
-  :config (setq hydra-hint-display-type 'posframe))
+(setq hydra-hint-display-type 'posframe)
 
 ;;;;; Ivy
 
-(use-package counsel
-  :config (setq ivy-use-virtual-buffers t)
-  :init  (ivy-mode)
-  :bind (("M-i" . counsel-imenu)
-         ("M-x" . counsel-M-x)
-         ("C-x C-f" . counsel-find-file)
-         ("C-S-s" . swiper)
-         ("C-x 8 RET" . counsel-unicode-char))
-  :diminish ivy-mode)
+(setq ivy-use-virtual-buffers t)
+(ivy-mode)
 
-(use-package ivy-posframe
-  :init (ivy-posframe-mode 1)
-  :config (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+(define-key global-map (kbd "M-i") 'counsel-imenu)
+(define-key global-map (kbd "M-x") 'counsel-M-x)
+(define-key global-map (kbd "C-x C-f") 'counsel-find-file)
+(define-key global-map (kbd "C-S-s") 'swiper)
+(define-key global-map (kbd "C-x 8 RET") 'counsel-unicode-char)
 
-  :diminish ivy-posframe-mode)
+(diminish 'ivy-mode)
 
-;;;;; Popwin
+(setq ivy-posframe-display-functions-alist
+      '((t . ivy-posframe-display-at-frame-center)))
 
-;; Popwin “makes you free from the hell of annoying buffers”:
-(use-package popwin
-  :init (require 'popwin)
-  (popwin-mode))
+(ivy-posframe-mode 1)
+(diminish 'ivy-posframe-mode)
+
+;;;;; Shackle
+
+;; Stealing rules from wasamasa's config
+(setq shackle-rules
+      '(("*Help*" :align t :select t)
+        ((compilation-mode "\\`\\*firestarter\\*\\'"
+                           "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
+        ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
+      shackle-default-rule '(:select t)
+      shackle-default-size 0.4
+      shackle-inhibit-window-quit-on-same-windows t)
+
+(shackle-mode)
 
 ;;;;; Windmove
 
-(use-package windmove
-  :config (setq windmove-wrap-around t)
-  :bind (("S-<up>" . windmove-up)
-         ("S-<left>" . windmove-left)
-         ("S-<right>" . windmove-right)
-         ("S-<down>" . windmove-down)))
+(setq windmove-wrap-around t)
+
+(define-key global-map (kbd "S-<up>") 'windmove-up)
+(define-key global-map (kbd "S-<left>") 'windmove-left)
+(define-key global-map (kbd "S-<right>") 'windmove-right)
+(define-key global-map (kbd "S-<down>") 'windmove-down)
 
 ;;;;; Winner
 
@@ -632,10 +636,10 @@ nil; otherwise it's evaluated normally."
 (diminish 'flyspell-mode "Fly")
 
 ;; Correct words using Ivy instead of default method:
-(use-package flyspell-correct-ivy
-  :bind (:map flyspell-mode-map
-              ("M-$" . flyspell-auto-correct-previous-word)
-              ("C-;" . flyspell-correct-previous-word-generic)))
+
+(with-eval-after-load 'flyspell
+  (define-key flyspell-mode-map (kbd "M-$") 'flyspell-auto-correct-previous-word)
+  (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic))
 
 ;;;; Moving around
 
@@ -648,38 +652,34 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; avy
 
-(use-package avy
-  :bind  (("C-:" . avy-goto-char-timer)
-          ("M-g f" . avy-goto-line)))
+(define-key global-map (kbd "C-:") 'avy-goto-char-timer)
+(define-key global-map (kbd "M-g f") 'avy-goto-line)
 
 ;;;;; beginend
 
-(use-package beginend
-  :init (beginend-global-mode)
-  :config (mapc (lambda (m) (diminish (cdr m)))
-                beginend-modes)
-  :diminish 'beginend-global-mode)
+(beginend-global-mode)
+
+(mapc (lambda (m) (diminish (cdr m)))
+      beginend-modes)
+(diminish 'beginend-global-mode)
 
 ;;;;; mwim
 
-(use-package mwim
-  :bind (("C-a" . mwim-beginning-of-code-or-line)
-	 ("C-e" . mwim-end-of-code-or-line)
-	 ("<home>" . mwim-beginning-of-line-or-code)
-	 ("<end>" . mwim-end-of-line-or-code)))
+(define-key global-map (kbd "C-a") 'mwim-beginning-of-code-or-line)
+(define-key global-map (kbd "C-e") 'mwim-end-of-code-or-line)
+(define-key global-map (kbd "<home>") 'mwim-beginning-of-line-or-code)
+(define-key global-map (kbd "<end>") 'mwim-end-of-line-or-code)
 
 ;;;;; nav-flash (don't get lost)
 
-(use-package nav-flash
-  :config (face-spec-set 'nav-flash-face '((t (:inherit pulse-highlight-face :extend t))))
-  (advice-add 'recenter-top-bottom :after (lambda (x) (nav-flash-show))))
+(face-spec-set 'nav-flash-face '((t (:inherit pulse-highlight-face :extend t))))
+(advice-add 'recenter-top-bottom :after (lambda (x) (nav-flash-show)))
 
 ;;;; Replace
 
-(use-package visual-regexp
-  :bind (("C-M-%" . vr/query-replace)
-         ("C-c r" . vr/replace)
-         ("C-c m" . vr/mc-mark)))
+(define-key global-map (kbd "C-M-%") 'vr/query-replace)
+(define-key global-map (kbd "C-c r") 'vr/replace)
+(define-key global-map (kbd "C-c m") 'vr/mc-mark)
 
 ;;;; Minor modes
 
@@ -700,75 +700,68 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; TODO Smartparens
 
-(use-package smartparens
-  :init  (require 'smartparens-config) ;; Load default config
-  (smartparens-global-mode)
-  (show-smartparens-global-mode)
-  :config (sp-with-modes 'org-mode
-            (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
-            (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
-            (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-            (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-            (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-            (sp-local-pair "«" "»")
-            (sp-local-pair "“" "”"))
-  :bind (:map smartparens-mode-map
-              ("C-M-f" . sp-forward-sexp)
+(require 'smartparens-config) ;; Load default config
+(smartparens-global-mode)
+(show-smartparens-global-mode)
 
-              ("C-M-b" . sp-backward-sexp)
+(sp-with-modes 'latex-mode
+  (sp-local-pair "«" "»")
+  (sp-local-pair "“" "”"))
 
-              ("C-M-d" . sp-down-sexp)
-              ("C-M-a" . sp-backward-down-sexp)
-              ("C-S-d" . sp-beginning-of-sexp)
-              ("C-S-a" . sp-end-of-sexp)
+(define-key smartparens-mode-map (kbd "C-M-f")  'sp-forward-sexp)
+(define-key smartparens-mode-map (kbd "C-M-b")  'sp-backward-sexp)
 
-              ("C-M-e" . sp-up-sexp)
-              ("C-M-u" . sp-backward-up-sexp)
-              ("C-M-t" . sp-transpose-sexp)
+(define-key smartparens-mode-map (kbd "C-M-d")  'sp-down-sexp)
+(define-key smartparens-mode-map (kbd "C-M-a")  'sp-backward-down-sexp)
+(define-key smartparens-mode-map (kbd "C-S-d")  'sp-beginning-of-sexp)
+(define-key smartparens-mode-map (kbd "C-S-a")  'sp-end-of-sexp)
 
-              ("C-M-n" . sp-next-sexp)
-              ("C-M-p" . sp-previous-sexp)
+(define-key smartparens-mode-map (kbd "C-M-e")  'sp-up-sexp)
+(define-key smartparens-mode-map (kbd "C-M-u")  'sp-backward-up-sexp)
+(define-key smartparens-mode-map (kbd "C-M-t")  'sp-transpose-sexp)
 
-              ("C-M-k" . sp-kill-sexp)
-              ("C-M-w" . sp-copy-sexp)
+(define-key smartparens-mode-map (kbd "C-M-n")  'sp-next-sexp)
+(define-key smartparens-mode-map (kbd "C-M-p")  'sp-previous-sexp)
 
-              ("M-<delete>" . sp-unwrap-sexp)
-              ("M-<backspace>" . sp-backward-unwrap-sexp)
+(define-key smartparens-mode-map (kbd "C-M-k")  'sp-kill-sexp)
+(define-key smartparens-mode-map (kbd "C-M-w")  'sp-copy-sexp)
 
-              ("C-<right>" . sp-forward-slurp-sexp)
-              ("C-<left>" . sp-forward-barf-sexp)
-              ("C-M-<left>" . sp-backward-slurp-sexp)
-              ("C-M-<right>" . sp-backward-barf-sexp)
+(define-key smartparens-mode-map (kbd "M-<delete>")  'sp-unwrap-sexp)
+(define-key smartparens-mode-map (kbd "M-<backspace>")  'sp-backward-unwrap-sexp)
 
-              ("M-D" . sp-splice-sexp)
-              ("C-M-<delete>" . sp-splice-sexp-killing-forward)
-              ("C-M-<backspace>" . sp-splice-sexp-killing-backward)
-              ("C-S-<backspace>" . sp-splice-sexp-killing-around)
+(define-key smartparens-mode-map (kbd "C-<right>")  'sp-forward-slurp-sexp)
+(define-key smartparens-mode-map (kbd "C-<left>")  'sp-forward-barf-sexp)
+(define-key smartparens-mode-map (kbd "C-M-<left>")  'sp-backward-slurp-sexp)
+(define-key smartparens-mode-map (kbd "C-M-<right>")  'sp-backward-barf-sexp)
 
-              ("C-]" . sp-select-next-thing-exchange)
-              ("C-<left_bracket>" . sp-select-previous-thing)
-              ("C-M-]" . sp-select-next-thing)
-              ("M-F" . sp-forward-symbol)
-              ("M-B" . sp-backward-symbol))
-  ;; ("C-c f" . (lambda () (interactive) (sp-beginning-of-sexp 2)))
-  ;; ("C-c b" (lambda () (interactive) (sp-beginning-of-sexp -2))))
+(define-key smartparens-mode-map (kbd "M-D")  'sp-splice-sexp)
+(define-key smartparens-mode-map (kbd "C-M-<delete>")  'sp-splice-sexp-killing-forward)
+(define-key smartparens-mode-map (kbd "C-M-<backspace>")  'sp-splice-sexp-killing-backward)
+(define-key smartparens-mode-map (kbd "C-S-<backspace>")  'sp-splice-sexp-killing-around)
 
-  :diminish smartparens-mode)
+(define-key smartparens-mode-map (kbd "C-]")  'sp-select-next-thing-exchange)
+(define-key smartparens-mode-map (kbd "C-<left_bracket>")  'sp-select-previous-thing)
+(define-key smartparens-mode-map (kbd "C-M-]")  'sp-select-next-thing)
+(define-key smartparens-mode-map (kbd "M-F")  'sp-forward-symbol)
+(define-key smartparens-mode-map (kbd "M-B")  'sp-backward-symbol)
+(define-key smartparens-mode-map (kbd "C-c f")  (lambda () (interactive) (sp-beginning-of-sexp 2)))
+(define-key smartparens-mode-map (kbd "C-c b") (lambda () (interactive) (sp-beginning-of-sexp -2)))
+
+(diminish 'smartparens-mode)
 
 ;;;;; Undo-Tree
 
-(use-package undo-tree
-  :init (global-undo-tree-mode)
-  :diminish undo-tree-mode)
+(global-undo-tree-mode)
+(diminish 'undo-tree-mode)
 
 ;;;;; Yasnippet
 
-(use-package yasnippet
-  :init (yas-global-mode)
-  :config (setq yas-snippet-dirs
-                (list (expand-file-name "~/.emacs.d/etc/snippets" )
-                      (borg-worktree "yasnippet-snippets/snippets")))
-  :diminish yas-minor-mode)
+
+(yas-global-mode)
+(setq yas-snippet-dirs
+      (list (no-littering-expand-etc-file-name "snippets")
+            (borg-worktree "yasnippet-snippets/snippets")))
+(diminish 'yas-minor-mode)
 
 ;;;; Misc
 
@@ -814,9 +807,8 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; Autosave when losing focus
 
-(use-package super-save
-  :init (super-save-mode +1)
-  :diminish (super-save-mode . " 💾"))
+(super-save-mode +1)
+(diminish 'super-save-mode " 💾")
 
 ;;;;; Delete trailing whitespace when saving
 
@@ -829,7 +821,7 @@ nil; otherwise it's evaluated normally."
 ;;  1. Major modes dedicated to writing prose, as opposed to code or
 ;;     configuration.
 ;;  2. Non-code bits in code/configuration files: comments and integrated
-;;     documentation.
+;;     documentation.n
 
 ;;;; Common settings and minor modes
 ;;;;; Abbrev
@@ -843,72 +835,71 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; Wordwrap/visual line/visual-fill-column
 
-(use-package visual-fill-column
-  :diminish 'visual-line-mode)
+(diminish 'visual-line-mode)
 
 ;;;; Major modes
 
 ;;;;; AucTex
 
-(use-package tex-site
-  :init (add-hook 'LaTeX-mode-hook (lambda ()
-                                     (visual-line-mode t)
-                                     (TeX-fold-mode t)))
+(add-hook 'LaTeX-mode-hook (lambda ()
+(visual-line-mode t)
+                             (TeX-fold-mode t)))
 
-  :config (setq-default TeX-save-query nil ; Autosave
-                        TeX-parse-self t
-                        TeX-engine 'xetex
-                        TeX-source-correlate-mode t))
+(setq-default TeX-save-query nil ; Autosave
+TeX-parse-self t
+              TeX-engine 'xetex
+              TeX-source-correlate-mode t)
 
 ;;;;; Org-Mode
 
-(use-package org
-  :config (setq org-catch-invisible-edits t
-		            org-hide-leading-stars t
-		            org-hide-emphasis-markers nil
-		            org-html-htmlize-output-type 'css
-		            org-imenu-depth 8
-		            org-src-fontify-natively t
-		            org-ellipsis " ▼"
-		            org-special-ctrl-a/e t
-		            org-special-ctrl-k t)
+(setq org-catch-invisible-edits t
+      org-hide-leading-stars t
+      org-hide-emphasis-markers nil
+      org-html-htmlize-output-type 'css
+      org-imenu-depth 8
+		  org-src-fontify-natively t
+		  org-ellipsis " ▼"
+		  org-special-ctrl-a/e t
+		  org-special-ctrl-k t)
 
-  (add-hook 'org-mode-hook (lambda ()
-                             (org-indent-mode t)
-                             (visual-line-mode t)
-                             (which-function-mode t)))
+(add-hook 'org-mode-hook (lambda ()
+                           (org-indent-mode t)
+                           (visual-line-mode t)
+                           (which-function-mode t)))
 
-  ;; Use shift-arrow for window navigation when not on an heading
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right)
+;; Use shift-arrow for window navigation when not on an heading
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
 
-  (with-eval-after-load 'org-indent
-    (diminish 'org-indent-mode)))
+(with-eval-after-load 'org-indent
+  (diminish 'org-indent-mode))4
 
-;;;;;; Export
-
-(require 'ox-extra)
-(ox-extras-activate '(ignore-headlines))
-
-;;;;;; PDF export
-
-(setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
-(setq org-latex-pdf-process (list "latexmk -f -pdfxe -xelatex %f"))
-
-(sp-with-modes 'org-mode
-  (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
-  (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
-  (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-  (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-  (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC"))))
+;;;;;; Pairs
 
 (defun sp--org-skip-asterisk (ms mb me)
   (or (and (= (line-beginning-position) mb)
            (eq 32 (char-after (1+ mb))))
 	    (and (= (1+ (line-beginning-position)) me)
            (eq 32 (char-after me)))))
+
+(sp-with-modes 'org-mode
+  (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+  (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
+  (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+  (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+  (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+  (sp-local-pair "«" "»")
+  (sp-local-pair "“" "”"))
+
+;;;;;;; Export
+
+(require 'ox-extra)
+(ox-extras-activate '(ignore-headlines))
+
+(setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
+(setq org-latex-pdf-process (list "latexmk -f -pdfxe -xelatex %f"))
 
 ;; Identify position in buffer:
 
@@ -991,45 +982,41 @@ Interactively, work on active buffer"
 ;;;; Minor modes
 ;;;;; Aggressive indent
 
-(use-package aggressive-indent
-  :init (add-hook 'emacs-lisp-mode-hook 'aggressive-indent-mode)
-  :diminish aggressive-indent-mode "⭾")
+(with-eval-after-load 'aggressive-indent-mode
+  (diminish 'aggressive-indent-mode "⭾"))
 
 ;;;;; Color-identifiers
 
 (add-hook 'prog-mode-hook 'color-identifiers-mode)
 
 (with-eval-after-load 'color-identifiers-mode
-    (advice-add 'load-theme :after (lambda (&rest _)
-                                     (color-identifiers:regenerate-colors)
-                                     (color-identifiers:refresh)))
-    (add-to-list
-     'color-identifiers:modes-alist'
-     `(haskell-mode . ("[^.][[:space:]]*"
-                       "\\_<\\([[:lower:][:upper:]]\\([_]??[[:lower:][:upper:]\\$0-9]+\\)*\\(_+[#:<=>@!%&*+/?\\\\^|~-]+\\|_\\)?\\)"
-                       (nil scala-font-lock:var-face font-lock-variable-name-face)))))
+  (advice-add 'load-theme :after (lambda (&rest _)
+                                   (color-identifiers:regenerate-colors)
+                                   (color-identifiers:refresh)))
+  (add-to-list
+   'color-identifiers:modes-alist'
+   `(haskell-mode . ("[^.][[:space:]]*"
+                     "\\_<\\([[:lower:][:upper:]]\\([_]??[[:lower:][:upper:]\\$0-9]+\\)*\\(_+[#:<=>@!%&*+/?\\\\^|~-]+\\|_\\)?\\)"
+                     (nil scala-font-lock:var-face font-lock-variable-name-face))))
 
-(diminish 'color-identifiers-mode)
+  (diminish 'color-identifiers-mode))
 
 ;;;;; Company
 
-(use-package company
-  :init
-  (add-hook 'prog-mode-hook 'company-mode)
-  ;;TODO BIND  :bind (:map company-mode-map
-  ;; (("M-TAB" . company-complete-common)))
-  :diminish company-mode "⋯ ")
+(add-hook 'prog-mode-hook 'company-mode)
 
-(use-package company-posframe
-  :init
-  (add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
-  :diminish 'company-posframe-mode)
+(with-eval-after-load 'company
+  (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
+  (diminish 'company-mode "⋯ "))
+
+(add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
+
+(diminish 'company-posframe-mode)
 
 ;;;;; Evil Nerd Commenter
 
-(use-package evil-nerd-commenter
-  :bind (("M-," . evilnc-comment-or-uncomment-lines)
-	       ("C-M-," . evilnc-comment-or-uncomment-paragraphs)))
+(define-key prog-mode-map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
+(define-key prog-mode-map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs)
 
 ;;;;; Flycheck
 
@@ -1038,47 +1025,37 @@ Interactively, work on active buffer"
 ;; (with-eval-after-load 'flycheck
 ;; (diminish 'flycheck-mode "▲"))
 
-;;;;; Highlight-indent-guides
-
-(use-package highlight-indent-guides
-  :disabled t
-  :config
-  (setq highlight-indent-guides-method 'fill
-        highlight-indent-guides-character ?┃
-        highlight-indent-guides-auto-character-face-perc 25)
-  :diminish highlight-indent-guides-mode)
-
 ;;;;; Outline and Outshine
 
-(provide 'outorg)
+(provide 'outorg) ; Dirty
 (add-hook 'prog-mode-hook 'outshine-mode)
 (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
 (diminish 'outline-minor-mode)
 
 (defun thblt/m-up-dwim () (interactive)
-	     (cond ((and outshine-mode (outline-on-heading-p))
-		          (call-interactively 'outline-move-subtree-up))
-             (t (call-interactively 'move-text-up))))
+(cond ((and outshine-mode (outline-on-heading-p))
+		   (call-interactively 'outline-move-subtree-up))
+      (t (call-interactively 'move-text-up))))
 
 (defun thblt/m-down-dwim () (interactive)
-	     (cond ((and outshine-mode (outline-on-heading-p))
-		          (call-interactively 'outline-move-subtree-down))
-             (t (call-interactively 'move-text-down))))
+(cond ((and outshine-mode (outline-on-heading-p))
+		   (call-interactively 'outline-move-subtree-down))
+      (t (call-interactively 'move-text-down))))
 
 (with-eval-after-load 'outshine
   (diminish 'outshine-mode)
   (define-key outshine-mode-map (kbd "M-<up>") 'thblt/m-up-dwim)
-  (define-key outshine-mode-map (kbd "M-<down>") 'thblt/m-down-dwim))
+  (define-key outshine-mode-map (kbd "M-<down>") 'thblt/m-down-dwim)
+  (define-key outshine-mode-map (kbd "M-TAB") nil)
+  (define-key outshine-mode-map (kbd "C-M-TAB") 'outshine-cycle-buffer))
 
 ;;;;; Rainbow mode
 
 ;; Rainbow mode is similar to Atom's Pigments plugin or something.
-(use-package rainbow-mode
-  :init
-  (add-hook 'prog-mode-hook (rainbow-mode))
-  (add-hook 'css-mode-hook 'rainbow-mode)
-  (add-hook 'scss-mode-hook 'rainbow-mode)
-  :diminish rainbow-mode)
+(add-hook 'prog-mode-hook (rainbow-mode))
+(add-hook 'css-mode-hook 'rainbow-mode)
+(add-hook 'scss-mode-hook 'rainbow-mode)
+(diminish 'rainbow-mode)
 
 ;;;; Programming languages
 
@@ -1090,6 +1067,11 @@ Interactively, work on active buffer"
 
 (add-hook 'c-mode-common-hook (lambda nil (setq-local
                                            format-buffer-function 'clang-format)))
+
+;;;;; Elisp
+
+(add-hook 'lisp-mode-hook 'aggressive-indent-mode)
+
 ;;;;; Haskell
 
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
@@ -1130,9 +1112,6 @@ Interactively, work on active buffer"
         (borg-drones)))
 
 ;;;; ERC
-
-(use-package erc-hl-nicks)
-(use-package znc)
 
 (setq  erc-server-auto-reconnect t
 	     erc-kill-buffer-on-part t
@@ -1237,177 +1216,176 @@ Interactively, work on active buffer"
 ;; [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from
 ;; here]].
 
-(use-package mu4e
-:load-path "lib/mu4e/mu4e"
-:config
-(defun mu4e-message-maildir-matches (msg rx)
-  (when rx
-	  (if (listp rx)
-        ;; if rx is a list, try each one for a match
-        (or (mu4e-message-maildir-matches msg (car rx))
-		        (mu4e-message-maildir-matches msg (cdr rx)))
-      ;; not a list, check rx
-      (string-match rx (mu4e-message-field msg :maildir)))))
+(with-eval-after-load 'mu4e
 
-;; Then the bulk of the config:
+  (require 'mu4e-contrib)
 
-(require 'mu4e-contrib)
+  (defun mu4e-message-maildir-matches (msg rx)
+    (when rx
+	    (if (listp rx)
+          ;; if rx is a list, try each one for a match
+          (or (mu4e-message-maildir-matches msg (car rx))
+		          (mu4e-message-maildir-matches msg (cdr rx)))
+        ;; not a list, check rx
+        (string-match rx (mu4e-message-field msg :maildir)))))
 
-(setq mu4e-completing-read-function 'ivy-completing-read
+  ;; Then the bulk of the config:
 
-      ;; General settings
-      mu4e-mu-binary (expand-file-name "mu/mu" (borg-worktree "mu4e"))
-      message-send-mail-function 'smtpmail-send-it
-      message-kill-buffer-on-exit t
-      mu4e-change-filenames-when-moving t  ; Required for mbsync
-      mu4e-get-mail-command "mbsync -a"
-      mu4e-headers-auto-update t
-      mu4e-html2text-command 'mu4e-shr2text
-      mu4e-maildir "~/.Mail/"
-      mu4e-update-interval 60 ;; seconds
-      mu4e-sent-messages-behavior 'sent
+  (setq mu4e-completing-read-function 'ivy-completing-read
 
-      ;; Behavior
-      mu4e-compose-dont-reply-to-self t
+        ;; General settings
+        mu4e-mu-binary (expand-file-name "mu/mu" (borg-worktree "mu4e"))
+        message-send-mail-function 'smtpmail-send-it
+        message-kill-buffer-on-exit t
+        mu4e-change-filenames-when-moving t  ; Required for mbsync
+        mu4e-get-mail-command "mbsync -a"
+        mu4e-headers-auto-update t
+        mu4e-html2text-command 'mu4e-shr2text
+        mu4e-maildir "~/.Mail/"
+        mu4e-update-interval 60 ;; seconds
+        mu4e-sent-messages-behavior 'sent
 
-      ;; UI settings
-      mu4e-confirm-quit nil
-      mu4e-hide-index-messages t
-      mu4e-split-view 'vertical
-      mu4e-headers-include-related t  ; Include related messages in threads
-      mu4e-view-show-images t
+        ;; Behavior
+        mu4e-compose-dont-reply-to-self t
 
-      ;; UI symbols
-      mu4e-use-fancy-chars t
-      mu4e-headers-attach-mark '("" . "")
-      mu4e-headers-encrypted-mark '("" . "")
-      mu4e-headers-flagged-mark '("+" . "⚑")
-      mu4e-headers-list-mark '("" . "")
-      mu4e-headers-new-mark '("" . "")
-      mu4e-headers-read-mark '("" . "")
-      mu4e-headers-replied-mark '("" . "↩")
-      mu4e-headers-seen-mark '("" . "")
-      mu4e-headers-unseen-mark '("" . "")
-      mu4e-headers-unread-mark '("" . "✱")
-      mu4e-headers-signed-mark '("" . "")
-      mu4e-headers-trashed-mark '("T" . "T")
+        ;; UI settings
+        mu4e-confirm-quit nil
+        mu4e-hide-index-messages t
+        mu4e-split-view 'vertical
+        mu4e-headers-include-related t  ; Include related messages in threads
+        mu4e-view-show-images t
 
-      mu4e-headers-from-or-to-prefix '("" . "→ ")
+        ;; UI symbols
+        mu4e-use-fancy-chars t
+        mu4e-headers-attach-mark '("" . "")
+        mu4e-headers-encrypted-mark '("" . "")
+        mu4e-headers-flagged-mark '("+" . "⚑")
+        mu4e-headers-list-mark '("" . "")
+        mu4e-headers-new-mark '("" . "")
+        mu4e-headers-read-mark '("" . "")
+        mu4e-headers-replied-mark '("" . "↩")
+        mu4e-headers-seen-mark '("" . "")
+        mu4e-headers-unseen-mark '("" . "")
+        mu4e-headers-unread-mark '("" . "✱")
+        mu4e-headers-signed-mark '("" . "")
+        mu4e-headers-trashed-mark '("T" . "T")
 
-      mu4e-headers-default-prefix '(" " . " ─")
-      mu4e-headers-duplicate-prefix '("D" . "D")
-      mu4e-headers-empty-parent-prefix '("X" . " X")
-      mu4e-headers-first-child-prefix '("|" . "╰─")
-      mu4e-headers-has-child-prefix '("+" . "╰┬")
+        mu4e-headers-from-or-to-prefix '("" . "→ ")
 
-      mu4e-headers-fields '(
-				                    (:flags          . 5)
-				                    (:mailing-list   . 18)
-				                    (:human-date     . 12)
-				                    (:from-or-to     . 25)
-				                    (:thread-subject . nil)
-				                    )
+        mu4e-headers-default-prefix '(" " . " ─")
+        mu4e-headers-duplicate-prefix '("D" . "D")
+        mu4e-headers-empty-parent-prefix '("X" . " X")
+        mu4e-headers-first-child-prefix '("|" . "╰─")
+        mu4e-headers-has-child-prefix '("+" . "╰┬")
 
-      mu4e-user-mail-address-list '("thblt@thb.lt"
-					                          "thibault.polge@ac-amiens.fr"
-					                          "thibault.polge@ac-orleans-tours.fr"
-					                          "thibault.polge@etu.univ-paris1.fr"
-					                          "thibault.polge@malix.univ-paris1.fr"
-					                          "thibault.polge@univ-paris1.fr"
-					                          "thibault@thb.lt"
-					                          "tpolge@gmail.com")
-      mu4e-refile-folder (lambda (msg)
-                           (let ((maildir (mu4e-message-field msg :maildir)))
-				                     (message "This is in %s" maildir)
-				                     (if (string-suffix-p "/Inbox" maildir)
-                                 (concat (substring maildir 0 -5) "Archive")
-                               maildir)))
+        mu4e-headers-fields '(
+				                      (:flags          . 5)
+				                      (:mailing-list   . 18)
+				                      (:human-date     . 12)
+				                      (:from-or-to     . 25)
+				                      (:thread-subject . nil)
+				                      )
 
-      mu4e-context-policy 'pick-first
-      mu4e-compose-context-policy 'ask
+        mu4e-user-mail-address-list '("thblt@thb.lt"
+					                            "thibault.polge@ac-amiens.fr"
+					                            "thibault.polge@ac-orleans-tours.fr"
+					                            "thibault.polge@etu.univ-paris1.fr"
+					                            "thibault.polge@malix.univ-paris1.fr"
+					                            "thibault.polge@univ-paris1.fr"
+					                            "thibault@thb.lt"
+					                            "tpolge@gmail.com")
+        mu4e-refile-folder (lambda (msg)
+                             (let ((maildir (mu4e-message-field msg :maildir)))
+				                       (message "This is in %s" maildir)
+				                       (if (string-suffix-p "/Inbox" maildir)
+                                   (concat (substring maildir 0 -5) "Archive")
+                                 maildir)))
 
-      mu4e-contexts `(
-                      ,(make-mu4e-context
-                        :name "OVH"
-                        :enter-func (lambda () (mu4e-message "OVH"))
-                        :match-func (lambda (msg)
-                                      (when msg
-                                        (mu4e-message-maildir-matches msg "^/OVH/")))
-                        :vars '(( user-mail-address   . "thibault@thb.lt"  )
-                                ( mu4e-sent-folder        . "/OVH/Sent" )
-                                ( mu4e-drafts-folder      . "/OVH/Drafts" )
-                                ( mu4e-trash-folder       . "/OVH/Trash" )
-                                ;; ( mu4e-refile-folder      . "/OVH/Archive" )
-                                ( smtpmail-local-domain   . "thb.lt" )
-                                ( smtpmail-smtp-server    . "ssl0.ovh.net" )
-                                ( smtpmail-smtp-user      . "thibault@thb.lt" )
-                                ( smtpmail-stream-type    . tls )
-                                ( smtpmail-smtp-service   . 465 )))
+        mu4e-context-policy 'pick-first
+        mu4e-compose-context-policy 'ask
 
-                      ,(make-mu4e-context
-                        :name "Académie"
-                        :enter-func (lambda () (mu4e-message "Académie"))
-                        :match-func (lambda (msg)
-                                      (when msg
-                                        (mu4e-message-maildir-matches msg "^/Académique/")))
-                        :vars '(( user-mail-address   . "thibault.polge@ac-amiens.fr"  )
-                                ( mu4e-sent-folder        . "/Académique/Sent" )
-                                ( mu4e-drafts-folder      . "/Académique/Drafts" )
-                                ( mu4e-trash-folder       . "/Académique/Trash" )
-                                ;; ( mu4e-refile-folder      . "/OVH/Archive" )
-                                ( smtpmail-local-domain   . "ac-amiens.fr" )
-                                ( smtpmail-smtp-server    . "smtp.ac-amiens.fr" )
-                                ( smtpmail-smtp-user      . "tpolge" )
-                                ( smtpmail-stream-type    . tls )
-                                ( smtpmail-smtp-service   . 465 ))))
+        mu4e-contexts `(
+                        ,(make-mu4e-context
+                          :name "OVH"
+                          :enter-func (lambda () (mu4e-message "OVH"))
+                          :match-func (lambda (msg)
+                                        (when msg
+                                          (mu4e-message-maildir-matches msg "^/OVH/")))
+                          :vars '(( user-mail-address   . "thibault@thb.lt"  )
+                                  ( mu4e-sent-folder        . "/OVH/Sent" )
+                                  ( mu4e-drafts-folder      . "/OVH/Drafts" )
+                                  ( mu4e-trash-folder       . "/OVH/Trash" )
+                                  ;; ( mu4e-refile-folder      . "/OVH/Archive" )
+                                  ( smtpmail-local-domain   . "thb.lt" )
+                                  ( smtpmail-smtp-server    . "ssl0.ovh.net" )
+                                  ( smtpmail-smtp-user      . "thibault@thb.lt" )
+                                  ( smtpmail-stream-type    . tls )
+                                  ( smtpmail-smtp-service   . 465 )))
 
-      mu4e-bookmarks `(("(m:/OVH/INBOX) or (m:/Académique/INBOX) or (m:/Ac/INBOX)"
-                        "Global inbox" ?i)
-                       ("(m:/OVH/Archive) or (m:/Académique/Archive) or (m:/Ac/Archive)"
-                        "Archives" ?a)
-                       ("(flag:flagged)" "Flagged" ?f)
-                       ("(m:/OVH/Sent) or (m:/Académique/Sent) or (m:/Ac/Sent)"
-                        "Sent" ?s)
-                       ("(m:/OVH/Drafts) or (m:/Académique/Drafts) or (m:/Ac/Drafts)"
-                        "Drafts"       ?d))
-      )
+                        ,(make-mu4e-context
+                          :name "Académie"
+                          :enter-func (lambda () (mu4e-message "Académie"))
+                          :match-func (lambda (msg)
+                                        (when msg
+                                          (mu4e-message-maildir-matches msg "^/Académique/")))
+                          :vars '(( user-mail-address   . "thibault.polge@ac-amiens.fr"  )
+                                  ( mu4e-sent-folder        . "/Académique/Sent" )
+                                  ( mu4e-drafts-folder      . "/Académique/Drafts" )
+                                  ( mu4e-trash-folder       . "/Académique/Trash" )
+                                  ;; ( mu4e-refile-folder      . "/OVH/Archive" )
+                                  ( smtpmail-local-domain   . "ac-amiens.fr" )
+                                  ( smtpmail-smtp-server    . "smtp.ac-amiens.fr" )
+                                  ( smtpmail-smtp-user      . "tpolge" )
+                                  ( smtpmail-stream-type    . tls )
+                                  ( smtpmail-smtp-service   . 465 ))))
 
-(add-hook 'mu4e-view-mode-hook (lambda ()
-                                 (setq visual-fill-column-width 80)
-                                 (visual-line-mode 1)
-                                 (visual-fill-column-mode 1)))
+        mu4e-bookmarks `(("(m:/OVH/INBOX) or (m:/Académique/INBOX) or (m:/Ac/INBOX)"
+                          "Global inbox" ?i)
+                         ("(m:/OVH/Archive) or (m:/Académique/Archive) or (m:/Ac/Archive)"
+                          "Archives" ?a)
+                         ("(flag:flagged)" "Flagged" ?f)
+                         ("(m:/OVH/Sent) or (m:/Académique/Sent) or (m:/Ac/Sent)"
+                          "Sent" ?s)
+                         ("(m:/OVH/Drafts) or (m:/Académique/Drafts) or (m:/Ac/Drafts)"
+                          "Drafts"       ?d))
+        )
 
-:bind (:map mu4e-headers-mode-map
-		        ("(" . mu4e-headers-prev-unread)
-		        (")" . mu4e-headers-next-unread)
-		        :map mu4e-view-mode-map
-		        ("(" . mu4e-view-headers-prev-unread)
-		        (")" . mu4e-view-headers-next-unread)
-		        ("c" . visual-fill-column-mode)))
+  (add-hook 'mu4e-view-mode-hook (lambda ()
+                                   (setq visual-fill-column-width 80)
+                                   (visual-line-mode 1)
+                                   (visual-fill-column-mode 1)))
+
+
+  (define-key mu4e-headers-mode-map (kbd "(") 'mu4e-headers-prev-unread)
+  (define-key mu4e-headers-mode-map (kbd ")") 'mu4e-headers-next-unread)
+  (define-key mu4e-view-mode-map (kbd "(") 'mu4e-view-headers-prev-unread)
+  (define-key mu4e-view-mode-map (kbd ")") 'mu4e-view-headers-next-unread)
+  (define-key mu4e-view-mode-map  (kbd "c") 'visual-fill-column-mode))
 
 ;;;; Password management (password-store)
 
-(use-package auth-source-pass
-  :init (auth-source-pass-enable))
+(auth-source-pass-enable)
 
 ;;;; PDF Tools
 
 ;; (setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
 
-(use-package pdf-tools
-  :init (pdf-tools-install)
-  (with-eval-after-load 'tex
-    (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
-	    (add-to-list 'TeX-view-program-list-builtin
-                   '("PDF Tools" TeX-pdf-tools-sync-view)))
-    (add-to-list 'TeX-view-program-selection
-                 '(output-pdf "PDF Tools")))
-  :config (add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode)))
-  (setq pdf-misc-print-programm (executable-find "lpr")
-        pdf-misc-print-programm-args '("-o media=A4" "-o fitplot"))
-  :bind ((:map pdf-view-mode-map
-		           ("s a" . pdf-view-auto-slice-minor-mode)
-		           ("s r" . pdf-view-reset-slice))))
+(pdf-tools-install)
+
+(with-eval-after-load 'tex
+  (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
+	  (add-to-list 'TeX-view-program-list-builtin
+                 '("PDF Tools" TeX-pdf-tools-sync-view)))
+  (add-to-list 'TeX-view-program-selection
+               '(output-pdf "PDF Tools")))
+
+(add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode)))
+
+(setq pdf-misc-print-programm (executable-find "lpr")
+      pdf-misc-print-programm-args '("-o media=A4" "-o fitplot"))
+
+(define-key pdf-view-mode-map (kbd "s a") 'pdf-view-auto-slice-minor-mode)
+(define-key pdf-view-mode-map (kbd "s r") 'pdf-view-reset-slice)
 
 ;;;; Regular expression builder
 
@@ -1419,75 +1397,37 @@ Interactively, work on active buffer"
 ;; paste.lisp.org, and similar services.  It generates a HTML page out
 ;; of a buffer or region and publishes it using scp.
 
-(use-package scpaste
-  :config
-  (setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
-        scpaste-http-destination "https://paste.thb.lt"
-        scpaste-user-address "https://thb.lt"
-        scpaste-make-name-function 'scpaste-make-name-from-timestamp)
+(setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
+      scpaste-http-destination "https://paste.thb.lt"
+      scpaste-user-address "https://thb.lt"
+      scpaste-make-name-function 'scpaste-make-name-from-timestamp)
 
-  (defun scpaste-footer (&rest _) "")
+(defun scpaste-footer (&rest _) "")
 
-  ;; A lot of packages add overlays which are useful when editing, noisy
-  ;; when reading.  We advise scpaste so a few minor modes get disabled
-  ;; before it runs, and restored afterwards.
-  (defun thblt/scpaste-without-noise (f &rest args)
-    (let ((hig (bound-and-true-p highlight-indent-guides-mode))
-          (flyc (bound-and-true-p flycheck-mode))
-          (flys (bound-and-true-p flyspell-mode)))
-	    (when hig
-        (highlight-indent-guides-mode -1))
-	    (when flyc
-        (flycheck-mode -1))
-	    (flyspell-mode -1)
-	    (apply f args)
-	    (when hig
-        (highlight-indent-guides-mode 1))
-	    (when flyc
-        (flycheck-mode 1))
-	    (when flys
-        (flyspell-mode 1))))
+;; A lot of packages add overlays which are useful when editing, noisy
+;; when reading.  We advise scpaste so a few minor modes get disabled
+;; before it runs, and restored afterwards.
+(defun thblt/scpaste-without-noise (f &rest args)
+  (let ((hig (bound-and-true-p highlight-indent-guides-mode))
+        (flyc (bound-and-true-p flycheck-mode))
+        (flys (bound-and-true-p flyspell-mode)))
+	  (when hig
+      (highlight-indent-guides-mode -1))
+	  (when flyc
+      (flycheck-mode -1))
+	  (flyspell-mode -1)
+	  (apply f args)
+	  (when hig
+      (highlight-indent-guides-mode 1))
+	  (when flyc
+      (flycheck-mode 1))
+	  (when flys
+      (flyspell-mode 1))))
 
-  (advice-add 'scpaste :around 'thblt/scpaste-without-noise)
-  (advice-add 'scpaste-region :around 'thblt/scpaste-without-noise))
+(advice-add 'scpaste :around 'thblt/scpaste-without-noise)
+(advice-add 'scpaste-region :around 'thblt/scpaste-without-noise)
 
 ;;; Conclusion
-
-;;;; HiDPI support (kindof)
-
-;; This section is made of overrides to improve support for HiDPI
-;; monitors.  It must be at the end, to avoid being overriden by default
-;; settings.
-
-;; If we're running on a HiDPI machine, we replace the flycheck fringe
-;; bitmap with a larger version.
-
-;; (when (string-prefix-p  "maladict" system-name)
-
-;;   (with-eval-after-load "flycheck"
-;;     (define-fringe-bitmap 'flycheck-fringe-bitmap-double-arrow
-;;       (vector
-;;        #b1000000000
-;;        #b1100000000
-;;        #b1110000000
-;;        #b1111000000
-;;        #b1111100000
-;;        #b1111110000
-;;        #b1111111000
-;;        #b1111111100
-;;        #b1111111110
-;;        #b1111111111
-;;        #b1111111111
-;;        #b1111111110
-;;        #b1111111100
-;;        #b1111111000
-;;        #b1111110000
-;;        #b1111100000
-;;        #b1111000000
-;;        #b1110000000
-;;        #b1100000000
-;;        #b1000000000)
-;;       20 10 'center)))
 
 ;;;; Server configuration
 
@@ -1523,3 +1463,5 @@ Interactively, work on active buffer"
 ;; obvious in daemon mode)
 
 (setq initial-scratch-message ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n")
+
+(message "Reached the end of init.el")

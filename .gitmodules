@@ -223,10 +223,6 @@
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
-[submodule "popwin"]
-	path = lib/popwin
-	url = https://github.com/m2ym/popwin-el
-	branch = master
 [submodule "posframe"]
 	path = lib/posframe
 	url = https://github.com/tumashu/posframe
@@ -255,6 +251,10 @@
 	path = lib/scpaste
 	url = https://github.com/technomancy/scpaste
 	branch = master
+[submodule "shackle"]
+	path = lib/shackle
+	url = https://github.com/wasamasa/shackle
+	branch = master
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
@@ -278,10 +278,6 @@
 [submodule "unfill"]
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
-	branch = master
-[submodule "use-package"]
-	path = lib/use-package
-	url = https://github.com/jwiegley/use-package
 	branch = master
 [submodule "visual-fill-column"]
 	path = lib/visual-fill-column
