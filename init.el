@@ -67,8 +67,9 @@
       ;; anything. See
       ;; [[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
       browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "setsid"
-      browse-url-generic-args '("xdg-open"))
+      ;; browse-url-generic-program "setsid"
+      browse-url-generic-program "firefox")
+      ;; browse-url-generic-args '("xdg-open"))
 
 (setq-default  major-mode 'text-mode)
 
@@ -167,7 +168,7 @@
 (diminish 'projectile-mode)
 
 ;; I prefer to treat submodules as separate projects, so don't include
-;; then in the main file listing:
+;; them in the main file listing:
 
 (setq projectile-git-submodule-command nil)
 
@@ -206,7 +207,7 @@
 
 ;;;;; Hydra
 
-(setq hydra-hint-display-type 'posframe)
+(setq hydra-hint-display-type 'message)
 
 ;;;;; Ivy
 
@@ -221,17 +222,18 @@
 
 (diminish 'ivy-mode)
 
-(setq ivy-posframe-display-functions-alist
-      '((t . ivy-posframe-display-at-frame-center)))
+;; (setq ivy-posframe-display-functions-alist
+;;       '((t . ivy-posframe-display-at-frame-center)))
 
-(ivy-posframe-mode 1)
-(diminish 'ivy-posframe-mode)
+;; (ivy-posframe-mode 1)
+;; (diminish 'ivy-posframe-mode)
 
 ;;;;; Shackle
 
 ;; Stealing rules from wasamasa's config
 (setq shackle-rules
       '(("*Help*" :align t :select t)
+        (flycheck-error-list-mode :select t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
@@ -257,7 +259,7 @@
 ;;;;; Customization helper
 
 ;; A small function to identify the face at point.  Nice to have when
-;; writing themes, and faster than =C-u C-x ==.
+;; writing themes, and faster than C-u C-x =
 (defun what-face (pos)
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
@@ -265,8 +267,7 @@
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 ;;;; BÉPO adjustments
-
-;;;;; Unshifted digit argument
+;; Unshifted digit argument
 
 (defmacro thblt/digit-argument-with-value (char)
   "Return an anonymous lambda that calls `digit-argument' as if CHAR had been pressed.
@@ -288,10 +289,73 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key universal-argument-map (kbd "/") (thblt/digit-argument-with-value ?9))
 (define-key universal-argument-map (kbd "0") (thblt/digit-argument-with-value ?0))
 
-;;;;; Beginning and end of buffer
+;; Beginning and end of buffer
 
 (define-key global-map(kbd "M-ê") 'beginning-of-buffer)
 (define-key global-map (kbd "M-Ê") 'end-of-buffer)
+
+;; Fast and efficient killing: q instead of q
+
+(define-key global-map (kbd "C-q") 'kill-line)
+(define-key smartparens-mode-map (kbd "C-M-q")  'sp-kill-sexp)
+
+;; EXPERIMENTAL Vim-like motion with modifiers
+
+;; (defun k (seq)
+;;   (let ((substs '(("left"  . "t")
+;;                   ("down"  . "s")
+;;                   ("up"    . "r")
+;;                   ("right" . "n"))))
+;;     (dolist (s substs)
+;;       (setq seq (replace-regexp-in-string (format "%%%s%%" (car s)) (cdr s) seq)))
+;;     (kbd seq)))
+
+;; (define-key global-map (k "C-b") nil)
+;; (define-key global-map (k "C-f") nil)
+;; (define-key global-map (k "C-p") nil)
+;; (define-key global-map (k "M-d") nil)
+;; (define-key global-map (k "M-n") nil)
+;; (define-key global-map (k "M-b") nil)
+;; (define-key global-map (k "M-f") nil)
+;; (define-key global-map (k "M-p") nil)
+;; (define-key global-map (k "M-n") nil)
+;; (define-key global-map (k "M-v") nil)
+
+;; ;; Motion
+
+;; (define-key global-map (k "C-%left%")             'backward-char)
+;; (define-key global-map (k "M-%left%")             'backward-word)
+;; (define-key smartparens-mode-map (k "C-M-%left%") 'sp-backward-sexp)
+;; (define-key global-map (k "C-%down%")             'next-line)
+;; (define-key global-map (k "M-%down%")             nil)
+;; (define-key smartparens-mode-map (k "C-M-%down%") nil)
+;; (define-key global-map (k "C-%up%")             'previous-line)
+;; (define-key global-map (k "M-%up%")             nil)
+;; (define-key smartparens-mode-map (k "C-M-%up%") nil)
+;; (define-key global-map (k "C-%right%")             'forward-char)
+;; (define-key global-map (k "M-%right%")             'forward-word)
+;; (define-key smartparens-mode-map (k "C-M-%right%") 'sp-forward-sexp)
+
+;; ;; Isearch
+
+;; (define-key global-map (k "C-v")   'isearch-backward)
+;; (define-key global-map (k "C-d")   'isearch-forward)
+;; (define-key global-map (k "C-M-d") 'isearch-forward-regexp)
+;; (define-key global-map (k "M-d .") 'isearch-forward-symbol-at-point)
+;; (define-key global-map (k "M-d o") 'occur)
+;; (define-key global-map (k "M-d w") 'isearch-forward-symbol-at-point)
+;; (define-key global-map (k "C-M-d") 'isearch-forward-regexp)
+
+;; (define-key isearch-mode-map (k "C-v") 'isearch-repeat-backward)
+;; (define-key isearch-mode-map (k "C-d") 'isearch-repeat-forward)
+;; (define-key isearch-mode-map (k "C-v") 'isearch-repeat-backward)
+
+;; ;; Killing
+;; (define-key global-map (k "C-q") 'delete-char)
+;; (define-key global-map (k "M-q") 'kill-word)
+;; (define-key text-mode-map (k "C-M-q") 'kill-sentence)
+;; (define-key prog-mode-map (k "C-M-q") 'kill-sentence)
+;; (define-key global-map (k "C-'") 'kill-line)
 
 ;;; Editing text
 
@@ -318,10 +382,10 @@ nil; otherwise it's evaluated normally."
                                                      (not (bound-and-true-p text-scale-mode))))
   ("p" text-scale-increase "Size +")
   ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
-  ("t w" (lambda () (interactive) (load-theme 'eziam-white t)) (thblt/hydra-indicator "White theme" (member 'eziam-white custom-enabled-themes)))
-  ("t l" (lambda () (interactive) (load-theme 'eziam-light t)) (thblt/hydra-indicator "Light theme" (member 'eziam-light custom-enabled-themes)))
-  ("t u" (lambda () (interactive) (load-theme 'eziam-dusk t)) (thblt/hydra-indicator "Dusk theme" (member 'eziam-dusk custom-enabled-themes)))
-  ("t d" (lambda () (interactive) (load-theme 'eziam-dark t)) (thblt/hydra-indicator "Dark theme" (member 'eziam-dark custom-enabled-themes)))
+  ;; ("t w" (lambda () (interactive) (load-theme 'eziam-white t)) (thblt/hydra-indicator "White theme" (member 'eziam-white custom-enabled-themes)))
+  ("t l" eziam-light (thblt/hydra-indicator "Light theme" (member 'eziam-light custom-enabled-themes)))
+  ;; ("t u" (lambda () (interactive) (load-theme 'eziam-dusk t)) (thblt/hydra-indicator "Dusk theme" (member 'eziam-dusk custom-enabled-themes)))
+  ("t d" eziam-dark (thblt/hydra-indicator "Dark theme" (member 'eziam-dark custom-enabled-themes)))
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
   ("c" thblt/visual-fill-column-toggle-centering (thblt/hydra-indicator "Centering" visual-fill-column-center-text))
@@ -430,7 +494,6 @@ nil; otherwise it's evaluated normally."
 (define-key global-map (kbd "C-M-\"") 'beginning-of-defun)
 (define-key global-map (kbd "C-M-«") 'end-of-defun)
 
-
 ;;;;; avy
 
 (define-key global-map (kbd "C-:") 'avy-goto-char-timer)
@@ -485,10 +548,6 @@ nil; otherwise it's evaluated normally."
 (smartparens-global-mode)
 (show-smartparens-global-mode)
 
-(sp-with-modes 'latex-mode
-  (sp-local-pair "«" "»")
-  (sp-local-pair "“" "”"))
-
 (define-key smartparens-mode-map (kbd "C-M-f")  'sp-forward-sexp)
 (define-key smartparens-mode-map (kbd "C-M-b")  'sp-backward-sexp)
 
@@ -508,7 +567,7 @@ nil; otherwise it's evaluated normally."
 (define-key smartparens-mode-map (kbd "C-M-w")  'sp-copy-sexp)
 
 (define-key smartparens-mode-map (kbd "M-<delete>")  'sp-unwrap-sexp)
-(define-key smartparens-mode-map (kbd "M-<backspace>")  'sp-backward-unwrap-sexp)
+(define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
 
 (define-key smartparens-mode-map (kbd "C-<right>")  'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-<left>")  'sp-forward-barf-sexp)
@@ -523,10 +582,10 @@ nil; otherwise it's evaluated normally."
 (define-key smartparens-mode-map (kbd "C-]")  'sp-select-next-thing-exchange)
 (define-key smartparens-mode-map (kbd "C-<left_bracket>")  'sp-select-previous-thing)
 (define-key smartparens-mode-map (kbd "C-M-]")  'sp-select-next-thing)
+
 (define-key smartparens-mode-map (kbd "M-F")  'sp-forward-symbol)
 (define-key smartparens-mode-map (kbd "M-B")  'sp-backward-symbol)
-(define-key smartparens-mode-map (kbd "C-c f")  (lambda () (interactive) (sp-beginning-of-sexp 2)))
-(define-key smartparens-mode-map (kbd "C-c b") (lambda () (interactive) (sp-beginning-of-sexp -2)))
+
 
 (diminish 'smartparens-mode)
 
@@ -537,11 +596,11 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; Yasnippet
 
-
-(yas-global-mode)
 (setq yas-snippet-dirs
       (list (no-littering-expand-etc-file-name "snippets")
             (borg-worktree "yasnippet-snippets/snippets")))
+
+(yas-global-mode)
 (diminish 'yas-minor-mode)
 
 ;;;; Misc
@@ -622,14 +681,22 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; AucTex
 
-(add-hook 'LaTeX-mode-hook (lambda ()
-(visual-line-mode t)
-                             (TeX-fold-mode t)))
+(require 'tex-site nil t) ; I don't build this on Windows.
+
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+            (visual-line-mode t)
+            (TeX-fold-mode t)
+            (aggressive-indent-mode)))
 
 (setq-default TeX-save-query nil ; Autosave
-TeX-parse-self t
+              TeX-parse-self t
               TeX-engine 'xetex
               TeX-source-correlate-mode t)
+
+(sp-with-modes 'latex-mode
+  (sp-local-pair "«" "»")
+  (sp-local-pair "“" "”"))
 
 ;;;;; Org-Mode
 
@@ -716,12 +783,6 @@ TeX-parse-self t
  '((dot . t)
    (shell . t)))
 
-;;;;;; Org-ref
-
-(setq org-ref-completion-library 'org-ref-ivy-cite
-	    bibtex-dialect 'biblatex)
-(add-hook 'org-mode-hook (lambda () (require 'org-ref nil t)))
-
 ;;; Writing code
 ;;;; Settings
 
@@ -766,6 +827,9 @@ Interactively, work on active buffer"
 (with-eval-after-load 'aggressive-indent-mode
   (diminish 'aggressive-indent-mode "⭾"))
 
+(dolist (mode '(elisp-mode lisp-mode))
+  (add-hook mode 'aggressive-indent-mode))
+
 ;;;;; Color-identifiers
 
 (add-hook 'prog-mode-hook 'color-identifiers-mode)
@@ -790,14 +854,23 @@ Interactively, work on active buffer"
   (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
   (diminish 'company-mode "⋯ "))
 
-(add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
+;; (add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
 
-(diminish 'company-posframe-mode)
+;; (with-eval-after-load 'company-posframe
+;;   (diminish 'company-posframe-mode))
 
 ;;;;; Evil Nerd Commenter
 
-(define-key prog-mode-map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
-(define-key prog-mode-map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs)
+(dolist (map (list org-mode-map prog-mode-map))
+  (define-key map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
+  (define-key map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs))
+
+(with-eval-after-load 'auctex
+  (dolist (map (list latex-mode-map LaTeX-mode-map  tex-mode-map))
+    (define-key map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
+    (define-key map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs)))
+
+
 
 ;;;;; Flycheck
 
@@ -919,20 +992,21 @@ Interactively, work on active buffer"
 (defun znc ()
   "A quick and dirty function to read ZNC password before connecting"
   (interactive)
+  (require 'znc)
   (unless znc-servers
-    (setq znc-servers
-          `(("k9.thb.lt" 2002 t
-             ((freenode "thblt"
-                        ,(funcall
-                          (plist-get
-                           (car
-                            (auth-source-search
-                             :max 1
-                             :host "znc.thb.lt"))
-                           :secret))))))))
-  (call-interactively 'znc-all))
-
-
+    (--if-let (plist-get
+               (car
+                (auth-source-search
+                 :max 1
+                 :host "znc.thb.lt"))
+               :secret)
+        (setq znc-servers
+              `(("k9.thb.lt" 2002 t
+                 ((freenode "thblt" ,(funcall it)
+                            )))))
+      (message "Cannot read ZNC secret!")))
+  (when znc-servers
+    (call-interactively 'znc-all)))
 
 ;;;; Magit and Git
 
@@ -987,6 +1061,16 @@ Interactively, work on active buffer"
 
 (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-fetch-all)
 
+;;;; Misc utilities
+
+(defun umount (point)
+  "Unmount device at POINT.
+
+Interactively, prompt for an ejectable device."
+  (interactive )
+
+  )
+
 ;;;; Mu4e
 
 ;; Each of my accounts is synced (by =mbsync=) to a folder at the root
@@ -1038,7 +1122,7 @@ Interactively, work on active buffer"
 
         ;; UI symbols
         mu4e-use-fancy-chars t
-        mu4e-headers-attach-mark '("" . "")
+        mu4e-headers-attach-mark '("A" . "A")
         mu4e-headers-encrypted-mark '("" . "")
         mu4e-headers-flagged-mark '("+" . "⚑")
         mu4e-headers-list-mark '("" . "")
@@ -1064,8 +1148,7 @@ Interactively, work on active buffer"
 				                      (:mailing-list   . 18)
 				                      (:human-date     . 12)
 				                      (:from-or-to     . 25)
-				                      (:thread-subject . nil)
-				                      )
+				                      (:thread-subject . nil))
 
         mu4e-user-mail-address-list '("thblt@thb.lt"
 					                            "thibault.polge@ac-amiens.fr"
@@ -1109,11 +1192,10 @@ Interactively, work on active buffer"
                           :match-func (lambda (msg)
                                         (when msg
                                           (mu4e-message-maildir-matches msg "^/Académique/")))
-                          :vars '(( user-mail-address   . "thibault.polge@ac-amiens.fr"  )
+                          :vars '(( user-mail-address       . "thibault.polge@ac-amiens.fr"  )
                                   ( mu4e-sent-folder        . "/Académique/Sent" )
                                   ( mu4e-drafts-folder      . "/Académique/Drafts" )
                                   ( mu4e-trash-folder       . "/Académique/Trash" )
-                                  ;; ( mu4e-refile-folder      . "/OVH/Archive" )
                                   ( smtpmail-local-domain   . "ac-amiens.fr" )
                                   ( smtpmail-smtp-server    . "smtp.ac-amiens.fr" )
                                   ( smtpmail-smtp-user      . "tpolge" )
@@ -1135,7 +1217,6 @@ Interactively, work on active buffer"
                                    (setq visual-fill-column-width 80)
                                    (visual-line-mode 1)
                                    (visual-fill-column-mode 1)))
-
 
   (define-key mu4e-headers-mode-map (kbd "(") 'mu4e-headers-prev-unread)
   (define-key mu4e-headers-mode-map (kbd ")") 'mu4e-headers-next-unread)
@@ -1183,27 +1264,35 @@ Interactively, work on active buffer"
       scpaste-user-address "https://thb.lt"
       scpaste-make-name-function 'scpaste-make-name-from-timestamp)
 
-(defun scpaste-footer (&rest _) "")
-
-;; A lot of packages add overlays which are useful when editing, noisy
-;; when reading.  We advise scpaste so a few minor modes get disabled
-;; before it runs, and restored afterwards.
 (defun thblt/scpaste-without-noise (f &rest args)
-  (let ((hig (bound-and-true-p highlight-indent-guides-mode))
+  "A lot of packages add overlays which are useful when editing,
+noisy when reading.  We advise scpaste so a few minor modes get
+disabled before it runs, and restored afterwards."
+  (let ((tmm transient-mark-mode)
+        (hig (bound-and-true-p highlight-indent-guides-mode))
         (flyc (bound-and-true-p flycheck-mode))
-        (flys (bound-and-true-p flyspell-mode)))
+        (flys (bound-and-true-p flyspell-mode))
+        (ssp (bound-and-true-p show-smartparens-mode)))
+    (when tmm
+      (transient-mark-mode 0))
 	  (when hig
       (highlight-indent-guides-mode -1))
 	  (when flyc
       (flycheck-mode -1))
-	  (flyspell-mode -1)
-	  (apply f args)
+    (flyspell-mode -1)
+    (when ssp
+      (show-smartparens-mode -1))
+	  (apply f args) ; Run wrapped function
+    (when tmm
+      (transient-mark-mode 1))
 	  (when hig
       (highlight-indent-guides-mode 1))
 	  (when flyc
       (flycheck-mode 1))
 	  (when flys
-      (flyspell-mode 1))))
+      (flyspell-mode 1))
+    (when ssp
+      (show-smartparens-mode 1)))))
 
 (advice-add 'scpaste :around 'thblt/scpaste-without-noise)
 (advice-add 'scpaste-region :around 'thblt/scpaste-without-noise)
