@@ -100,6 +100,9 @@
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
 	branch = master
+[submodule "eziam-line"]
+	path = lib/eziam-line
+	url = https://github.com/thblt/eziam-line
 [submodule "eziam-theme-emacs"]
 	path = lib/eziam-theme-emacs
 	url = https://github.com/thblt/eziam-theme-emacs

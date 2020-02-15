@@ -16,7 +16,7 @@
 (require 'package)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
-			 ("melpa-stable" . "https://melpa.org/packages/")))
+			                   ("melpa-stable" . "https://melpa.org/packages/")))
 (package-initialize)
 
 (setq package-archive-priorities '(("gnu"          . 100)
@@ -132,242 +132,25 @@
 
 ;; Configure the default font:
 
-(add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono 10"))
+;; (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono 10"))
+(add-to-list 'default-frame-alist '(font . "Iosevka 8"))
 (set-face-attribute 'default nil
-                    :height 100)
-
-(defadvice load-theme (before theme-dont-propagate activate)
-  "Disable active themes before loading a new one."
-  (mapc #'disable-theme custom-enabled-themes))
+                    :height 080)
 
 (setq eziam-color-comments t
-      eziam-scale-headings nil
+      eziam-scale-headings t
       eziam-heading-style 'gray-blocks)
 
 ;; Create some shortcut commands to load the Eziam themes:
-(defun eziam-dark () (interactive) (load-theme 'eziam-dark t))
-(defun eziam-dusk () (interactive) (load-theme 'eziam-dusk t))
-(defun eziam-light () (interactive) (load-theme 'eziam-light t))
-(defun eziam-white () (interactive) (load-theme 'eziam-white t))
-
-(load-theme 'eziam-dark t)
-
-;;;; Modeline
-
-(require 'kurecolor)
-(require 'powerline)
-(require 'server)
-
-(setq x-underline-at-descent-line t
-      powerline-gui-use-vcs-glyph t)
-
-;;;;; Faces (and cursor!)
-
-(defun thblt/mode-line-set-faces (&rest _) ; I'm hooking this on theme change so it needs to accept arguments
-  "Configure faces for the mode-line."
+(defun thblt/disable-all-themes ()
   (interactive)
-  (pl/reset-cache)
+  (mapc 'disable-theme custom-enabled-themes))
 
-  (let* ((dark (< (kurecolor-hex-get-brightness (face-attribute 'default :background)) .5))
+(defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t) (load-theme 'eziam-dark-line t) (when (fboundp 'pl/reset-cache) (pl/reset-cache)))
+(defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t) (load-theme 'eziam-light-line t) (pl/reset-cache))
 
-         (buffid-bg (if dark "#fff" "#000"))
-
-         (inactive (if dark "#111111" "#dddddd")))
-
-    ;; Modeline
-    (face-spec-set 'mode-line
-                   `((t
-                      :background ,(if dark "#334" "#667")
-                      :foreground ,(if dark "#ffe" "#ffe")
-                      :overline ,(if dark "#667" "#334")
-                      :underline ,(if dark "#667" "#334"))))
-
-    ;; Inactive mode line (invisible)
-    (face-spec-set 'mode-line-inactive
-                   `((t
-                      :background ,inactive
-                      :foreground ,inactive
-                      :overline ,(if dark "#444" "#fff")
-                      :underline ,(if dark "#444" "#fff"))))
-
-    (face-spec-set 'thblt/mode-line--buffer-modified
-                   `((t
-                      :background ,buffid-bg
-                      :foreground "#ff0000")))
-
-    (face-spec-set 'thblt/mode-line--buffer-modified-inactive
-                   `((t
-                      :inherit thblt-mode-line--buffer-modified
-                      :background nil)))
-
-    (face-spec-set 'thblt/mode-line--buffer-read-only
-                   `((t
-                      :background ,buffid-bg
-                      :foreground "#ff0000"))) ;
-
-    ;; Narrowing indicator
-    (face-spec-set 'thblt/mode-line--buffer-narrowed
-                   `((t
-                      :background ,buffid-bg
-                      :foreground "#888888")))
-
-    ;; Minor mode lighter
-    (face-spec-set 'thblt/mode-line--minor-mode
-                   `((t)))
-
-    ;; Server ON face
-    (face-spec-set 'thblt/mode-line--server
-                   `((t
-                      :foreground "#fe3"
-                      :weight bold)))
-
-    ;; Buffer ID
-    (face-spec-set 'thblt/mode-line--buffer-id
-                   `((t
-                      :background ,buffid-bg
-                      :foreground ,(if dark "#000" "#fff"))))
-    ;; Delimiter
-    (face-spec-set 'thblt/mode-line--delimiter
-                   `((t
-                      :foreground "#97978D")))))
-
-;;;;; Theme
-
-(defun thblt/powerline-theme ()
-  "Setup the default mode-line."
-
-  ;; MAINTENANCE NOTES
-  ;;
-  ;; the `mode-line' face isn't used, because the whole modeline color
-  ;; is determined by the current Evil mode.
-
-  (interactive)
-  (setq-default
-   mode-line-format
-   '("%e"
-     (:eval
-      (let* ((active (powerline-selected-window-active))
-             (face (if active 'mode-line 'mode-line-inactive))
-             (last-face) ; The last used face, to show the
-                                        ; correct separator after conditional
-                                        ; segments
-             (separator-left (intern (format "powerline-%s-%s"
-                                             (powerline-current-separator)
-                                             (car powerline-default-separator-dir))))
-             (separator-right (intern (format "powerline-%s-%s"
-                                              (powerline-current-separator)
-                                              (cdr powerline-default-separator-dir))))
-             (delim-face (if active 'thblt/mode-line--delimiter face))
-             (space (powerline-raw " " face))
-             (open (powerline-raw " [" delim-face))
-             (open* (powerline-raw "[" delim-face))
-             (close (powerline-raw "]" delim-face))
-             (lhs
-              (list
-               ;; Buffer id
-               ;; Modified?
-               (when (and buffer-file-name (buffer-modified-p))
-                 (powerline-raw " ●"  'thblt/mode-line--buffer-modified))
-               ;; Read-only?
-               (when buffer-read-only
-                 (powerline-raw " "  'thblt/mode-line--buffer-read-only))
-               ;; Not read-only, has a file, but isn't modified: spaces where the modified marker will appear
-               (when (and buffer-file-name
-                          (not (or (buffer-modified-p)
-                                   buffer-read-only)))
-                 ;; @Notice: we're borrowing the narrow face here
-                 (powerline-raw " -" 'thblt/mode-line--buffer-narrowed))
-
-               ;; Buffer name
-               (progn
-                 (setq last-face 'thblt/mode-line--buffer-id)
-                 ( powerline-raw
-                   " %b "
-                   `(:weight ,(if buffer-file-name 'bold 'normal) :inherit thblt/mode-line--buffer-id)))
-
-               ;; Narrowing indicator
-               (when (buffer-narrowed-p)
-                 (powerline-raw "[Narrow] " `(:inherit thblt/mode-line--buffer-narrowed :inherit thblt/mode-line--buffer-id )))
-
-               (funcall separator-left last-face face)
-               ;; Position
-               (powerline-raw " %2l:%3c [%o]    " face)
-
-               ;; Major mode
-               open
-               (powerline-major-mode `(:inherit ,face :weight bold 'r))
-               ;; Minor modes
-               (powerline-minor-modes  face 'l)
-               close
-
-               space space space space
-
-               ;; open
-               ;; (powerline-raw "⯃ 3 ⯅ 14" face)
-               ;; close
-               ))
-             (rhs (list
-                   ;; Version control
-                   (when buffer-file-name
-                     (concat
-                      open
-                      (powerline-raw
-                       (concat
-                        (projectile-project-name)
-                        (powerline-vc))
-                       face)
-                      close))
-
-                   space
-                   (when  (window-parameter (selected-window) 'thblt/window-at-bottom-right)
-                     (powerline-raw
-                      (if server-process
-                          (propertize (format " [%s] " server-name) 'face 'thblt/mode-line--server)
-                        ""))))
-
-                  ))
-
-        (concat (powerline-render lhs)
-                (powerline-fill face (powerline-width rhs))
-                (powerline-render rhs)))))))
-
-;;;;; Window position tracker
-
-(defun thblt/window-at-bottom-left-p (win)
-  "Return non-nil if WIN is at the bottom left of the frame."
-  (not (or
-        (window-in-direction 'below win)
-        (window-in-direction 'left win))))
-
-(defun thblt/window-at-bottom-right-p (win)
-  "Return non-nil if WIN is at the bottom right of the frame."
-  (not (or
-        (window-in-direction 'below win)
-        (window-in-direction 'right win))))
-
-(defun thblt/update-window-position-parameters (&optional frame)
-  (unless frame (setq frame (selected-frame)))
-  (mapc (lambda (win)
-          (set-window-parameter win 'thblt/window-at-bottom-left (thblt/window-at-bottom-left-p win))
-          (set-window-parameter win 'thblt/window-at-bottom-right (thblt/window-at-bottom-right-p win)))
-        (window-list frame nil)))
-
-(add-hook 'window-configuration-change-hook 'thblt/update-window-position-parameters)
-
-;;;;; Installation
-
-(thblt/mode-line-set-faces)
-(advice-add 'load-theme :after 'thblt/mode-line-set-faces)
-
-(add-to-list 'after-make-frame-functions 'thblt/update-window-position-parameters)
-(unless (daemonp)
-  (thblt/update-window-position-parameters)) ; This is required for
-                                        ; non-daemon instances
-                                        ; where the frame is
-                                        ; created before init.el
-                                        ; gets to run.
-
-(thblt/powerline-theme)
+(eziam-dark)
+; (require 'eziam-line)
 
 ;;;; Projectile
 
@@ -404,8 +187,6 @@
         aw-ignored-buffers (append aw-ignored-buffers
                                    (mapcar (lambda (n) (format " *Minibuf-%s*" n))
                                            (number-sequence 0 20)))))
-
-(defvar thblt/window-hydra-mode 'swap)
 
 (defun thblt/aw-switch-to-numbered-window (number)
   (aw-switch-to-window (nth (- number 1) (aw-window-list))))
@@ -1426,6 +1207,9 @@ Interactively, work on active buffer"
 
 (advice-add 'scpaste :around 'thblt/scpaste-without-noise)
 (advice-add 'scpaste-region :around 'thblt/scpaste-without-noise)
+
+(with-eval-after-load 'scpaste
+  (defun scpaste-footer (&rest _) ""))
 
 ;;; Conclusion
 
