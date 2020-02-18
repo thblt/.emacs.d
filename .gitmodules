@@ -22,10 +22,6 @@
 	build-step = make
 	build-step = borg-update-autoloads
 	build-step = borg-makeinfo
-[submodule "auth-password-store"]
-	path = lib/auth-password-store
-	url = https://github.com/DamienCassou/auth-password-store
-	branch = master
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = https://github.com/tarsius/auto-compile
@@ -207,15 +203,6 @@
 [submodule "packed"]
 	path = lib/packed
 	url = https://github.com/tarsius/packed
-	branch = master
-[submodule "pass"]
-	path = lib/pass
-	url = https://github.com/NicolasPetton/pass
-	branch = master
-	signingkey = 28D3BED851FDF3AB57FEF93C233587A47C207910
-[submodule "password-store"]
-	path = lib/password-store
-	url = https://github.com/emacsmirror/password-store
 	branch = master
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
