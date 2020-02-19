@@ -69,7 +69,7 @@
       browse-url-browser-function 'browse-url-generic
       ;; browse-url-generic-program "setsid"
       browse-url-generic-program "firefox")
-      ;; browse-url-generic-args '("xdg-open"))
+;; browse-url-generic-args '("xdg-open"))
 
 (setq-default  major-mode 'text-mode)
 
@@ -102,7 +102,7 @@
 (add-hook 'overwrite-mode-hook 'thblt/update-cursor-color)
 (thblt/update-cursor-color)
 (blink-cursor-mode)
-; @FIXME Set color per-buffer
+                                        ; @FIXME Set color per-buffer
 
 ;; Never use the "safe" ~yes-or-no~ function:
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -150,8 +150,8 @@
 (defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t) (load-theme 'eziam-dark-line t) (when (fboundp 'pl/reset-cache) (pl/reset-cache)))
 (defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t) (load-theme 'eziam-light-line t) (pl/reset-cache))
 
+(eziam-line-install)
 (eziam-dark)
-; (require 'eziam-line)
 
 ;;;; Projectile
 
@@ -233,11 +233,12 @@
 ;; Stealing rules from wasamasa's config
 (setq shackle-rules
       '(("*Help*" :align t :select t)
+        ("\\`\\*magit.*?\\*\\'" :regexp t :frame nil)
         (flycheck-error-list-mode :select t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
-      shackle-default-rule '(:select t)
+      shackle-default-rule '(:select t :frame nil)
       shackle-default-size 0.4
       shackle-inhibit-window-quit-on-same-windows t)
 
@@ -294,10 +295,16 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key global-map(kbd "M-ê") 'beginning-of-buffer)
 (define-key global-map (kbd "M-Ê") 'end-of-buffer)
 
-;; Fast and efficient killing: q instead of q
+;; Fast and efficient killing: q instead of k
 
 (define-key global-map (kbd "C-q") 'kill-line)
 (define-key smartparens-mode-map (kbd "C-M-q")  'sp-kill-sexp)
+
+;; Fill and unfill
+(define-key global-map (kbd "M-'") 'fill-paragraph)
+(define-key global-map (kbd "C-'") 'unfill-paragraph)
+                                        ; @FIXME In prog-mode, this could be reformat-defun or something.
+
 
 ;; EXPERIMENTAL Vim-like motion with modifiers
 
@@ -542,7 +549,7 @@ nil; otherwise it's evaluated normally."
 
 (recentf-mode)
 
-;;;;; TODO Smartparens
+;;;;; Smartparens
 
 (require 'smartparens-config) ;; Load default config
 (smartparens-global-mode)
@@ -645,10 +652,14 @@ nil; otherwise it's evaluated normally."
 (global-set-key (kbd "C-S-y") 'copy-line)
 (global-set-key (kbd "C-h") 'delete-backward-char)
 
+(define-key global-map (kbd "M-Q") 'unfill-paragraph)
+
+
+
 ;;;;; Autosave when losing focus
 
 (super-save-mode +1)
-(diminish 'super-save-mode " 💾")
+(diminish 'super-save-mode)
 
 ;;;;; Delete trailing whitespace when saving
 
@@ -668,10 +679,6 @@ nil; otherwise it's evaluated normally."
 
 (add-hook 'text-mode-hook (lambda () (abbrev-mode t)))
 (diminish 'abbrev-mode)
-
-;;;;; Unfill
-
-(define-key global-map (kbd "M-Q") 'unfill-paragraph)
 
 ;;;;; Wordwrap/visual line/visual-fill-column
 
@@ -706,6 +713,7 @@ nil; otherwise it's evaluated normally."
       org-html-htmlize-output-type 'css
       org-imenu-depth 8
 		  org-src-fontify-natively t
+      org-use-speed-commands t
 		  org-ellipsis " ▼"
 		  org-special-ctrl-a/e t
 		  org-special-ctrl-k t)
@@ -764,12 +772,7 @@ nil; otherwise it's evaluated normally."
     (message (mapconcat #'identity headers " > "))))
 
 (define-key org-mode-map (kbd  "<f1> <f1>") 'thblt/org-where-am-i)
-
-;; The *emphasize selected* bindings:
-
-(defvar selected-org-mode-map (make-sparse-keymap))
-(define-key selected-org-mode-map (kbd "b") (lambda () (interactive) (org-emphasize ?*)))
-(define-key selected-org-mode-map (kbd "i") (lambda () (interactive) (org-emphasize ?/)))
+(define-key org-mode-map (kbd  "C-'") nil)
 
 ;;;;;; Org-agenda:
 
@@ -782,6 +785,18 @@ nil; otherwise it's evaluated normally."
  'org-babel-load-languages
  '((dot . t)
    (shell . t)))
+
+;;;;;; Stuff
+
+(defun thblt/org-insert-magic-link (url)
+  (interactive "sLink to? ")
+  (require 'url-util)
+  (let ((title))
+    (cond
+     ((string-prefix-p "https://fr.wikipedia.org/wiki/" url)
+      (setq title (decode-coding-string (url-unhex-string (substring url 30)) 'utf-8)))
+     (t (error "I have no idea what to do with this")))
+    (org-insert-link nil url title)))
 
 ;;; Writing code
 ;;;; Settings
@@ -852,7 +867,7 @@ Interactively, work on active buffer"
 
 (with-eval-after-load 'company
   (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
-  (diminish 'company-mode "⋯ "))
+  (diminish 'company-mode ""))
 
 ;; (add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
 
@@ -882,19 +897,22 @@ Interactively, work on active buffer"
 ;;;;; Outline and Outshine
 
 (provide 'outorg) ; Dirty
+
+(setq outshine-use-speed-commands t)
+
 (add-hook 'prog-mode-hook 'outshine-mode)
 (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
 (diminish 'outline-minor-mode)
 
 (defun thblt/m-up-dwim () (interactive)
-(cond ((and outshine-mode (outline-on-heading-p))
-		   (call-interactively 'outline-move-subtree-up))
-      (t (call-interactively 'move-text-up))))
+       (cond ((and outshine-mode (outline-on-heading-p))
+		          (call-interactively 'outline-move-subtree-up))
+             (t (call-interactively 'move-text-up))))
 
 (defun thblt/m-down-dwim () (interactive)
-(cond ((and outshine-mode (outline-on-heading-p))
-		   (call-interactively 'outline-move-subtree-down))
-      (t (call-interactively 'move-text-down))))
+       (cond ((and outshine-mode (outline-on-heading-p))
+		          (call-interactively 'outline-move-subtree-down))
+             (t (call-interactively 'move-text-down))))
 
 (with-eval-after-load 'outshine
   (diminish 'outshine-mode)
@@ -1275,24 +1293,24 @@ disabled before it runs, and restored afterwards."
         (ssp (bound-and-true-p show-smartparens-mode)))
     (when tmm
       (transient-mark-mode 0))
-	  (when hig
+    (when hig
       (highlight-indent-guides-mode -1))
-	  (when flyc
+    (when flyc
       (flycheck-mode -1))
     (flyspell-mode -1)
     (when ssp
       (show-smartparens-mode -1))
-	  (apply f args) ; Run wrapped function
+    (apply f args) ; Run wrapped function
     (when tmm
       (transient-mark-mode 1))
-	  (when hig
+    (when hig
       (highlight-indent-guides-mode 1))
-	  (when flyc
+    (when flyc
       (flycheck-mode 1))
-	  (when flys
+    (when flys
       (flyspell-mode 1))
     (when ssp
-      (show-smartparens-mode 1)))))
+      (show-smartparens-mode 1))))
 
 (advice-add 'scpaste :around 'thblt/scpaste-without-noise)
 (advice-add 'scpaste-region :around 'thblt/scpaste-without-noise)
