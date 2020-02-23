@@ -1,3 +1,13 @@
+;; -*- lexical-binding: t; -*-
+
+(message "███████╗███╗   ███╗ █████╗  ██████╗███████╗")
+(message "██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝")
+(message "█████╗  ██╔████╔██║███████║██║     ███████╗")
+(message "██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║")
+(message "███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║")
+(message "╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝ %s\n"
+         (if lexical-binding "NT 4" "3.11 FOR WORKGROUPS"))
+
 ;;; Introduction
 
 ;; This chapter deals with the general use of Emacs, and is limited to
@@ -134,9 +144,9 @@
 ;; Configure the default font:
 
 ;; (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono 10"))
-(add-to-list 'default-frame-alist '(font . "Iosevka 8"))
+(add-to-list 'default-frame-alist '(font . "Iosevka Term 8"))
 (set-face-attribute 'default nil
-                    :height 080)
+                    :height 090)
 
 (setq eziam-color-comments t
       eziam-scale-headings t
@@ -259,25 +269,28 @@
 ;; Stealing rules from wasamasa's config
 (setq shackle-rules
       '(("*Help*" :align t :select t)
-        ("\\`\\*magit.*?\\*\\'" :regexp t :frame nil)
+        ("^magit.*$'" :regexp t :frame nil)
+        (" *Marked Processes*" :frame nil :popup t :select t)
+        (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
+        ("COMMIT…EDITMSG" :select t :frame nil)
         (flycheck-error-list-mode :select t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
-      shackle-default-rule '(:select t :frame nil)
+      shackle-default-rule '(:select t :frame t)
       shackle-default-size 0.4
       shackle-inhibit-window-quit-on-same-windows t)
 
 (shackle-mode)
 
-;;;;; Windmove
+;;;;; Windmove [DISABLED]
 
-(setq windmove-wrap-around t)
+;; (setq windmove-wrap-around t)
 
-(define-key global-map (kbd "S-<up>") 'windmove-up)
-(define-key global-map (kbd "S-<left>") 'windmove-left)
-(define-key global-map (kbd "S-<right>") 'windmove-right)
-(define-key global-map (kbd "S-<down>") 'windmove-down)
+;; (define-key global-map (kbd "S-<up>") 'windmove-up)
+;; (define-key global-map (kbd "S-<left>") 'windmove-left)
+;; (define-key global-map (kbd "S-<right>") 'windmove-right)
+;; (define-key global-map (kbd "S-<down>") 'windmove-down)
 
 ;;;;; Winner
 
@@ -294,10 +307,11 @@
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 ;;;; BÉPO adjustments
+
 ;; Unshifted digit argument
 
 (defmacro thblt/digit-argument-with-value (char)
-  "Return an anonymous lambda that calls `digit-argument' as if CHAR had been pressed.
+  "Return an (interactive) lambda that calls `digit-argument' as if CHAR had been pressed.
 
 This can be used to update the digit argument from arbitrary keys."
   `(lambda () (interactive)
@@ -314,7 +328,7 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key universal-argument-map (kbd "+") (thblt/digit-argument-with-value ?7))
 (define-key universal-argument-map (kbd "-") (thblt/digit-argument-with-value ?8))
 (define-key universal-argument-map (kbd "/") (thblt/digit-argument-with-value ?9))
-(define-key universal-argument-map (kbd "0") (thblt/digit-argument-with-value ?0))
+(define-key universal-argument-map (kbd "*") (thblt/digit-argument-with-value ?0))
 
 ;; Beginning and end of buffer
 
@@ -330,7 +344,6 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key global-map (kbd "M-'") 'fill-paragraph)
 (define-key global-map (kbd "C-'") 'unfill-paragraph)
                                         ; @FIXME In prog-mode, this could be reformat-defun or something.
-
 
 ;; EXPERIMENTAL Vim-like motion with modifiers
 
@@ -619,7 +632,6 @@ nil; otherwise it's evaluated normally."
 (define-key smartparens-mode-map (kbd "M-F")  'sp-forward-symbol)
 (define-key smartparens-mode-map (kbd "M-B")  'sp-backward-symbol)
 
-
 (diminish 'smartparens-mode)
 
 ;;;;; Undo-Tree
@@ -679,8 +691,6 @@ nil; otherwise it's evaluated normally."
 (global-set-key (kbd "C-h") 'delete-backward-char)
 
 (define-key global-map (kbd "M-Q") 'unfill-paragraph)
-
-
 
 ;;;;; Autosave when losing focus
 
@@ -893,12 +903,8 @@ Interactively, work on active buffer"
 
 (with-eval-after-load 'company
   (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
-  (diminish 'company-mode ""))
-
-;; (add-hook 'after-make-frame-functions (lambda (_) (interactive) (company-posframe-mode 1)))
-
-;; (with-eval-after-load 'company-posframe
-;;   (diminish 'company-posframe-mode))
+  (diminish 'company-mode "C⋯"))
+(setq company-auto-complete t)
 
 ;;;;; Evil Nerd Commenter
 
@@ -911,8 +917,6 @@ Interactively, work on active buffer"
     (define-key map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
     (define-key map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs)))
 
-
-
 ;;;;; Flycheck
 
 ;; (add-hook 'prog-mode-hook 'flycheck-mode)
@@ -922,7 +926,7 @@ Interactively, work on active buffer"
 
 ;;;;; Outline and Outshine
 
-(provide 'outorg) ; Dirty
+(provide 'outorg) ; FIXME Dirty
 
 (setq outshine-use-speed-commands t)
 
@@ -947,9 +951,11 @@ Interactively, work on active buffer"
   (define-key outshine-mode-map (kbd "M-TAB") nil)
   (define-key outshine-mode-map (kbd "C-M-TAB") 'outshine-cycle-buffer))
 
+(define-key outline-minor-mode-map (kbd "C-c C-p") 'outline-previous-visible-heading)
+(define-key outline-minor-mode-map (kbd "C-c C-n") 'outline-next-visible-heading)
+
 ;;;;; Rainbow mode
 
-;; Rainbow mode is similar to Atom's Pigments plugin or something.
 (add-hook 'prog-mode-hook (rainbow-mode))
 (add-hook 'css-mode-hook 'rainbow-mode)
 (add-hook 'scss-mode-hook 'rainbow-mode)
