@@ -34,10 +34,6 @@
 	path = lib/beginend
 	url = https://github.com/DamienCassou/beginend
 	branch = master
-[submodule "bind-map"]
-	path = lib/bind-map
-	url = https://github.com/justbur/emacs-bind-map/
-	branch = master
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
@@ -62,10 +58,6 @@
 [submodule "company-auctex"]
 	path = lib/company-auctex
 	url = https://github.com/alexeyr/company-auctex
-	branch = master
-[submodule "company-posframe"]
-	path = lib/company-posframe
-	url = https://github.com/tumashu/company-posframe
 	branch = master
 [submodule "counsel-projectile"]
 	path = lib/counsel-projectile
@@ -139,10 +131,6 @@
 	path = lib/ivy
 	url = https://github.com/abo-abo/swiper
 	branch = master
-[submodule "ivy-posframe"]
-	path = lib/ivy-posframe
-	url = https://github.com/tumashu/ivy-posframe
-	branch = master
 [submodule "kurecolor"]
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
@@ -195,10 +183,6 @@
 	info-path = doc
 	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
-[submodule "origami"]
-	path = lib/origami
-	url = https://github.com/gregsexton/origami.el/blob/master/origami.el
-	branch = master
 [submodule "outshine"]
 	path = lib/outshine
 	url = https://github.com/alphapapa/outshine
@@ -220,10 +204,6 @@
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
-[submodule "posframe"]
-	path = lib/posframe
-	url = https://github.com/tumashu/posframe
-	branch = master
 [submodule "projectile"]
 	path = lib/projectile
 	url = https://github.com/bbatsov/projectile
