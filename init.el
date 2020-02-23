@@ -147,11 +147,37 @@
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
 
-(defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t) (load-theme 'eziam-dark-line t) (when (fboundp 'pl/reset-cache) (pl/reset-cache)))
-(defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t) (load-theme 'eziam-light-line t) (pl/reset-cache))
+(defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t))
+(defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t))
 
-(eziam-line-install)
 (eziam-dark)
+
+;;;;; Mode line
+
+(setq x-underline-at-descent-line t)
+
+(set-face-attribute 'mode-line           nil :background "#222222" :foreground "#dddddd" :distant-foreground "#ffffff" :overline "#444444" :underline "#444444" :weight 'medium)
+(set-face-attribute 'mode-line-inactive  nil :background "#000000" :foreground "#444444" :distant-foreground "#444444" :overline "#444444" :underline "#444444" :inverse-video nil)
+(set-face-attribute 'mode-line-buffer-id nil :background nil :foreground nil :weight 'medium :inverse-video t)
+(set-face-attribute 'mode-line-emphasis  nil :background "#000000")
+(set-face-attribute 'mode-line-highlight nil :background "#000000" :foreground nil)
+
+(setq-default mode-line-format
+              `(
+                (:eval
+                 (cond
+                  ((not buffer-file-name) "")
+                  (buffer-read-only " x "
+                   )
+                  ((buffer-modified-p )
+                   " ▼  ")
+                  (buffer-file-name " ")))
+                (:propertize " %b %@%n " face mode-line-buffer-id)
+                                " %l:%c %o "
+                "    "
+                mode-line-modes
+                "    "
+                ))
 
 ;;;; Projectile
 

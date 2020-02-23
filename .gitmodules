@@ -97,9 +97,6 @@
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
 	branch = master
-[submodule "eziam-line"]
-	path = lib/eziam-line
-	url = https://github.com/thblt/eziam-line
 [submodule "eziam-theme-emacs"]
 	path = lib/eziam-theme-emacs
 	url = https://github.com/thblt/eziam-theme-emacs
@@ -226,10 +223,6 @@
 [submodule "posframe"]
 	path = lib/posframe
 	url = https://github.com/tumashu/posframe
-	branch = master
-[submodule "powerline"]
-	path = lib/powerline
-	url = https://github.com/milkypostman/powerline
 	branch = master
 [submodule "projectile"]
 	path = lib/projectile
