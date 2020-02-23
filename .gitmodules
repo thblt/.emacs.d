@@ -84,6 +84,7 @@
 	url = https://github.com/skeeto/emacsql
 	branch = master
 	build-nix-shell-packages = llvmPackages.clang.cc
+  build-step = make binary
 [submodule "emmet-mode"]
 	path = lib/emmet-mode
 	url = https://github.com/smihica/emmet-mode/
@@ -119,6 +120,12 @@
 	path = lib/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct
 	branch = master
+[submodule "forge"]
+	path = lib/forge
+	url = https://github.com/magit/forge
+[submodule "ghub"]
+	path = lib/ghub
+	url = https://github.com/magit/ghub
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	url = https://github.com/haskell/haskell-mode
@@ -151,6 +158,9 @@
 	path = lib/magit-popup
 	url = https://github.com/magit/magit-popup
 	branch = master
+[submodule "markdown-mode"]
+	path = lib/markdown-mode
+	url = https://github.com/jrblevin/markdown-mode
 [submodule "move-text"]
 	path = lib/move-text
 	url = https://github.com/emacsfodder/move-text
@@ -261,6 +271,9 @@
 	path = lib/transient
 	url = https://github.com/magit/transient
 	branch = master
+[submodule "treepy"]
+	path = lib/treepy
+	url = https://github.com/volrath/treepy.el
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
