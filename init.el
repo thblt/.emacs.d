@@ -14,24 +14,18 @@
 ;; general settings and sane defaults.  It's a bit messy, since it's
 ;; mostly made up of all the bits that don't fit anywhere else.
 
-;;;; First things first
 
-;; Never load bytecode if .el is more recent(
+;; Never load bytecode if .el is more recent
 (setq load-prefer-newer t)
 
-;;;;; Package managers
+;;;; Package managers
 
 ;;;;;; package.el
 
 (require 'package)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")
-			                   ("melpa-stable" . "https://melpa.org/packages/")))
+                         ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
-
-(setq package-archive-priorities '(("gnu"          . 100)
-                                   ("melpa"        . 50)
-                                   ("melpa-stable" . 10)))
 
 ;;;;;; Borg
 
@@ -42,7 +36,7 @@
 (require 'borg)
 (borg-initialize)
 
-;;;;; Fundamentals
+;;;; Fundamental packages
 
 ;; Recompile what needs recompiling
 (require 'auto-compile)
@@ -67,8 +61,7 @@
       delete-old-versions t
       ;; Don't lose the contents of system clipboard when killing from Emacs:
       save-interprogram-paste-before-kill t
-      ;; Disable Customize by pointing it to =/dev/null=:
-      custom-file "/dev/null"
+      custom-file (no-littering-expand-var-file-name "customize.el")
 
       inhibit-compacting-font-caches (eq 'system-type 'windows-nt) ; This prevents slowdown when using strange characters.
 
@@ -81,15 +74,20 @@
       browse-url-generic-program "firefox")
 ;; browse-url-generic-args '("xdg-open"))
 
-(setq-default  major-mode 'text-mode)
-
-(define-key input-decode-map [?\C-m] [C-m])
-(define-key input-decode-map [?\C-i] [C-i])
-(define-key input-decode-map [?\C-i] [C-i])
-
 (load custom-file t)
 
-;;;; MELPA and package.el
+(setq-default major-mode 'text-mode)
+
+(defun thblt/disable-key-translations (frame)
+  (with-selected-frame frame
+    (when (display-graphic-p)
+      (define-key input-decode-map [?\C-m] [C-m])
+      (define-key input-decode-map [?\C-i] [C-i]))))
+;; Don't lose usage of C-* in X
+
+(add-to-list 'after-make-frame-functions 'thblt/disable-key-translations)
+(unless (daemonp)
+  (thblt/disable-key-translations))
 
 ;;; User interface
 
@@ -118,7 +116,7 @@
 (add-hook 'overwrite-mode-hook 'thblt/update-cursor-color)
 (thblt/update-cursor-color)
 (blink-cursor-mode)
-                                        ; @FIXME Set color per-buffer
+;; @FIXME Set color per-buffer
 
 ;; Never use the "safe" ~yes-or-no~ function:
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -142,54 +140,59 @@
 ;; And force leave the minibuffer with =C-M-]=
 (global-set-key (kbd "C-M-à") 'abort-recursive-edit)
 
-;; Fringes are pointless (by default)
+;; Fringes are pointless
 (fringe-mode 0)
 
 ;;;; Fonts and themes
 
 ;; Configure the default font:
-
-;; (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono 10"))
-(add-to-list 'default-frame-alist '(font . "Iosevka Term 8"))
+(add-to-list 'default-frame-alist '(font . "Iosevka Term"))
 (set-face-attribute 'default nil
                     :height 090)
 
 (setq eziam-color-comments t
-      eziam-scale-headings t
+      eziam-scale-headings nil
       eziam-heading-style 'gray-blocks)
 
-;; Create some shortcut commands to load the Eziam themes:
 (defun thblt/disable-all-themes ()
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
 
-(defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t))
-(defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t))
+(defun thblt/local-face-customizations (dark)
+  (interactive (list (member 'eziam-dark custom-enabled-themes)))
+  (let ((fg (face-attribute 'default :foreground)))
+    (set-face-attribute 'mode-line           nil :background "#111111" :foreground "#ffffff" :distant-foreground "#ffffff" :overline "#444444" :underline "#444444")
+    (set-face-attribute 'mode-line-inactive  nil :background "#000000" :foreground "#444444" :distant-foreground "#444444" :overline "#444444" :underline "#444444")
+    (set-face-attribute 'mode-line-buffer-id nil :background nil :foreground nil :weight 'medium :inverse-video t)
+    (set-face-attribute 'mode-line-emphasis  nil :background "#000000")
+    (set-face-attribute 'mode-line-highlight nil :background "#000000" :foreground nil)
+    (set-face-attribute 'region              nil :background "#2288aa" :foreground fg :distant-foreground "#ffffff")
 
-(eziam-dark)
+    (set-face-attribute 'hydra-face-red      nil :foreground (if dark "#ff8888" "red"))
+
+    (set-face-attribute 'dired-directory     nil :foreground (if dark "#7799bb"))
+    (set-face-attribute 'dired-symlink       nil :foreground (if dark "#bbffbb"))))
+
+(defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t) (thblt/local-face-customizations t))
+(defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t) (thblt/local-face-customizations nil))
+
+(with-eval-after-load 'hydra
+  (eziam-dark))
 
 ;;;;; Mode line
 
 (setq x-underline-at-descent-line t)
-
-(set-face-attribute 'mode-line           nil :background "#222222" :foreground "#dddddd" :distant-foreground "#ffffff" :overline "#444444" :underline "#444444" :weight 'medium)
-(set-face-attribute 'mode-line-inactive  nil :background "#000000" :foreground "#444444" :distant-foreground "#444444" :overline "#444444" :underline "#444444" :inverse-video nil)
-(set-face-attribute 'mode-line-buffer-id nil :background nil :foreground nil :weight 'medium :inverse-video t)
-(set-face-attribute 'mode-line-emphasis  nil :background "#000000")
-(set-face-attribute 'mode-line-highlight nil :background "#000000" :foreground nil)
 
 (setq-default mode-line-format
               `(
                 (:eval
                  (cond
                   ((not buffer-file-name) "")
-                  (buffer-read-only " x "
-                   )
-                  ((buffer-modified-p )
-                   " ▼  ")
+                  (buffer-read-only " X ")
+                  ((buffer-modified-p) " ▼ ")
                   (buffer-file-name " ")))
                 (:propertize " %b %@%n " face mode-line-buffer-id)
-                                " %l:%c %o "
+                " %l:%c %o "
                 "    "
                 mode-line-modes
                 "    "
@@ -218,18 +221,19 @@
 
 ;;;;; Ace-window
 
-(define-key global-map (kbd "C-x o") 'ace-window)
-(define-key global-map (kbd "M-0") 'thblt/switch-to-minibuffer)
+(unless (eq system-type 'gnu/linux)
+  (define-key global-map (kbd "C-x o") 'ace-window)
+  (define-key global-map (kbd "M-0") 'thblt/switch-to-minibuffer)
 
-;; We use the value of aw-ignored-buffers, so we need the
-;; eval-after-load
-(with-eval-after-load 'ace-window
-  (setq aw-scope 'frame
-        aw-background t
-        aw-ignore-on t
-        aw-ignored-buffers (append aw-ignored-buffers
-                                   (mapcar (lambda (n) (format " *Minibuf-%s*" n))
-                                           (number-sequence 0 20)))))
+  ;; We use the value of aw-ignored-buffers, so we need the
+  ;; eval-after-load
+  (with-eval-after-load 'ace-window
+    (setq aw-scope 'frame
+          aw-background t
+          aw-ignore-on t
+          aw-ignored-buffers (append aw-ignored-buffers
+                                     (mapcar (lambda (n) (format " *Minibuf-%s*" n))
+                                             (number-sequence 0 20))))))
 
 (defun thblt/aw-switch-to-numbered-window (number)
   (aw-switch-to-window (nth (- number 1) (aw-window-list))))
@@ -253,7 +257,8 @@
 
 ;;;;; Ivy
 
-(setq ivy-use-virtual-buffers t)
+(setq ivy-use-virtual-buffers t
+      ivy-read-action-function 'ivy-hydra-read-action)
 (ivy-mode)
 
 (define-key global-map (kbd "M-i") 'counsel-imenu)
@@ -265,7 +270,7 @@
 (diminish 'ivy-mode)
 
 ;; (setq ivy-posframe-display-functions-alist
-;;       '((t . ivy-posframe-display-at-frame-center)))
+;;      '((t . ivy-posframe-display-at-frame-center)))
 
 ;; (ivy-posframe-mode 1)
 ;; (diminish 'ivy-posframe-mode)
@@ -278,7 +283,9 @@
         ("^magit.*$'" :regexp t :frame nil)
         (" *Marked Processes*" :frame nil :popup t :select t)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
+        ("*Org PDF LaTeX Output*" :select nil)
         ("COMMIT…EDITMSG" :select t :frame nil)
+        (" *undo-tree*" :frame nil)
         (flycheck-error-list-mode :select t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
@@ -354,13 +361,13 @@ This can be used to update the digit argument from arbitrary keys."
 ;; EXPERIMENTAL Vim-like motion with modifiers
 
 ;; (defun k (seq)
-;;   (let ((substs '(("left"  . "t")
-;;                   ("down"  . "s")
-;;                   ("up"    . "r")
-;;                   ("right" . "n"))))
-;;     (dolist (s substs)
-;;       (setq seq (replace-regexp-in-string (format "%%%s%%" (car s)) (cdr s) seq)))
-;;     (kbd seq)))
+;;  (let ((substs '(("left"  . "t")
+;;                  ("down"  . "s")
+;;                  ("up"    . "r")
+;;                  ("right" . "n"))))
+;;    (dolist (s substs)
+;;      (setq seq (replace-regexp-in-string (format "%%%s%%" (car s)) (cdr s) seq)))
+;;    (kbd seq)))
 
 ;; (define-key global-map (k "C-b") nil)
 ;; (define-key global-map (k "C-f") nil)
@@ -565,6 +572,9 @@ nil; otherwise it's evaluated normally."
 (define-key global-map (kbd "C-e") 'mwim-end-of-code-or-line)
 (define-key global-map (kbd "<home>") 'mwim-beginning-of-line-or-code)
 (define-key global-map (kbd "<end>") 'mwim-end-of-line-or-code)
+;; but…
+(with-eval-after-load 'haskell-interactive-mode
+  (define-key haskell-interactive-mode-map (kbd "C-a") 'haskell-interactive-mode-bol))
 
 ;;;;; nav-flash (don't get lost)
 
@@ -709,26 +719,20 @@ nil; otherwise it's evaluated normally."
 
 ;;; Writing prose
 
-;; This chapter deals with two things:
-
-;;  1. Major modes dedicated to writing prose, as opposed to code or
-;;     configuration.
-;;  2. Non-code bits in code/configuration files: comments and integrated
-;;     documentation.n
 
 ;;;; Common settings and minor modes
-;;;;; Abbrev
+;;;; bbrev
 
 (add-hook 'text-mode-hook (lambda () (abbrev-mode t)))
 (diminish 'abbrev-mode)
 
-;;;;; Wordwrap/visual line/visual-fill-column
+;;;; Wordwrap/visual line/visual-fill-column
 
 (diminish 'visual-line-mode)
 
 ;;;; Major modes
 
-;;;;; AucTex
+;;;; AucTex
 
 (require 'tex-site nil t) ; I don't build this on Windows.
 
@@ -747,18 +751,18 @@ nil; otherwise it's evaluated normally."
   (sp-local-pair "«" "»")
   (sp-local-pair "“" "”"))
 
-;;;;; Org-Mode
+;;;; Org-Mode
 
 (setq org-catch-invisible-edits t
       org-hide-leading-stars t
       org-hide-emphasis-markers nil
       org-html-htmlize-output-type 'css
       org-imenu-depth 8
-		  org-src-fontify-natively t
-      org-use-speed-commands t
-		  org-ellipsis " ▼"
-		  org-special-ctrl-a/e t
-		  org-special-ctrl-k t)
+      org-src-fontify-natively t
+      org-use-speed-commands nil
+      org-ellipsis " ▼"
+      org-special-ctrl-a/e t
+      org-special-ctrl-k t)
 
 (add-hook 'org-mode-hook (lambda ()
                            (org-indent-mode t)
@@ -774,12 +778,12 @@ nil; otherwise it's evaluated normally."
 (with-eval-after-load 'org-indent
   (diminish 'org-indent-mode))4
 
-;;;;;; Pairs
+;;;; Pairs
 
 (defun sp--org-skip-asterisk (ms mb me)
   (or (and (= (line-beginning-position) mb)
            (eq 32 (char-after (1+ mb))))
-	    (and (= (1+ (line-beginning-position)) me)
+      (and (= (1+ (line-beginning-position)) me)
            (eq 32 (char-after me)))))
 
 (sp-with-modes 'org-mode
@@ -791,7 +795,7 @@ nil; otherwise it's evaluated normally."
   (sp-local-pair "«" "»")
   (sp-local-pair "“" "”"))
 
-;;;;;;; Export
+;;;; Export
 
 (require 'ox-extra)
 (ox-extras-activate '(ignore-headlines))
@@ -806,29 +810,29 @@ nil; otherwise it's evaluated normally."
   (interactive)
   (let (headers)
     (save-excursion
-	    (while (condition-case nil
+      (while (condition-case nil
                  (progn
                    (push (nth 4 (org-heading-components)) headers)
                    (outline-up-heading 1))
-		           (error nil))))
+               (error nil))))
     (message (mapconcat #'identity headers " > "))))
 
 (define-key org-mode-map (kbd  "<f1> <f1>") 'thblt/org-where-am-i)
 (define-key org-mode-map (kbd  "C-'") nil)
 
-;;;;;; Org-agenda:
+;;;; Org-agenda:
 
 (setq org-agenda-files (list "~/Documents/LOG.org")
-	    org-default-notes-file "~/Documents/LOG.org")
+      org-default-notes-file "~/Documents/LOG.org")
 
-;;;;;; Org-babel
+;;;; Org-babel
 
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((dot . t)
    (shell . t)))
 
-;;;;;; Stuff
+;;;; Stuff
 
 (defun thblt/org-insert-magic-link (url)
   (interactive "sLink to? ")
@@ -846,37 +850,12 @@ nil; otherwise it's evaluated normally."
 ;; Some basic settings...
 
 (setq-default comment-empty-lines nil
-		          tab-width 2
-		          c-basic-offset 2
-		          cperl-indent-level 2
-		          indent-tabs-mode nil)
-
-;; and a few mappings.
-
-(defvar-local thblt/compile-command nil)
-
-(defvar thblt/default-compile-command-alist
-  '((haskell-mode . "stack build")
-    (c-mode       . "cmake")))
-
-;; TODO
+              tab-width 2
+              c-basic-offset 2
+              cperl-indent-level 2
+              indent-tabs-mode nil)
 
 (global-set-key (kbd "<f8>") 'ffap)
-
-;;;; Reformatting
-
-(defvar-local format-buffer-function nil
-  "The function used to reformat this buffer")
-
-(defun format-buffer (buffer)
-  "Reformat BUFFER.
-
-Interactively, work on active buffer"
-  (interactive (list (current-buffer)))
-  (with-current-buffer buffer
-    (if format-buffer-function
-        (funcall format-buffer-function)
-	    (message "Please set `format-buffer-function' first!"))))
 
 ;;;; Minor modes
 ;;;;; Aggressive indent
@@ -934,7 +913,7 @@ Interactively, work on active buffer"
 
 (provide 'outorg) ; FIXME Dirty
 
-(setq outshine-use-speed-commands t)
+(setq outshine-use-speed-commands nil)
 
 (add-hook 'prog-mode-hook 'outshine-mode)
 (add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
@@ -942,12 +921,12 @@ Interactively, work on active buffer"
 
 (defun thblt/m-up-dwim () (interactive)
        (cond ((and outshine-mode (outline-on-heading-p))
-		          (call-interactively 'outline-move-subtree-up))
+              (call-interactively 'outline-move-subtree-up))
              (t (call-interactively 'move-text-up))))
 
 (defun thblt/m-down-dwim () (interactive)
        (cond ((and outshine-mode (outline-on-heading-p))
-		          (call-interactively 'outline-move-subtree-down))
+              (call-interactively 'outline-move-subtree-down))
              (t (call-interactively 'move-text-down))))
 
 (with-eval-after-load 'outshine
@@ -959,6 +938,36 @@ Interactively, work on active buffer"
 
 (define-key outline-minor-mode-map (kbd "C-c C-p") 'outline-previous-visible-heading)
 (define-key outline-minor-mode-map (kbd "C-c C-n") 'outline-next-visible-heading)
+
+(defmacro org-or-outshine (command)
+  (let ((org (intern (format "org-%s" command)))
+        (os (intern (format "org-%s" command)))
+        (doc (format "Run either org-%s, outshine-%s or nothing,
+        depending on the major mode.")))
+    `(defun () (interactive)
+       ,doc
+       (cond
+        ((eq major-mode 'org-mode) ,org)
+        (outshine-mode) ,os))))
+
+(defhydra hydra-outline ()
+  ("p" outline-previous-visible-heading "prev")
+  ("<down>" outline-previous-visible-heading "prev")
+  ("n" outline-next-visible-heading "next")
+  ("<up>" outline-next-visible-heading "prev")
+  ("P" outline-move-subtree-up "up")
+  ("N" outline-move-subtree-down "down")
+  ("b" outline-promote "+")
+  ("f" outline-demote "-")
+  ("w" outshine-narrow-to-subtree "Narrow")
+  ("c" outshine-cycle "Cycle")
+  ("<tab>" outshine-cycle "Cycle")
+  ("C" outshine-cycle-buffer "Cycle buffer")
+  ("M-<tab>" outshine-cycle-buffer)
+  ("o" outline-hide-other "Hide others"))
+
+(define-key outline-minor-mode-map (kbd "M-o") 'hydra-outline/body)
+(define-key org-mode-map (kbd "M-o") 'hydra-outline/body)
 
 ;;;;; Rainbow mode
 
@@ -997,20 +1006,21 @@ Interactively, work on active buffer"
 
 ;;;; Borg
 
+
 (defun thblt/borg-fix-branch-declarations ()
   "Verify that all Borg drones have a branch declared in .gitmodules."
   (interactive)
   (let ((errors))
     (mapc (lambda (drone)
             (unless (borg-get drone "branch")
-		          (add-to-list 'errors drone)
-		          (call-process "git" nil nil nil
+              (add-to-list 'errors drone)
+              (call-process "git" nil nil nil
                             "config" "-f" borg-gitmodules-file "--add" (format "submodule.%s.branch" drone) "master")))
           (borg-drones))
     (when errors
-	    (borg--sort-submodule-sections borg-gitmodules-file)
+      (borg--sort-submodule-sections borg-gitmodules-file)
                                         ; (sort errors 'string<)
-	    (message "These modules were updated: %s" errors))))
+      (message "These modules were updated: %s" errors))))
 
 (defun thblt/borg-check-urls ()
   "Verify that all Borg drones remote URLs begin with http."
@@ -1018,7 +1028,7 @@ Interactively, work on active buffer"
   (mapc (lambda (drone)
           (let ((url (borg-get drone "url")))
             (unless (string-prefix-p "http" url)
-		          (message "Bad remote URL on %s: %s" drone url))))
+              (message "Bad remote URL on %s: %s" drone url))))
         (borg-drones)))
 
 ;;;; Divine
@@ -1032,25 +1042,123 @@ Interactively, work on active buffer"
   (dolist (module (list "divine-core.el" "divine-commands.el" "divine.el"))
     (load (expand-file-name module (borg-worktree "divine")))))
 
+(defhydra divine--hydra (:color amaranth) " --- DIVINE ---"
+  ;; Fundamentals
+  ("<esc>" ignore :color blue :exit t)
+  ("C-g" ignore :color blue :exit t)
+  ("0" digit-argument)
+  ("1" digit-argument)
+  ("2" digit-argument)
+  ("3" digit-argument)
+  ("4" digit-argument)
+  ("5" digit-argument)
+  ("6" digit-argument)
+  ("7" digit-argument)
+  ("8" digit-argument)
+  ("9" digit-argument)
+  ;; Character motion
+  ("b" backward-char)
+  ("B" backward-word)
+  ("f" forward-char)
+  ("F" forward-word)
+  ("<spc>" activate-mark)
+  ;; Line motion
+  ("p" previous-line)
+  ("n" next-line)
+  ("$" divine-end-of-line)
+  ("a" divine-beginning-of-line)
+  ;; Killing
+  ("d" divine-kill)
+  ;; History
+  ("u" undo)
+  ("U" redo)
+  ;; imenu
+  ("M-i" counsel-imenu :color blue)
+  )
+
+(defhydra hydra-smartparens (:hint nil)
+  "
+ Moving^^^^                       Slurp & Barf^^   Wrapping^^            Sexp juggling^^^^               Destructive
+------------------------------------------------------------------------------------------------------------------------
+ [_a_] beginning  [_n_] down      [_h_] bw slurp   [_R_]   rewrap        [_S_] split   [_t_] transpose   [_c_] change inner  [_w_] copy
+ [_e_] end        [_N_] bw down   [_H_] bw barf    [_u_]   unwrap        [_s_] splice  [_A_] absorb      [_C_] change outer
+ [_f_] forward    [_p_] up        [_l_] slurp      [_U_]   bw unwrap     [_r_] raise   [_E_] emit        [_k_] kill          [_g_] quit
+ [_b_] backward   [_P_] bw up     [_L_] barf       [_(__{__[_] wrap (){}[]   [_j_] join    [_o_] convolute   [_K_] bw kill       [_q_] quit"
+  ("0" digit-argument)
+  ("1" digit-argument)
+  ("2" digit-argument)
+  ("3" digit-argument)
+  ("4" digit-argument)
+  ("5" digit-argument)
+  ("6" digit-argument)
+  ("7" digit-argument)
+  ("8" digit-argument)
+  ("9" digit-argument)
+
+  ;; Moving
+  ("a" sp-beginning-of-sexp)
+  ("e" sp-end-of-sexp)
+  ("f" sp-forward-sexp)
+  ("b" sp-backward-sexp)
+  ("n" sp-down-sexp)
+  ("N" sp-backward-down-sexp)
+  ("p" sp-up-sexp)
+  ("P" sp-backward-up-sexp)
+
+  ;; Slurping & barfing
+  ("h" sp-backward-slurp-sexp)
+  ("H" sp-backward-barf-sexp)
+  ("l" sp-forward-slurp-sexp)
+  ("L" sp-forward-barf-sexp)
+
+  ;; Wrapping
+  ("R" sp-rewrap-sexp)
+  ("u" sp-unwrap-sexp)
+  ("U" sp-backward-unwrap-sexp)
+  ("(" sp-wrap-round)
+  ("{" sp-wrap-curly)
+  ("[" sp-wrap-square)
+
+  ;; Sexp juggling
+  ("S" sp-split-sexp)
+  ("s" sp-splice-sexp)
+  ("r" sp-raise-sexp)
+  ("j" sp-join-sexp)
+  ("t" sp-transpose-sexp)
+  ("A" sp-absorb-sexp)
+  ("E" sp-emit-sexp)
+  ("o" sp-convolute-sexp)
+
+  ;; Destructive editing
+  ("c" sp-change-inner :exit t)
+  ("C" sp-change-enclosing :exit t)
+  ("k" sp-kill-sexp)
+  ("K" sp-backward-kill-sexp)
+  ("w" sp-copy-sexp)
+
+  ("q" nil)
+  ("g" nil))
+
 ;;;; ERC
 
 (setq  erc-server-auto-reconnect t
-	     erc-kill-buffer-on-part t
+       erc-kill-buffer-on-part t
 
-	     erc-lurker-hide-list '("JOIN" "PART" "QUIT")
-	     erc-lurker-threshold-time 900 ; 15mn
+       erc-lurker-hide-list '("JOIN" "PART" "QUIT")
+       erc-lurker-threshold-time 900 ; 15mn
 
        erc-hl-nicks-skip-nicks '("thblt")
 
-	     erc-header-line-format nil)
+       erc-header-line-format nil)
 
 (add-hook 'erc-mode-hook (lambda ()
                            (visual-line-mode)
-                           (erc-hl-nicks-mode)
+                           ;; (erc-hl-nicks-mode)
                            (erc-fill-disable)))
 
-(advice-add 'load-theme :after (lambda (&rest _) (when (functionp 'erc-hl-nicks-reset-face-table)
-                                                   (erc-hl-nicks-reset-face-table))))
+;; (with-eval-after-load 'erc-hl-nicks
+
+(advice-add 'load-theme :after (lambda (&rest _) (if (fboundp 'erc-hl-nicks-refresh-colors) (erc-hl-nicks-refresh-colors))))
 
 ;; ZNC doesn't know how to use auth-source, and I'm too lazy to
 ;; implement it.  Instead, this function will initialize znc-servers
@@ -1069,8 +1177,7 @@ Interactively, work on active buffer"
                :secret)
         (setq znc-servers
               `(("k9.thb.lt" 2002 t
-                 ((freenode "thblt" ,(funcall it)
-                            )))))
+                 ((freenode "thblt" ,(funcall it))))))
       (message "Cannot read ZNC secret!")))
   (when znc-servers
     (call-interactively 'znc-all)))
@@ -1100,8 +1207,7 @@ Interactively, work on active buffer"
 ;; First, let's configure the view.
 
 (setq magit-repolist-columns
-	    '(
-        ("Name"       25  magit-repolist-column-ident nil)
+      '(("Name"       25  magit-repolist-column-ident nil)
         ("Branch"     16  magit-repolist-column-branch)
         ("Version" 25  magit-repolist-column-version nil)
         ("Upstream"   15  magit-repolist-column-upstream)
@@ -1123,20 +1229,14 @@ Interactively, work on active buffer"
           (shell-command
            (format "git -C %s fetch --all &"
                    (shell-quote-argument
-                    (expand-file-name (car d))))))
-        magit-repository-directories))
+                    (expand-file-name (car d)))))
+          magit-repository-directories)))
 
 (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-fetch-all)
 
 ;;;; Misc utilities
 
-(defun umount (point)
-  "Unmount device at POINT.
-
-Interactively, prompt for an ejectable device."
-  (interactive )
-
-  )
+(define-key global-map (kbd "C-x C-p") 'proced)
 
 ;;;; Mu4e
 
@@ -1154,10 +1254,10 @@ Interactively, prompt for an ejectable device."
 
   (defun mu4e-message-maildir-matches (msg rx)
     (when rx
-	    (if (listp rx)
+      (if (listp rx)
           ;; if rx is a list, try each one for a match
           (or (mu4e-message-maildir-matches msg (car rx))
-		          (mu4e-message-maildir-matches msg (cdr rx)))
+              (mu4e-message-maildir-matches msg (cdr rx)))
         ;; not a list, check rx
         (string-match rx (mu4e-message-field msg :maildir)))))
 
@@ -1211,24 +1311,24 @@ Interactively, prompt for an ejectable device."
         mu4e-headers-has-child-prefix '("+" . "╰┬")
 
         mu4e-headers-fields '(
-				                      (:flags          . 5)
-				                      (:mailing-list   . 18)
-				                      (:human-date     . 12)
-				                      (:from-or-to     . 25)
-				                      (:thread-subject . nil))
+                              (:flags          . 5)
+                              (:mailing-list   . 18)
+                              (:human-date     . 12)
+                              (:from-or-to     . 25)
+                              (:thread-subject . nil))
 
         mu4e-user-mail-address-list '("thblt@thb.lt"
-					                            "thibault.polge@ac-amiens.fr"
-					                            "thibault.polge@ac-orleans-tours.fr"
-					                            "thibault.polge@etu.univ-paris1.fr"
-					                            "thibault.polge@malix.univ-paris1.fr"
-					                            "thibault.polge@univ-paris1.fr"
-					                            "thibault@thb.lt"
-					                            "tpolge@gmail.com")
+                                      "thibault.polge@ac-amiens.fr"
+                                      "thibault.polge@ac-orleans-tours.fr"
+                                      "thibault.polge@etu.univ-paris1.fr"
+                                      "thibault.polge@malix.univ-paris1.fr"
+                                      "thibault.polge@univ-paris1.fr"
+                                      "thibault@thb.lt"
+                                      "tpolge@gmail.com")
         mu4e-refile-folder (lambda (msg)
                              (let ((maildir (mu4e-message-field msg :maildir)))
-				                       (message "This is in %s" maildir)
-				                       (if (string-suffix-p "/Inbox" maildir)
+                               (message "This is in %s" maildir)
+                               (if (string-suffix-p "/Inbox" maildir)
                                    (concat (substring maildir 0 -5) "Archive")
                                  maildir)))
 
@@ -1303,7 +1403,7 @@ Interactively, prompt for an ejectable device."
 
 (with-eval-after-load 'tex
   (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
-	  (add-to-list 'TeX-view-program-list-builtin
+    (add-to-list 'TeX-view-program-list-builtin
                  '("PDF Tools" TeX-pdf-tools-sync-view)))
   (add-to-list 'TeX-view-program-selection
                '(output-pdf "PDF Tools")))
@@ -1386,7 +1486,7 @@ disabled before it runs, and restored afterwards."
   (interactive)
   (dolist (instance (directory-files server-socket-dir nil (rx bol (not (any ".")))))
     (unless (equal instance server-name)
-	    (async-shell-command (format "emacsclient -s %s --eval \"(thblt/reload-emacs)\"" instance)))))
+      (async-shell-command (format "emacsclient -s %s --eval \"(thblt/reload-emacs)\"" instance)))))
 
 ;; Also, some utility function:
 
@@ -1402,6 +1502,10 @@ disabled before it runs, and restored afterwards."
 ;; makes it easy to notice when something went wrong (this may not be
 ;; obvious in daemon mode)
 
-(setq initial-scratch-message ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n;; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n;; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n")
+(setq initial-scratch-message
+      (concat
+       ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n"
+       ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
+       ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
 
 (message "Reached the end of init.el")

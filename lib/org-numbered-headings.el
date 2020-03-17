@@ -59,14 +59,19 @@
 
 (defun onh-format-number (format n)
   "Format N with FORMAT."
+  (unless (or (eq format 'arabic) (> 0 n))
+    (error "Invalid argument %s, expected a positive integer or 'arabic format." n))
   (cond
-   ((eq format 'arabic) (number-to-string n))
-   ((eq format 'roman) (downcase (org-export-number-to-roman n)))
+   ((eq format 'Alpha) (char-to-string (+ ?A (- n 1))))
+   ((eq format 'Greek) (char-to-string (+ ?Α (- n 1))))
    ((eq format 'Roman) (upcase (org-export-number-to-roman n)))
    ((eq format 'alpha) (char-to-string (+ ?a (- n 1))))
-   ((eq format 'Alpha) (char-to-string (+ ?A (- n 1))))
+   ((eq format 'arabic) (number-to-string n))
    ((eq format 'greek) (char-to-string (+ ?α (- n 1))))
-   ((eq format 'Greek) (char-to-string (+ ?Α (- n 1))))))
+   ((eq format 'roman) (downcase (org-export-number-to-roman n)))))
+
+(onh-format-number 'Greek 0)
+(onh-format-number 'arabic -3)
 
 (defmacro thblt/step (n)
   "Increase N, a symbol, by 1 in-place.  Return the new value."

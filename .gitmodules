@@ -116,9 +116,11 @@
 [submodule "forge"]
 	path = lib/forge
 	url = https://github.com/magit/forge
+	branch = master
 [submodule "ghub"]
 	path = lib/ghub
 	url = https://github.com/magit/ghub
+	branch = master
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	url = https://github.com/haskell/haskell-mode
@@ -143,6 +145,8 @@
 	path = lib/magit
 	url = https://github.com/magit/magit
 	branch = master
+  recursive-byte-compile = true
+	info-path = Documentation
 [submodule "magit-popup"]
 	path = lib/magit-popup
 	url = https://github.com/magit/magit-popup
@@ -150,6 +154,7 @@
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
+	branch = master
 [submodule "move-text"]
 	path = lib/move-text
 	url = https://github.com/emacsfodder/move-text
@@ -251,6 +256,7 @@
 [submodule "treepy"]
 	path = lib/treepy
 	url = https://github.com/volrath/treepy.el
+	branch = master
 [submodule "undo-tree"]
 	path = lib/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
