@@ -105,6 +105,12 @@
 
  disabled-command-function nil)
 
+;; Line numbers
+(setq display-line-numbers-type 'relative
+      display-line-numbers-major-tick 10
+      display-line-numbers-minor-tick 5
+      display-line-numbers-current-absolute nil)
+
 ;; Cursor configuration
 (setq-default  cursor-type 'box)
 (defun thblt/update-cursor-color ()
@@ -1014,6 +1020,17 @@ Interactively, work on active buffer"
             (unless (string-prefix-p "http" url)
 		          (message "Bad remote URL on %s: %s" drone url))))
         (borg-drones)))
+
+;;;; Divine
+
+(require 'divine)
+(divine-global-mode)
+
+(defun divine-reload ()
+  "Force reload Divine."
+  (interactive)
+  (dolist (module (list "divine-core.el" "divine-commands.el" "divine.el"))
+    (load (expand-file-name module (borg-worktree "divine")))))
 
 ;;;; ERC
 
