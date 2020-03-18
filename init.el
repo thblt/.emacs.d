@@ -1027,6 +1027,23 @@ nil; otherwise it's evaluated normally."
                                         ; (sort errors 'string<)
       (message "These modules were updated: %s" errors))))
 
+(defun thblt/borg-drones-track-upstream ()
+  "Make all Borg drones track the branch they're configured to."
+  (interactive)
+  (dolist (drone (borg-drones))
+    (let* ((default-directory (borg-worktree drone))
+           (current-branch (magit-git-string "branch" "--show-current"))
+           (remote-branch (borg-get drone "branch"))
+           (local-branch (or (borg-get drone "local-branch") remote-branch)))
+      (if (null remote-branch)
+          (warn "No remote branch configured for drone %s, ignoring." drone)
+        (unless (string= current-branch local-branch)
+          (message "Switching to `%s' on %s (was `%s') " local-branch drone current-branch)
+          (magit-git-string "branch" "-f" local-branch "HEAD")
+          (magit-git-string "checkout" local-branch))
+        (magit-git-string "branch" local-branch "--set-upstream-to" "origin" remote-branch)))))
+
+
 (defun thblt/borg-check-urls ()
   "Verify that all Borg drones remote URLs begin with http."
   (interactive)
