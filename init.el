@@ -1484,7 +1484,7 @@ disabled before it runs, and restored afterwards."
 (defun thblt/reload-emacs ()
   "Reload Emacs configuration."
   (interactive)
-  (load (expand-file-name "init.el" user-emacs-directory)))
+  (load user-init-file))
 
 (defun thblt/reload-all-emacsen ()
   "Execute `thblt/reload-emacs' on all servers."
