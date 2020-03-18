@@ -217,6 +217,11 @@
 
 (setq projectile-git-submodule-command nil)
 
+;; Teach Projectile about Borg modules
+(with-eval-after-load 'borg
+  (dolist (clone (borg-clones))
+    (projectile-add-known-project (borg-worktree clone))))
+
 ;;;; UI Utilities
 
 ;;;;; Ace-window
