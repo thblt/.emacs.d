@@ -158,26 +158,24 @@
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
 
-(defun thblt/local-face-customizations (dark)
-  (interactive (list (member 'eziam-dark custom-enabled-themes)))
-  (let ((fg (face-attribute 'default :foreground)))
-    (set-face-attribute 'mode-line           nil :background "#111111" :foreground "#ffffff" :distant-foreground "#ffffff" :overline "#444444" :underline "#444444")
-    (set-face-attribute 'mode-line-inactive  nil :background "#000000" :foreground "#444444" :distant-foreground "#444444" :overline "#444444" :underline "#444444")
-    (set-face-attribute 'mode-line-buffer-id nil :background nil :foreground nil :weight 'medium :inverse-video t)
-    (set-face-attribute 'mode-line-emphasis  nil :background "#000000")
-    (set-face-attribute 'mode-line-highlight nil :background "#000000" :foreground nil)
-    (set-face-attribute 'region              nil :background "#2288aa" :foreground fg :distant-foreground "#ffffff")
+(defun thblt/local-face-customizations (&optional frame)
+  (interactive)
+  (let ((dark (list (member 'eziam-dark custom-enabled-themes)))
+        (fg (face-attribute 'default :foreground)))
+    (set-face-attribute 'mode-line           frame :background "#111111" :foreground "#ffffff" :distant-foreground "#ffffff" :overline "#444444" :underline "#444444")
+    (set-face-attribute 'mode-line-inactive  frame :background "#000000" :foreground "#444444" :distant-foreground "#444444" :overline "#444444" :underline "#444444")
+    (set-face-attribute 'mode-line-buffer-id frame :background nil :foreground nil :weight 'medium :inverse-video t)
+    (set-face-attribute 'mode-line-emphasis  frame :background "#000000")
+    (set-face-attribute 'mode-line-highlight frame :background "#000000" :foreground nil)
+    (set-face-attribute 'region              frame :background "#2288aa" :foreground fg :distant-foreground "#ffffff")
+    (set-face-attribute 'hydra-face-red      frame :foreground (if dark "#ff8888" "red"))
+    (set-face-attribute 'dired-directory     frame :foreground (if dark "#7799bb"))
+    (set-face-attribute 'dired-symlink       frame :foreground (if dark "#bbffbb"))))
 
-    (set-face-attribute 'hydra-face-red      nil :foreground (if dark "#ff8888" "red"))
+(defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t) (thblt/local-face-customizations))
+(defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t) (thblt/local-face-customizations))
 
-    (set-face-attribute 'dired-directory     nil :foreground (if dark "#7799bb"))
-    (set-face-attribute 'dired-symlink       nil :foreground (if dark "#bbffbb"))))
-
-(defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t) (thblt/local-face-customizations t))
-(defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t) (thblt/local-face-customizations nil))
-
-(with-eval-after-load 'hydra
-  (eziam-dark))
+(add-to-list 'after-make-frame-functions 'thblt/local-face-customizations)
 
 ;;;;; Mode line
 
