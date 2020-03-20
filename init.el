@@ -1413,28 +1413,30 @@ nil; otherwise it's evaluated normally."
 
 ;;;; Password management (password-store)
 
-(auth-source-pass-enable)
+(unless (eq system-type 'windows-nt)
+  (auth-source-pass-enable))
 
 ;;;; PDF Tools
 
 ;; (setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
 
-(pdf-tools-install)
+(unless (eq system-type 'windows-nt)
+  (pdf-tools-install)
 
-(with-eval-after-load 'tex
-  (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
-    (add-to-list 'TeX-view-program-list-builtin
-                 '("PDF Tools" TeX-pdf-tools-sync-view)))
-  (add-to-list 'TeX-view-program-selection
-               '(output-pdf "PDF Tools")))
+  (with-eval-after-load 'tex
+    (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
+      (add-to-list 'TeX-view-program-list-builtin
+                   '("PDF Tools" TeX-pdf-tools-sync-view)))
+    (add-to-list 'TeX-view-program-selection
+                 '(output-pdf "PDF Tools")))
 
-(add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode)))
+  (add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode)))
 
-(setq pdf-misc-print-programm (executable-find "lpr")
-      pdf-misc-print-programm-args '("-o media=A4" "-o fitplot"))
+  (setq pdf-misc-print-programm (executable-find "lpr")
+        pdf-misc-print-programm-args '("-o media=A4" "-o fitplot"))
 
-(define-key pdf-view-mode-map (kbd "s a") 'pdf-view-auto-slice-minor-mode)
-(define-key pdf-view-mode-map (kbd "s r") 'pdf-view-reset-slice)
+  (define-key pdf-view-mode-map (kbd "s a") 'pdf-view-auto-slice-minor-mode)
+  (define-key pdf-view-mode-map (kbd "s r") 'pdf-view-reset-slice))
 
 ;;;; Regular expression builder
 
