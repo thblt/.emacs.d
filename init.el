@@ -78,8 +78,8 @@
 
 (setq-default major-mode 'text-mode)
 
-(defun thblt/disable-key-translations (frame)
-  (with-selected-frame frame
+(defun thblt/disable-key-translations (&optional frame)
+  (with-selected-frame (or frame (selected-frame))
     (when (display-graphic-p)
       (define-key input-decode-map [?\C-m] [C-m])
       (define-key input-decode-map [?\C-i] [C-i]))))
