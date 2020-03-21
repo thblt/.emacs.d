@@ -293,7 +293,7 @@
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
-      shackle-default-rule '(:select t :frame t)
+      shackle-default-rule `(:select t :frame ,(eq system-type 'gnu/linux))
       shackle-default-size 0.4
       shackle-inhibit-window-quit-on-same-windows t)
 
@@ -1519,8 +1519,6 @@ disabled before it runs, and restored afterwards."
   (server-start))
 
 ;;;; Report success
-
-(eziam-dark)
 
 ;; We finally set the initial contents of the scratch buffer.  This
 ;; makes it easy to notice when something went wrong (this may not be
