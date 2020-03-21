@@ -361,6 +361,30 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key global-map (kbd "C-'") 'unfill-paragraph)
                                         ; @FIXME In prog-mode, this could be reformat-defun or something.
 
+;;;;; BEPO programmer
+
+(defvar bepo-programmer-mode-map
+  (let ((keymap (make-sparse-keymap)))
+    (define-key keymap "é" (lambda () (interactive) (insert "(")))
+    (define-key keymap "É" (lambda () (interactive) (insert ")")))
+    (define-key keymap "è" (lambda () (interactive) (insert "{")))
+    (define-key keymap "È" (lambda () (interactive) (insert "}")))
+    (define-key keymap "à" (lambda () (interactive) (insert "[")))
+    (define-key keymap "À" (lambda () (interactive) (insert "]")))
+    (define-key keymap "ê" (lambda () (interactive) (insert "{")))
+    (define-key keymap "Ê" (lambda () (interactive) (insert "}")))
+    keymap))
+
+(define-minor-mode bepo-programmer-mode
+  "A minor mode to convert BÉPO accentuated characters into
+useful programming symbols"
+  :keymap bepo-programmer-mode-map
+  :lighter " BÉPROG")
+
+(add-hook 'conf-mode-hook 'bepo-programmer-mode)
+(add-hook 'prog-mode-hook 'bepo-programmer-mode)
+
+
 ;; EXPERIMENTAL Vim-like motion with modifiers
 
 ;; (defun k (seq)
