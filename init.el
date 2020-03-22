@@ -887,10 +887,10 @@ nil; otherwise it's evaluated normally."
 ;;;; Minor modes
 ;;;;; Aggressive indent
 
-(with-eval-after-load 'aggressive-indent-mode
+(with-eval-after-load 'aggressive-indent
   (diminish 'aggressive-indent-mode "⭾"))
 
-(dolist (mode '(elisp-mode lisp-mode))
+(dolist (mode '(emacs-lisp-mode-hook lisp-mode-hook))
   (add-hook mode 'aggressive-indent-mode))
 
 ;;;;; Color-identifiers
