@@ -89,6 +89,10 @@
 (unless (daemonp)
   (thblt/disable-key-translations))
 
+;; I do that by accident, so let's not
+(define-key global-map [remap suspend-frame] 'ignore) ; nil doesn't unset.
+(define-key global-map [remap suspend-emacs] 'ignore)
+
 ;;; User interface
 
 ;;;; Settings and general configuration
