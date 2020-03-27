@@ -14,7 +14,6 @@
 ;; general settings and sane defaults.  It's a bit messy, since it's
 ;; mostly made up of all the bits that don't fit anywhere else.
 
-
 ;; Never load bytecode if .el is more recent
 (setq load-prefer-newer t)
 
@@ -357,16 +356,25 @@ This can be used to update the digit argument from arbitrary keys."
 
 ;;;;; BEPO programmer
 
+(defmacro thblt/self-insert-char (char)
+  "Return a closure that calls `self-insert-command' as if CHAR had been pressed."
+  (unless (integerp char) (error "CHAR must be a character (not a string)."))
+  `(lambda () (interactive)
+     (setq last-command-event ,char)
+     (call-interactively 'self-insert-command)))
+
 (defvar bepo-programmer-mode-map
-  (let ((keymap (make-sparse-keymap)))
-    (define-key keymap "é" (lambda () (interactive) (insert "(")))
-    (define-key keymap "É" (lambda () (interactive) (insert ")")))
-    (define-key keymap "è" (lambda () (interactive) (insert "{")))
-    (define-key keymap "È" (lambda () (interactive) (insert "}")))
-    (define-key keymap "à" (lambda () (interactive) (insert "[")))
-    (define-key keymap "À" (lambda () (interactive) (insert "]")))
-    (define-key keymap "ê" (lambda () (interactive) (insert "{")))
-    (define-key keymap "Ê" (lambda () (interactive) (insert "}")))
+  (let ((keymap (make-keymap)))
+    (define-key keymap "é" (thblt/self-insert-char ?\())
+    (define-key keymap "É" (thblt/self-insert-char ?\)))
+    (define-key keymap "è" (thblt/self-insert-char ?{))
+    (define-key keymap "È" (thblt/self-insert-char ?}))
+    (define-key keymap "à" (thblt/self-insert-char ?\[))
+    (define-key keymap "À" (thblt/self-insert-char ?\]))
+    (define-key keymap "ê" (thblt/self-insert-char ?\"))
+    (define-key keymap "«" (thblt/self-insert-char ?\{))
+    (define-key keymap "»" (thblt/self-insert-char ?\}))
+    ;; (define-key keymap "Ê" (thblt/self-insert-char ?))
     keymap))
 
 (define-minor-mode bepo-programmer-mode
@@ -878,7 +886,7 @@ nil; otherwise it's evaluated normally."
 ;;;;; Aggressive indent
 
 (with-eval-after-load 'aggressive-indent
-  (diminish 'aggressive-indent-mode "⭾"))
+  (diminish 'aggressive-indent-mode " ⭾"))
 
 (dolist (mode '(emacs-lisp-mode-hook lisp-mode-hook))
   (add-hook mode 'aggressive-indent-mode))
