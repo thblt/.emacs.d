@@ -271,12 +271,18 @@
 ;; Stealing rules from wasamasa's config
 (setq shackle-rules
       '(("*Help*" :align t :select t)
+        ((:custom
+          (lambda (buffer)
+            (with-current-buffer buffer
+              (and (eq major-mode 'magit-diff-mode) magit-display-buffer-noselect))))
+         :select nil)
         ("^magit.*$'" :regexp t :frame nil)
         (" *Marked Processes*" :frame nil :popup t :select t)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
         ("*Org PDF LaTeX Output*" :select nil)
         ("COMMIT…EDITMSG" :select t :frame nil)
         (" *undo-tree*" :frame nil)
+        ("*Register Preview*" :frame nil :noselect t)
         (flycheck-error-list-mode :select t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
