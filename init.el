@@ -108,10 +108,10 @@
  disabled-command-function nil)
 
 ;; Line numbers
-(setq display-line-numbers-type 'relative
-      display-line-numbers-major-tick 10
-      display-line-numbers-minor-tick 5
-      display-line-numbers-current-absolute nil)
+(setq-default display-line-numbers-type 'relative
+              display-line-numbers-major-tick 10
+              display-line-numbers-minor-tick 5
+              display-line-numbers-current-absolute t)
 
 ;; Cursor configuration
 (setq-default  cursor-type 'box)
