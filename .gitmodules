@@ -93,10 +93,6 @@
 	path = lib/evil-nerd-commenter
 	url = https://github.com/redguardtoo/evil-nerd-commenter
 	branch = master
-[submodule "eziam-theme-emacs"]
-	path = lib/eziam-theme-emacs
-	url = https://github.com/thblt/eziam-theme-emacs
-	branch = master
 [submodule "f"]
 	path = lib/f
 	url = https://github.com/rejeep/f.el
@@ -241,6 +237,9 @@
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
 	branch = master
+[submodule "solarized"]
+	path = lib/solarized
+	url = https://github.com/bbatsov/solarized-emacs
 [submodule "super-save"]
 	path = lib/super-save
 	url = https://github.com/bbatsov/super-save

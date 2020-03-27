@@ -150,32 +150,16 @@
 (set-face-attribute 'default nil
                     :height 090)
 
-(setq eziam-color-comments t
-      eziam-scale-headings nil
-      eziam-heading-style 'gray-blocks)
+(add-to-list 'load-path borg-drone-directory)
+(add-to-list 'custom-theme-load-path borg-drone-directory)
 
 (defun thblt/disable-all-themes ()
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
 
-(defun thblt/local-face-customizations (&optional frame)
-  (interactive)
-  (let ((dark (list (member 'eziam-dark custom-enabled-themes)))
-        (fg (face-attribute 'default :foreground)))
-    (set-face-attribute 'mode-line           frame :background "#111111" :foreground "#ffffff" :distant-foreground "#ffffff" :overline "#444444" :underline "#444444")
-    (set-face-attribute 'mode-line-inactive  frame :background "#000000" :foreground "#444444" :distant-foreground "#444444" :overline "#444444" :underline "#444444")
-    (set-face-attribute 'mode-line-buffer-id frame :background nil :foreground nil :weight 'medium :inverse-video t)
-    (set-face-attribute 'mode-line-emphasis  frame :background "#000000")
-    (set-face-attribute 'mode-line-highlight frame :background "#000000" :foreground nil)
-    (set-face-attribute 'region              frame :background "#2288aa" :foreground fg :distant-foreground "#ffffff")
-    (set-face-attribute 'hydra-face-red      frame :foreground (if dark "#ff8888" "red"))
-    (set-face-attribute 'dired-directory     frame :foreground (if dark "#7799bb"))
-    (set-face-attribute 'dired-symlink       frame :foreground (if dark "#bbffbb"))))
+(defun thblt/dark-theme () (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
+(defun thblt/light-theme () (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
 
-(defun eziam-dark () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-dark t) (thblt/local-face-customizations))
-(defun eziam-light () (interactive) (thblt/disable-all-themes) (load-theme 'eziam-light t) (thblt/local-face-customizations))
-
-(add-to-list 'after-make-frame-functions 'thblt/local-face-customizations)
 
 ;;;;; Mode line
 
@@ -381,9 +365,8 @@ useful programming symbols"
   :keymap bepo-programmer-mode-map
   :lighter " BÉPROG")
 
-(add-hook 'conf-mode-hook 'bepo-programmer-mode)
-(add-hook 'prog-mode-hook 'bepo-programmer-mode)
-
+;; (add-hook 'conf-mode-hook 'bepo-programmer-mode)
+;; (add-hook 'prog-mode-hook 'bepo-programmer-mode)
 
 ;; EXPERIMENTAL Vim-like motion with modifiers
 
@@ -468,10 +451,8 @@ nil; otherwise it's evaluated normally."
                                                      (not (bound-and-true-p text-scale-mode))))
   ("p" text-scale-increase "Size +")
   ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
-  ;; ("t w" (lambda () (interactive) (load-theme 'eziam-white t)) (thblt/hydra-indicator "White theme" (member 'eziam-white custom-enabled-themes)))
-  ("t l" eziam-light (thblt/hydra-indicator "Light theme" (member 'eziam-light custom-enabled-themes)))
-  ;; ("t u" (lambda () (interactive) (load-theme 'eziam-dusk t)) (thblt/hydra-indicator "Dusk theme" (member 'eziam-dusk custom-enabled-themes)))
-  ("t d" eziam-dark (thblt/hydra-indicator "Dark theme" (member 'eziam-dark custom-enabled-themes)))
+  ("t l" thblt/light-theme "Light theme")
+  ("t d" thblt/dark-theme "Dark theme")
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
   ("c" thblt/visual-fill-column-toggle-centering (thblt/hydra-indicator "Centering" visual-fill-column-center-text))
@@ -745,7 +726,6 @@ nil; otherwise it's evaluated normally."
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;;; Writing prose
-
 
 ;;;; Common settings and minor modes
 ;;;; bbrev
@@ -1033,7 +1013,6 @@ nil; otherwise it's evaluated normally."
 
 ;;;; Borg
 
-
 (defun thblt/borg-fix-branch-declarations ()
   "Verify that all Borg drones have a branch declared in .gitmodules."
   (interactive)
@@ -1064,7 +1043,6 @@ nil; otherwise it's evaluated normally."
           (magit-git-string "branch" "-f" local-branch "HEAD")
           (magit-git-string "checkout" local-branch))
         (magit-git-string "branch" local-branch "--set-upstream-to" "origin" remote-branch)))))
-
 
 (defun thblt/borg-check-urls ()
   "Verify that all Borg drones remote URLs begin with http."
@@ -1194,13 +1172,6 @@ nil; otherwise it's evaluated normally."
        erc-hl-nicks-skip-nicks '("thblt")
 
        erc-header-line-format nil)
-
-(add-hook 'erc-mode-hook (lambda ()
-                           (visual-line-mode)
-                           ;; (erc-hl-nicks-mode)
-                           (erc-fill-disable)))
-
-;; (with-eval-after-load 'erc-hl-nicks
 
 (advice-add 'load-theme :after (lambda (&rest _) (if (fboundp 'erc-hl-nicks-refresh-colors) (erc-hl-nicks-refresh-colors))))
 
@@ -1335,14 +1306,14 @@ nil; otherwise it's evaluated normally."
         mu4e-use-fancy-chars t
         mu4e-headers-attach-mark '("A" . "A")
         mu4e-headers-encrypted-mark '("" . "")
-        mu4e-headers-flagged-mark '("+" . "⚑")
+        mu4e-headers-flagged-mark '("+" . "+")
         mu4e-headers-list-mark '("" . "")
         mu4e-headers-new-mark '("" . "")
         mu4e-headers-read-mark '("" . "")
         mu4e-headers-replied-mark '("" . "↩")
         mu4e-headers-seen-mark '("" . "")
         mu4e-headers-unseen-mark '("" . "")
-        mu4e-headers-unread-mark '("" . "✱")
+        mu4e-headers-unread-mark '("" . "")
         mu4e-headers-signed-mark '("" . "")
         mu4e-headers-trashed-mark '("T" . "T")
 
@@ -1551,5 +1522,7 @@ disabled before it runs, and restored afterwards."
        ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n"
        ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
        ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
+
+(thblt/light-theme)
 
 (message "Reached the end of init.el")
