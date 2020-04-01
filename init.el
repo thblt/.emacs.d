@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t; -*-
+;;; ~thblt/.emacs.d/init.el -*- lexical-binding: t; -*-
 
 (message "███████╗███╗   ███╗ █████╗  ██████╗███████╗")
 (message "██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝")
@@ -153,8 +153,9 @@
 (set-face-attribute 'default nil
                     :height 090)
 
-(add-to-list 'load-path borg-drone-directory)
 (add-to-list 'custom-theme-load-path borg-drone-directory)
+(add-to-list 'load-path borg-drone-directory)
+(setq x-underline-at-descent-line t)
 
 (defun thblt/disable-all-themes ()
   (interactive)
@@ -163,25 +164,7 @@
 (defun thblt/dark-theme () (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
 (defun thblt/light-theme () (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
 
-
-;;;;; Mode line
-
-(setq x-underline-at-descent-line t)
-
-(setq-default mode-line-format
-              `(
-                (:eval
-                 (cond
-                  ((not buffer-file-name) "")
-                  (buffer-read-only " X ")
-                  ((buffer-modified-p) " ▼ ")
-                  (buffer-file-name " ")))
-                (:propertize " %b %@%n " face mode-line-buffer-id)
-                " %l:%c %o "
-                "    "
-                mode-line-modes
-                "    "
-                ))
+;; Theme is loaded at the very end of this file.
 
 ;;;; Projectile
 
@@ -568,8 +551,9 @@ nil; otherwise it's evaluated normally."
 ;; Correct words using Ivy instead of default method:
 
 (with-eval-after-load 'flyspell
+  (require 'flyspell-correct-ivy)
   (define-key flyspell-mode-map (kbd "M-$") 'flyspell-auto-correct-previous-word)
-  (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous-word-generic))
+  (define-key flyspell-mode-map (kbd "C-,") 'flyspell-correct-previous))
 
 ;;;; Moving around
 
@@ -1187,6 +1171,7 @@ nil; otherwise it's evaluated normally."
        erc-lurker-hide-list '("JOIN" "PART" "QUIT")
        erc-lurker-threshold-time 900 ; 15mn
 
+       erc-show-my-nick nil
        erc-hl-nicks-skip-nicks '("thblt")
 
        erc-header-line-format nil)
