@@ -240,6 +240,7 @@
 [submodule "solarized"]
 	path = lib/solarized
 	url = https://github.com/bbatsov/solarized-emacs
+	branch = master
 [submodule "super-save"]
 	path = lib/super-save
 	url = https://github.com/bbatsov/super-save
