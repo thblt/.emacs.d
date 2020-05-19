@@ -39,6 +39,8 @@
        `(erc-my-nick-face ((,class (:foreground ,base2))))
        `(erc-current-nick-face ((,class (:inverse-video t))))
        `(erc-nick-default-face ((,class (:weight ,s-maybe-bold))))
+       ;;;; latext
+       `(font-latex-string-face ((,class (:background ,base02))))
        ;;;; links
        `(link ((,class (:foreground ,blue :underline t))))
        ;;;; line numbers
@@ -75,6 +77,7 @@
        `(outshine-level-5 ,ol-gray-blocks-5)
        `(outshine-level-6 ,ol-gray-blocks-6)
        `(outshine-level-7 ,ol-gray-blocks-7)
-       `(outshine-level-8 ,ol-gray-blocks-8)))))
-
+       `(outshine-level-8 ,ol-gray-blocks-8)
+       ;;;; which-function
+       `(which-func ((,class (:foreground ,base01))))))))
 (provide 'solaris)
