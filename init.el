@@ -264,6 +264,7 @@
         ("*Org PDF LaTeX Output*" :select nil)
         ("COMMIT…EDITMSG" :select t :frame nil)
         (" *undo-tree*" :frame nil)
+        ("*Proced*" :same t)
         ("*Register Preview*" :frame nil :noselect t)
         (flycheck-error-list-mode :select t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
@@ -1328,8 +1329,9 @@ nil; otherwise it's evaluated normally."
         mu4e-headers-first-child-prefix '("|" . "╰─")
         mu4e-headers-has-child-prefix '("+" . "╰┬")
 
-        mu4e-headers-fields '(
-                              (:flags          . 5)
+        mu4e-attachment-dir "~"
+
+        mu4e-headers-fields '((:flags          . 5)
                               (:mailing-list   . 18)
                               (:human-date     . 12)
                               (:from-or-to     . 25)
@@ -1514,11 +1516,7 @@ disabled before it runs, and restored afterwards."
   (setq server-name name)
   (server-start))
 
-;;;; Report success
-
-;; We finally set the initial contents of the scratch buffer.  This
-;; makes it easy to notice when something went wrong (this may not be
-;; obvious in daemon mode)
+;;;; Handmade persistent scratch
 
 (setq initial-scratch-message
       (concat
