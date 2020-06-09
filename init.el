@@ -330,7 +330,7 @@ This can be used to update the digit argument from arbitrary keys."
 
 ;; Fast and efficient killing: q instead of k
 
-(define-key global-map (kbd "C-q") 'kill-line)
+;;(define-key global-map (kbd "C-q") 'kill-line)
 (define-key smartparens-mode-map (kbd "C-M-q")  'sp-kill-sexp)
 
 ;; Fill and unfill
