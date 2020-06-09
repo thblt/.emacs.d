@@ -1179,6 +1179,11 @@ nil; otherwise it's evaluated normally."
 
 (advice-add 'load-theme :after (lambda (&rest _) (if (fboundp 'erc-hl-nicks-refresh-colors) (erc-hl-nicks-refresh-colors))))
 
+(add-hook 'erc-mode-hook (lambda ()
+                           (erc-fill-mode -1)
+                           (visual-line-mode 1)
+                           (setq-local wrap-prefix "  ")))
+
 ;; ZNC doesn't know how to use auth-source, and I'm too lazy to
 ;; implement it.  Instead, this function will initialize znc-servers
 ;; on first start, reading the password from auth-source.
