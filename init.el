@@ -1529,6 +1529,28 @@ disabled before it runs, and restored afterwards."
        ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
        ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
 
+(defun persistent-scratch-insert-sig ()
+  (insert (if buffer-file-name
+              (format "Persisting to %s" buffer-file-name)
+            "(Ephemeral buffer)")))
+
+(with-current-buffer "*scratch*"
+  (let ((fn (no-littering-expand-var-file-name "scratches/default")))
+    (setq-local buffer-file-name fn)
+    (if (file-exists-p fn)
+        (revert-buffer nil t)
+      (persistent-scratch-insert-sig)
+      (make-directory (file-name-directory fn) t)
+      (save-buffer)))
+  (auto-revert-mode t)
+  (when (fboundp 'super-save-mode) (super-save-mode t)))
+
+;;;; Report success
+
+;; We finally set the initial contents of the scratch buffer.  This
+;; makes it easy to notice when something went wrong (this may not be
+;; obvious in daemon mode)
+
 (thblt/light-theme)
 
 (message "Reached the end of init.el")
