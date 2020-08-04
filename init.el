@@ -112,10 +112,14 @@
               display-line-numbers-minor-tick 5
               display-line-numbers-current-absolute t)
 
+;; Line numbers in mode-line
+(line-number-mode)
+(column-number-mode)
+
 ;; Cursor configuration
 (setq-default  cursor-type 'box)
 (defun thblt/update-cursor-color ()
-  (set-cursor-color (if overwrite-mode "#ff0000" "#ffffff")))
+  (set-cursor-color (if overwrite-mode "#ff0000" (face-attribute 'default :foreground))))
 (add-hook 'overwrite-mode-hook 'thblt/update-cursor-color)
 (thblt/update-cursor-color)
 (blink-cursor-mode)
@@ -151,7 +155,7 @@
 ;; Configure the default font:
 (add-to-list 'default-frame-alist '(font . "Iosevka Term"))
 (set-face-attribute 'default nil
-                    :height 090)
+                    :height 100)
 
 (add-to-list 'custom-theme-load-path borg-drone-directory)
 (add-to-list 'load-path borg-drone-directory)
@@ -250,7 +254,6 @@
 
 ;;;;; Shackle
 
-;; Stealing rules from wasamasa's config
 (setq shackle-rules
       '(("*Help*" :align t :select t)
         ((:custom
@@ -275,6 +278,10 @@
       shackle-inhibit-window-quit-on-same-windows t)
 
 (shackle-mode)
+
+;;;;; Which function
+
+(which-function-mode)
 
 ;;;;; Windmove [DISABLED]
 
@@ -433,6 +440,8 @@ useful programming symbols"
 ;; This chapter deals with /general/ text editing.  The next two configure
 ;; prose and code editing, respectively.
 
+(define-key global-map (kbd "C- ") 'er/expand-region)
+
 ;;;; The editor view hydra
 
 (defmacro thblt/hydra-indicator (desc active)
@@ -579,8 +588,10 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; mwim
 
-(define-key global-map (kbd "C-a") 'mwim-beginning-of-code-or-line)
-(define-key global-map (kbd "C-e") 'mwim-end-of-code-or-line)
+;; (define-key global-map (kbd "C-a") 'mwim-beginning-of-code-or-line)
+;; (define-key global-map (kbd "C-e") 'mwim-end-of-code-or-line)
+(define-key prog-mode-map (kbd "C-a") 'mwim-beginning)
+(define-key prog-mode-map (kbd "C-e") 'mwim-end)
 (define-key global-map (kbd "<home>") 'mwim-beginning-of-line-or-code)
 (define-key global-map (kbd "<end>") 'mwim-end-of-line-or-code)
 ;; but…
@@ -776,8 +787,7 @@ nil; otherwise it's evaluated normally."
 
 (add-hook 'org-mode-hook (lambda ()
                            (org-indent-mode t)
-                           (visual-line-mode t)
-                           (which-function-mode t)))
+                           (visual-line-mode t)))                          ))
 
 ;; Use shift-arrow for window navigation when not on an heading
 (add-hook 'org-shiftup-final-hook 'windmove-up)
@@ -1004,6 +1014,7 @@ nil; otherwise it's evaluated normally."
 ;;;;; Haskell
 
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+(setq haskell-interactive-popup-errors nil)
 
 ;;;;; Nix
 
@@ -1043,9 +1054,9 @@ nil; otherwise it's evaluated normally."
           (warn "No remote branch configured for drone %s, ignoring." drone)
         (unless (string= current-branch local-branch)
           (message "Switching to `%s' on %s (was `%s') " local-branch drone current-branch)
-          (magit-git-string "branch" "-f" local-branch "HEAD")
-          (magit-git-string "checkout" local-branch))
-        (magit-git-string "branch" local-branch "--set-upstream-to" "origin" remote-branch)))))
+          (magit-git "branch" "-f" local-branch "HEAD")
+          (magit-git "checkout" local-branch))
+        (magit-git "branch" local-branch "--set-upstream-to" (format "%s/%s" "origin" remote-branch))))))
 
 (defun thblt/borg-check-urls ()
   "Verify that all Borg drones remote URLs begin with http."
@@ -1166,16 +1177,19 @@ nil; otherwise it's evaluated normally."
 
 ;;;; ERC
 
-(setq  erc-server-auto-reconnect t
-       erc-kill-buffer-on-part t
+(setq erc-server-auto-reconnect t
+      erc-kill-buffer-on-part t
 
-       erc-lurker-hide-list '("JOIN" "PART" "QUIT")
-       erc-lurker-threshold-time 900 ; 15mn
+      erc-lurker-hide-list '("JOIN" "PART" "QUIT")
+      erc-lurker-threshold-time 900 ; 15mn
 
-       erc-show-my-nick nil
-       erc-hl-nicks-skip-nicks '("thblt")
+      erc-show-my-nick nil
+      erc-hl-nicks-skip-nicks '("thblt")
 
-       erc-header-line-format nil)
+      erc-header-line-format nil
+
+      erc-kill-server-buffer-on-quit t
+      erc-kill-queries-on-quit t)
 
 (advice-add 'load-theme :after (lambda (&rest _) (if (fboundp 'erc-hl-nicks-refresh-colors) (erc-hl-nicks-refresh-colors))))
 
