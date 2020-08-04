@@ -1067,10 +1067,11 @@ nil; otherwise it's evaluated normally."
               (message "Bad remote URL on %s: %s" drone url))))
         (borg-drones)))
 
-;;;; Divine
+;;;; Divine or Boon
 
-(require 'divine)
-(divine-global-mode)
+;; (require 'divine)
+;; (divine-global-mode)
+(require 'boon-thblt)
 
 (defun divine-reload ()
   "Force reload Divine."

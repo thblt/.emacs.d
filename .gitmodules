@@ -34,6 +34,9 @@
 	path = lib/beginend
 	url = https://github.com/DamienCassou/beginend
 	branch = master
+[submodule "boon"]
+	path = lib/boon
+	url = https://github.com/jyp/boon/
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
