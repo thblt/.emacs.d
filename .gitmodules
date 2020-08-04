@@ -71,10 +71,6 @@
 	path = lib/diminish
 	url = https://github.com/myrjola/diminish.el
 	branch = master
-[submodule "divine"]
-	path = lib/divine
-	url = https://github.com/thblt/divine
-	branch = master
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = https://github.com/skeeto/emacsql

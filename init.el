@@ -787,7 +787,7 @@ nil; otherwise it's evaluated normally."
 
 (add-hook 'org-mode-hook (lambda ()
                            (org-indent-mode t)
-                           (visual-line-mode t)))                          ))
+                           (visual-line-mode t)))
 
 ;; Use shift-arrow for window navigation when not on an heading
 (add-hook 'org-shiftup-final-hook 'windmove-up)
