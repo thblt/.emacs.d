@@ -62,13 +62,13 @@
       save-interprogram-paste-before-kill t
       custom-file (no-littering-expand-var-file-name "customize.el")
 
-      inhibit-compacting-font-caches (eq 'system-type 'windows-nt) ; This prevents slowdown when using strange characters.
+      inhibit-compacting-font-caches (eq system-type 'windows-nt) ; This prevents slowdown when using strange characters.
 
       ;; Use default browser from the system. Using =setsid xdg-open=
       ;; prevents Emacs from killing xdg-open before it actually opened
       ;; anything. See
       ;; [[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
-      browse-url-browser-function 'browse-url-generic
+      browse-url-browser-function (if (eq system-type 'windows-nt) 'browse-url-default-browser 'browse-url-generic)
       ;; browse-url-generic-program "setsid"
       browse-url-generic-program "firefox")
 ;; browse-url-generic-args '("xdg-open"))
