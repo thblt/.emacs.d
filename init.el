@@ -156,7 +156,7 @@
 (add-to-list 'default-frame-alist '(font . "Iosevka"))
 (set-face-attribute 'default nil
                     :height (pcase system-name
-                              ("dru" 060)
+                              ("dru" 070)
                               ("maladict" 100)))
 
 (add-to-list 'custom-theme-load-path borg-drone-directory)
@@ -1186,7 +1186,6 @@ nil; otherwise it's evaluated normally."
       erc-lurker-hide-list '("JOIN" "PART" "QUIT")
       erc-lurker-threshold-time 900 ; 15mn
 
-      erc-show-my-nick nil
       erc-hl-nicks-skip-nicks '("thblt")
 
       erc-header-line-format nil
