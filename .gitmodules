@@ -37,6 +37,7 @@
 [submodule "boon"]
 	path = lib/boon
 	url = https://github.com/jyp/boon/
+	branch = master
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
