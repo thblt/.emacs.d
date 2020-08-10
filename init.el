@@ -113,7 +113,6 @@
               display-line-numbers-current-absolute t)
 
 ;; Line numbers in mode-line
-(line-number-mode)
 (column-number-mode)
 
 ;; Cursor configuration
@@ -473,6 +472,7 @@ nil; otherwise it's evaluated normally."
   ("h" thblt/visual-fill-column-width-increase "Width +")
   ("l" visual-line-mode (thblt/hydra-indicator "Line wrap" visual-line-mode))
   ("-" toggle-word-wrap (thblt/hydra-indicator "Word wrap" word-wrap))
+  ("L" display-line-numbers-mode (thblt/hydra-indicator "Line numbers" display-line-numbers-mode))
 
   ("v d" rainbow-delimiters-mode (thblt/hydra-indicator "Rainbow delimiters" rainbow-delimiters-mode) :column "Helpers")
   ("v r" rainbow-mode (thblt/hydra-indicator "Rainbow" rainbow-mode))
@@ -481,7 +481,7 @@ nil; otherwise it's evaluated normally."
   ("W" superword-mode (thblt/hydra-indicator "super-word" superword-mode))
   ("w" subword-mode (thblt/hydra-indicator "SubWord" subword-mode))
 
-  ("a" auto-fill-mode (thblt/hydra-indicator "Auto fill" auto-fill-function) :column "Elecricity")
+  ("a" auto-fill-mode (thblt/hydra-indicator "Auto fill" auto-fill-function) :column "Electricity")
   ("A" refill-mode (thblt/hydra-indicator "Auto refill" refill-mode))
   ("I" aggressive-indent-mode (thblt/hydra-indicator "Aggressive indent" aggressive-indent-mode))
 
@@ -1073,7 +1073,7 @@ nil; otherwise it's evaluated normally."
 
 ;; (require 'divine)
 ;; (divine-global-mode)
-(require 'boon-thblt)
+;; (require 'boon-thblt)
 
 (defun divine-reload ()
   "Force reload Divine."
@@ -1185,6 +1185,8 @@ nil; otherwise it's evaluated normally."
 
       erc-lurker-hide-list '("JOIN" "PART" "QUIT")
       erc-lurker-threshold-time 900 ; 15mn
+
+      erc-track-exclude-server-buffer t
 
       erc-hl-nicks-skip-nicks '("thblt")
 
