@@ -155,8 +155,8 @@
 (add-to-list 'default-frame-alist '(font . "Iosevka"))
 (set-face-attribute 'default nil
                     :height (pcase system-name
-                              ("dru" 070)
-                              ("maladict" 100)))
+                              ("dru" 100)
+                              ("maladict" 090)))
 
 (add-to-list 'custom-theme-load-path borg-drone-directory)
 (add-to-list 'load-path borg-drone-directory)
