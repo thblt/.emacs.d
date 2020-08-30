@@ -117,6 +117,10 @@
 	path = lib/haskell-mode
 	url = https://github.com/haskell/haskell-mode
 	branch = master
+[submodule "ht"]
+	path = lib/ht
+	url = https://github.com/Wilfred/ht.el
+	branch = master
 [submodule "htmlize"]
 	path = lib/htmlize
 	url = https://github.com/hniksic/emacs-htmlize
@@ -136,6 +140,7 @@
 [submodule "lsp-mode"]
 	path = lib/lsp-mode
 	url = https://github.com/emacs-lsp/lsp-mode
+	branch = master
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit
@@ -177,6 +182,7 @@
 [submodule "nix-mode"]
 	path = lib/nix-mode
 	url = https://github.com/NixOS/nix-mode
+	branch = master
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = https://github.com/tarsius/no-littering
@@ -243,6 +249,9 @@
 	path = lib/solarized
 	url = https://github.com/bbatsov/solarized-emacs
 	branch = master
+[submodule "spinner"]
+	path = lib/spinner
+	url = https://github.com/Malabarba/spinner.el
 [submodule "super-save"]
 	path = lib/super-save
 	url = https://github.com/bbatsov/super-save
