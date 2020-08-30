@@ -133,6 +133,9 @@
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
 	branch = master
+[submodule "lsp-mode"]
+	path = lib/lsp-mode
+	url = https://github.com/emacs-lsp/lsp-mode
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit
@@ -171,6 +174,9 @@
 	path = lib/nav-flash
 	url = https://github.com/rolandwalker/nav-flash
 	branch = master
+[submodule "nix-mode"]
+	path = lib/nix-mode
+	url = https://github.com/NixOS/nix-mode
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = https://github.com/tarsius/no-littering
