@@ -256,6 +256,9 @@
 	path = lib/super-save
 	url = https://github.com/bbatsov/super-save
 	branch = master
+[submodule "sway"]
+	path = lib/sway
+	url = https://github.com/thblt/sway.el
 [submodule "tablist"]
 	path = lib/tablist
 	url = https://github.com/politza/tablist

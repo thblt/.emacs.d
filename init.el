@@ -737,9 +737,12 @@ nil; otherwise it's evaluated normally."
 (super-save-mode +1)
 (diminish 'super-save-mode)
 
-;;;;; Delete trailing whitespace when saving
+;;;;; What to do when saving
 
+;; Delete trailing whitespace
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; Make scripts executable
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 ;;; Writing prose
 
