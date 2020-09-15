@@ -236,7 +236,7 @@
 ;;;;; Ivy
 
 (setq ivy-use-virtual-buffers t
-      ivy-read-action-function 'ivy-hydra-read-action)
+      ivy-read-action-function 'ivy-read-action-by-key)
 (ivy-mode)
 
 (define-key global-map (kbd "M-i") 'counsel-imenu)
