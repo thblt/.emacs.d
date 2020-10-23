@@ -1,5 +1,5 @@
 (defun solaris--heading-height (x) x)
-(setq solarized-high-contrast-mode-line nil)
+(setq solarized-high-contrast-mode-line t)
 (defvar solaris-theme
   '("Solaris, like Solarized, but with less fruit salad."
     ;; `default :foreground ,base0 :background ,base03
