@@ -1,5 +1,4 @@
 ;;; ~thblt/.emacs.d/init.el -*- lexical-binding: t; -*-
-
 (message "███████╗███╗   ███╗ █████╗  ██████╗███████╗")
 (message "██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝")
 (message "█████╗  ██╔████╔██║███████║██║     ███████╗")
@@ -58,6 +57,8 @@
       kept-new-versions 500
       kept-old-versions 500
       delete-old-versions t
+      ;; But lockfiles are so 1990
+      create-lockfiles nil
       ;; Don't lose the contents of system clipboard when killing from Emacs:
       save-interprogram-paste-before-kill t
       custom-file (no-littering-expand-var-file-name "customize.el")
@@ -166,6 +167,7 @@
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
 
+;; Note to self: theme is configured in solaris.el
 (defun thblt/dark-theme () (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
 (defun thblt/light-theme () (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
 
@@ -467,6 +469,7 @@ nil; otherwise it's evaluated normally."
   ("t d" thblt/dark-theme "Dark theme")
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
+  ;; @FIXME This breaks is `visual-fill-column' hasn't been loaded yet.
   ("c" thblt/visual-fill-column-toggle-centering (thblt/hydra-indicator "Centering" visual-fill-column-center-text))
   ("g" thblt/visual-fill-column-width-decrease "Width -")
   ("h" thblt/visual-fill-column-width-increase "Width +")
