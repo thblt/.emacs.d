@@ -1,4 +1,5 @@
 ;;; ~thblt/.emacs.d/init.el -*- lexical-binding: t; -*-
+
 (message "███████╗███╗   ███╗ █████╗  ██████╗███████╗")
 (message "██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝")
 (message "█████╗  ██╔████╔██║███████║██║     ███████╗")
@@ -1233,6 +1234,7 @@ nil; otherwise it's evaluated normally."
 ;;;; Magit and Git
 
 (define-key global-map (kbd "C-x g") 'magit-status)
+(define-key global-map (kbd "C-x C-g") 'magit-list-repositories)
 
 ;; Use Projectile projects as a source of repositories:
 
