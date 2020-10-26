@@ -1088,40 +1088,6 @@ nil; otherwise it's evaluated normally."
   (dolist (module (list "divine-core.el" "divine-commands.el" "divine.el"))
     (load (expand-file-name module (borg-worktree "divine")))))
 
-(defhydra divine--hydra (:color amaranth) " --- DIVINE ---"
-  ;; Fundamentals
-  ("<esc>" ignore :color blue :exit t)
-  ("C-g" ignore :color blue :exit t)
-  ("0" digit-argument)
-  ("1" digit-argument)
-  ("2" digit-argument)
-  ("3" digit-argument)
-  ("4" digit-argument)
-  ("5" digit-argument)
-  ("6" digit-argument)
-  ("7" digit-argument)
-  ("8" digit-argument)
-  ("9" digit-argument)
-  ;; Character motion
-  ("b" backward-char)
-  ("B" backward-word)
-  ("f" forward-char)
-  ("F" forward-word)
-  ("<spc>" activate-mark)
-  ;; Line motion
-  ("p" previous-line)
-  ("n" next-line)
-  ("$" divine-end-of-line)
-  ("a" divine-beginning-of-line)
-  ;; Killing
-  ("d" divine-kill)
-  ;; History
-  ("u" undo)
-  ("U" redo)
-  ;; imenu
-  ("M-i" counsel-imenu :color blue)
-  )
-
 (defhydra hydra-smartparens (:hint nil)
   "
  Moving^^^^                       Slurp & Barf^^   Wrapping^^            Sexp juggling^^^^               Destructive
@@ -1185,6 +1151,8 @@ nil; otherwise it's evaluated normally."
   ("q" nil)
   ("g" nil))
 
+(define-key smartparens-mode-map (kbd "M-p") 'hydra-smartparens/body)
+
 ;;;; ERC
 
 (setq erc-server-auto-reconnect t
@@ -1233,12 +1201,23 @@ nil; otherwise it's evaluated normally."
 
 ;;;; Magit and Git
 
+(defhydra hydra-magit-launcher (:color blue)
+  ("g" magit-status "Status")
+  ("C-g" magit-status)
+  ("l" magit-list-repositories "List repos")
+  ("c" magit-clone "Clone")
+  ("i" magit-init "Init"))
+
 (define-key global-map (kbd "C-x g") 'magit-status)
-(define-key global-map (kbd "C-x C-g") 'magit-list-repositories)
+(define-key global-map (kbd "C-x C-g") 'hydra-magit-launcher/body)
+
+(with-eval-after-load 'magit
+  (require 'forge))
 
 ;; Use Projectile projects as a source of repositories:
 
 (defun thblt/update-magit-repository-directories (&rest _)
+  (interactive)
   (setq magit-repository-directories
         (-non-nil
          (mapcar (lambda (x)
@@ -1484,8 +1463,8 @@ nil; otherwise it's evaluated normally."
 
 (defun thblt/scpaste-without-noise (f &rest args)
   "A lot of packages add overlays which are useful when editing,
-noisy when reading.  We advise scpaste so a few minor modes get
-disabled before it runs, and restored afterwards."
+  noisy when reading.  We advise scpaste so a few minor modes get
+  disabled before it runs, and restored afterwards."
   (let ((tmm transient-mark-mode)
         (hig (bound-and-true-p highlight-indent-guides-mode))
         (flyc (bound-and-true-p flycheck-mode))
@@ -1552,8 +1531,8 @@ disabled before it runs, and restored afterwards."
 (setq initial-scratch-message
       (concat
        ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n"
-       ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
-       ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
+  ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
+  ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
 
 (defun persistent-scratch-insert-sig ()
   (insert (if buffer-file-name
