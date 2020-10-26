@@ -243,7 +243,7 @@
 	branch = master
 [submodule "shackle"]
 	path = lib/shackle
-	url = https://github.com/wasamasa/shackle
+	url = https://depp.brause.cc/shackle.git
 	branch = master
 [submodule "smart-mode-line"]
 	path = lib/smart-mode-line
