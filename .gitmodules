@@ -137,6 +137,10 @@
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
 	branch = master
+[submodule "lsp-haskell"]
+	path = lib/lsp-haskell
+	url = https://github.com/emacs-lsp/lsp-haskell
+	branch = master
 [submodule "lsp-mode"]
 	path = lib/lsp-mode
 	url = https://github.com/emacs-lsp/lsp-mode
