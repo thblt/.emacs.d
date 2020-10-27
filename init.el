@@ -274,6 +274,9 @@
         ("*Proced*" :same t)
         ("*Register Preview*" :frame nil :noselect t)
         (flycheck-error-list-mode :select t)
+        (magit-log-mode :same t)
+        (magit-submodule-list-mode :same t)
+        (magit-revision-mode :same t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
