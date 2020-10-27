@@ -269,7 +269,6 @@
         (" *Marked Processes*" :frame nil :popup t :select t)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
         ("*Org PDF LaTeX Output*" :select nil)
-        ("COMMIT…EDITMSG" :select t :frame nil)
         (" *undo-tree*" :frame nil)
         ("*Proced*" :same t)
         ("*Register Preview*" :frame nil :noselect t)
