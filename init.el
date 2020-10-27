@@ -995,8 +995,8 @@ nil; otherwise it's evaluated normally."
   ("M-<tab>" outshine-cycle-buffer)
   ("o" outline-hide-other "Hide others"))
 
-(define-key outline-minor-mode-map (kbd "M-o") 'hydra-outline/body)
-(define-key org-mode-map (kbd "M-o") 'hydra-outline/body)
+(define-key outline-minor-mode-map (kbd "C-M-o") 'hydra-outline/body)
+(define-key org-mode-map (kbd "C-M-o") 'hydra-outline/body)
 
 ;;;;; Rainbow mode
 
@@ -1151,7 +1151,7 @@ nil; otherwise it's evaluated normally."
   ("q" nil)
   ("g" nil))
 
-(define-key smartparens-mode-map (kbd "M-p") 'hydra-smartparens/body)
+(define-key smartparens-mode-map (kbd "M-o") 'hydra-smartparens/body)
 
 ;;;; ERC
 
