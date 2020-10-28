@@ -966,46 +966,16 @@ the extension."
 ;; (with-eval-after-load 'flycheck
 ;; (diminish 'flycheck-mode "▲"))
 
-;;;;; Outline and Outshine
+;;;;; Outline and bicyle
 
-(provide 'outorg) ; FIXME Dirty
+(add-hook 'prog-mode-hook 'outline-minor-mode)
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+(define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
+(define-key outline-minor-mode-map (kbd "C-M-<tab>") 'bicycle-cycle-global)
 
-(setq outshine-use-speed-commands nil)
-
-(add-hook 'prog-mode-hook 'outshine-mode)
-(add-hook 'haskell-mode-hook (lambda () (setq-local outshine-preserve-delimiter-whitespace t)))
-(diminish 'outline-minor-mode)
-
-(defun thblt/m-up-dwim () (interactive)
-       (cond ((and outshine-mode (outline-on-heading-p))
-              (call-interactively 'outline-move-subtree-up))
-             (t (call-interactively 'move-text-up))))
-
-(defun thblt/m-down-dwim () (interactive)
-       (cond ((and outshine-mode (outline-on-heading-p))
-              (call-interactively 'outline-move-subtree-down))
-             (t (call-interactively 'move-text-down))))
-
-(with-eval-after-load 'outshine
-  (diminish 'outshine-mode)
-  (define-key outshine-mode-map (kbd "M-<up>") 'thblt/m-up-dwim)
-  (define-key outshine-mode-map (kbd "M-<down>") 'thblt/m-down-dwim)
-  (define-key outshine-mode-map (kbd "M-TAB") nil)
-  (define-key outshine-mode-map (kbd "C-M-TAB") 'outshine-cycle-buffer))
-
-(define-key outline-minor-mode-map (kbd "C-c C-p") 'outline-previous-visible-heading)
-(define-key outline-minor-mode-map (kbd "C-c C-n") 'outline-next-visible-heading)
-
-(defmacro org-or-outshine (command)
-  (let ((org (intern (format "org-%s" command)))
-        (os (intern (format "org-%s" command)))
-        (doc (format "Run either org-%s, outshine-%s or nothing,
-        depending on the major mode.")))
-    `(defun () (interactive)
-       ,doc
-       (cond
-        ((eq major-mode 'org-mode) ,org)
-        (outshine-mode) ,os))))
+(advice-add 'outline-flag-region :after 'backline-update)
+(add-hook 'outline-minor-mode-hook
+          'outline-minor-faces-add-font-lock-keywords)
 
 (defhydra hydra-outline ()
   ("p" outline-previous-visible-heading "prev")

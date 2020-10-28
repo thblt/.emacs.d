@@ -30,10 +30,16 @@
 	path = lib/avy
 	url = https://github.com/abo-abo/avy
 	branch = master
+[submodule "backline"]
+	path = lib/backline
+	url = https://github.com/tarsius/backline
 [submodule "beginend"]
 	path = lib/beginend
 	url = https://github.com/DamienCassou/beginend
 	branch = master
+[submodule "bicycle"]
+	path = lib/bicycle
+	url = https://github.com/tarsius/bicycle
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
@@ -203,10 +209,9 @@
 	info-path = doc
 	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
-[submodule "outshine"]
-	path = lib/outshine
-	url = https://github.com/alphapapa/outshine
-	branch = master
+[submodule "outline-minor-faces"]
+	path = lib/outline-minor-faces
+	url = https://github.com/tarsius/outline-minor-faces
 [submodule "package-lint"]
 	path = lib/package-lint
 	url = https://github.com/purcell/package-lint
