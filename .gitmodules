@@ -33,6 +33,7 @@
 [submodule "backline"]
 	path = lib/backline
 	url = https://github.com/tarsius/backline
+	branch = master
 [submodule "beginend"]
 	path = lib/beginend
 	url = https://github.com/DamienCassou/beginend
@@ -40,6 +41,7 @@
 [submodule "bicycle"]
 	path = lib/bicycle
 	url = https://github.com/tarsius/bicycle
+	branch = master
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
@@ -154,6 +156,7 @@
 [submodule "lsp-ui"]
 	path = lib/lsp-ui
 	url = https://github.com/emacs-lsp/lsp-ui
+	branch = master
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit
@@ -212,6 +215,7 @@
 [submodule "outline-minor-faces"]
 	path = lib/outline-minor-faces
 	url = https://github.com/tarsius/outline-minor-faces
+	branch = master
 [submodule "package-lint"]
 	path = lib/package-lint
 	url = https://github.com/purcell/package-lint
