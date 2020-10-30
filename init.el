@@ -285,10 +285,6 @@
 
 (shackle-mode)
 
-;;;;; Which function
-
-(which-function-mode)
-
 ;;;;; Windmove [DISABLED]
 
 ;; (setq windmove-wrap-around t)
