@@ -260,22 +260,25 @@
 
 (setq shackle-rules
       '(("*Help*" :align t :select t)
+        ;; ** Magit **
         ((:custom
           (lambda (buffer)
             (with-current-buffer buffer
               (and (eq major-mode 'magit-diff-mode) magit-display-buffer-noselect))))
          :select nil)
         ("^magit.*$'" :regexp t :frame nil)
-        (" *Marked Processes*" :frame nil :popup t :select t)
+        (magit-log-mode :same t)
+        (magit-submodule-list-mode :same t)
+        (magit-revision-mode :same t)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
+        ;; ** Sunrise commander **
+        (sunrise-mode :ignore t)
+        (" *Marked Processes*" :frame nil :popup t :select t)
         ("*Org PDF LaTeX Output*" :select nil)
         (" *undo-tree*" :frame nil)
         ("*Proced*" :same t)
         ("*Register Preview*" :frame nil :noselect t)
         (flycheck-error-list-mode :select t)
-        (magit-log-mode :same t)
-        (magit-submodule-list-mode :same t)
-        (magit-revision-mode :same t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
