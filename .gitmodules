@@ -257,10 +257,6 @@
 	path = lib/shackle
 	url = https://depp.brause.cc/shackle.git
 	branch = master
-[submodule "smart-mode-line"]
-	path = lib/smart-mode-line
-	url = https://github.com/Malabarba/smart-mode-line
-	branch = master
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
