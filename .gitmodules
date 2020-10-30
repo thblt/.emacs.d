@@ -273,6 +273,10 @@
 	path = lib/spinner
 	url = https://github.com/Malabarba/spinner.el
 	branch = master
+[submodule "sunrise-commander"]
+	path = lib/sunrise-commander
+	url = https://github.com/sunrise-commander/sunrise-commander
+	branch = master
 [submodule "super-save"]
 	path = lib/super-save
 	url = https://github.com/bbatsov/super-save

@@ -259,12 +259,12 @@
 ;;;;; Shackle
 
 (setq shackle-rules
-      '(("*Help*" :align t :select t)
+      `(("*Help*" :align t :select t)
         ;; ** Magit **
         ((:custom
-          (lambda (buffer)
-            (with-current-buffer buffer
-              (and (eq major-mode 'magit-diff-mode) magit-display-buffer-noselect))))
+          ,(lambda (buffer)
+             (with-current-buffer buffer
+               (and (eq major-mode 'magit-diff-mode) magit-display-buffer-noselect))))
          :select nil)
         ("^magit.*$'" :regexp t :frame nil)
         (magit-log-mode :same t)
@@ -276,9 +276,9 @@
         ;; ** Proced **
         ("*Proced*" :same t)
         (" *Marked Processes*" :frame nil :popup t :select t)
+        ;; ** Misc **
         ("*Org PDF LaTeX Output*" :select nil)
         (" *undo-tree*" :frame nil)
-        ("*Proced*" :same t)
         ("*Register Preview*" :frame nil :noselect t)
         (flycheck-error-list-mode :select t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
@@ -1269,6 +1269,7 @@ the extension."
 ;;;; Misc utilities
 
 (define-key global-map (kbd "C-x C-p") 'proced)
+(define-key global-map (kbd "<f12>") 'sunrise)
 
 ;;;; Mu4e
 
