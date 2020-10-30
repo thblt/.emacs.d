@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: module_doc
+# key: md
+# --
+{-|
+Module      : ${1:`(thblt/guess-module-name)`}
+Description : ${2:Short description}
+Copyright   : ${3:`(format "© %s %s" (format-time-string "%Y") user-full-name)`}
+License     : ${4:GPL-3}
+Maintainer  : ${5:`user-mail-address`}
+Stability   : experimental
+
+$0
+-}

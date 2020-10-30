@@ -690,6 +690,36 @@ nil; otherwise it's evaluated normally."
 (yas-global-mode)
 (diminish 'yas-minor-mode)
 
+(defun thblt/split-path (path)
+  (let ((base t)
+        (list))
+    (while (< 1 (length path))
+      (setq base (file-name-nondirectory path)
+            path (substring (file-name-directory path) 0 -1))
+      (push base list))
+    list))
+
+(defun thblt/guess-module-name-from-path (path &optional keep-extension)
+  "Guess a Haskell-ish module name by concatenating path
+components that don't start with a lowercase letter and dropping
+the extension."
+  (let ((module)
+        (case-fold-search nil))
+    (mapc (lambda (item)
+            (if (string-match-p (rx bos lower) item)
+                (setq module nil)
+              (push item module)))
+          (thblt/split-path path))
+    (unless keep-extension
+      (setf (car module) (file-name-base (car module)))
+      )
+    (mapconcat 'identity (reverse module) ".")))
+
+(defun thblt/guess-module-name (&optional buffer)
+  (with-current-buffer (or buffer (current-buffer))
+    (when buffer-file-name
+      (thblt/guess-module-name-from-path buffer-file-name))))
+
 ;;;; Misc
 
 (setq shift-select-mode nil)
