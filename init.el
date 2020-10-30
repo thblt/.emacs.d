@@ -964,14 +964,7 @@ the extension."
     (define-key map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
     (define-key map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs)))
 
-;;;;; Flycheck
-
-;; (add-hook 'prog-mode-hook 'flycheck-mode)
-
-;; (with-eval-after-load 'flycheck
-;; (diminish 'flycheck-mode "▲"))
-
-;;;;; Outline and bicyle
+;;;;; Outline, hideshow, bicyle
 
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 (add-hook 'prog-mode-hook 'hs-minor-mode)
@@ -1001,11 +994,14 @@ the extension."
 (define-key outline-minor-mode-map (kbd "C-M-o") 'hydra-outline/body)
 (define-key org-mode-map (kbd "C-M-o") 'hydra-outline/body)
 
+(with-eval-after-load 'outline
+  (diminish 'outline-minor-mode))
+
+(with-eval-after-load 'hideshow
+  (diminish 'hs-minor-mode))
+
 ;;;;; Rainbow mode
 
-(add-hook 'prog-mode-hook (rainbow-mode))
-(add-hook 'css-mode-hook 'rainbow-mode)
-(add-hook 'scss-mode-hook 'rainbow-mode)
 (diminish 'rainbow-mode)
 
 ;;;; Programming languages
