@@ -1,3 +1,19 @@
 #+TITLE: My Emacs configuration
 
-As the title subtly suggests, this is my Emacs configuration.  Most of the time, it works.
+As the title subtly suggests, this is my Emacs configuration.  It
+sometimes works.  You should make your own config, but here are a few
+ideas you could borrow from mine:
+
+ - I use [[https://github.com/emacscollective/borg][Borg]], a simple package managers for Emacs that stores
+   packages as submodules.  It also supports arbitrary build commands.
+   Since every package is already a clone of its source repository,
+   contributing is much more natural than with =package.el=.
+
+ - I don't use an Org-based “literate” configuration pattern (ie, an
+   org mode file that at some point gets tangled to an elisp source
+   file).  Instead, I structure the config around an outline structure
+   provided by elisp conventions (a comment delimited by =;;;= marks a
+   first-level header, =;;;;= second level, and so on) and implemented
+   by the built-in =outline= and =hideshow= modes, augmented with
+   [[https://github.com/tarsius/bicycle/][bicycle]] and [[https://github.com/tarsius/outline-minor-faces/][outline-minor-faces]].  [[https://asciinema.org/a/lMdrUVAeduwzctLoJdAOYWDP3][Here's how it looks in a
+   terminal]].
