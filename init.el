@@ -272,7 +272,9 @@
         (magit-revision-mode :same t)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
         ;; ** Sunrise commander **
-        (sunrise-mode :ignore t)
+        (sunrise-mode :custom (lambda (&rest _)))
+        ;; ** Proced **
+        ("*Proced*" :same t)
         (" *Marked Processes*" :frame nil :popup t :select t)
         ("*Org PDF LaTeX Output*" :select nil)
         (" *undo-tree*" :frame nil)
@@ -282,7 +284,7 @@
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
-      shackle-default-rule '(:select t :frame t)
+      shackle-default-rule '(:frame t)
       shackle-default-size 0.4
       shackle-inhibit-window-quit-on-same-windows t)
 
