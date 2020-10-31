@@ -242,11 +242,14 @@
       ivy-read-action-function 'ivy-read-action-by-key)
 (ivy-mode)
 
-(define-key global-map (kbd "M-i") 'counsel-imenu)
-(define-key global-map (kbd "M-x") 'counsel-M-x)
-(define-key global-map (kbd "C-x C-f") 'counsel-find-file)
+(define-key global-map [remap describe-function]'counsel-describe-function)
+(define-key global-map [remap describe-symbol]'counsel-describe-symbol)
+(define-key global-map [remap describe-variable]'counsel-describe-variable)
+(define-key global-map [remap execute-extended-command] 'counsel-M-x)
+(define-key global-map [remap find-file] 'counsel-find-file)
+(define-key global-map [remap insert-char]'counsel-unicode-char)
+(define-key global-map [remap imenu] 'counsel-imenu)
 (define-key global-map (kbd "C-S-s") 'swiper)
-(define-key global-map (kbd "C-x 8 RET") 'counsel-unicode-char)
 
 (diminish 'ivy-mode)
 
@@ -447,7 +450,7 @@ useful programming symbols"
 ;; This chapter deals with /general/ text editing.  The next two configure
 ;; prose and code editing, respectively.
 
-(define-key global-map (kbd "C- ") 'er/expand-region)
+(define-key global-map (kbd "M-i") 'imenu)
 
 ;;;; The editor view hydra
 
