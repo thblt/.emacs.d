@@ -273,6 +273,7 @@
         (magit-log-mode :same t)
         (magit-submodule-list-mode :same t)
         (magit-revision-mode :same t)
+        (magit-process-mode :frame nil)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
