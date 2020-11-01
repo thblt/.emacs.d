@@ -176,27 +176,30 @@
 
 ;;;; Projectile
 
+(setq projectile-completion-system 'ivy
+      ;; globally ignore undo-files and similar byproducts.
+      projectile-globally-ignored-file-suffixes '(".un~"
+						  ".~undo-tree~")
+      ;; Manage submodules as distinct projects.
+      projectile-git-submodule-command nil)
+
 (projectile-global-mode)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (counsel-projectile-mode)
-
-;; - globally ignore undo-files and similar byproducts.
-(setq projectile-globally-ignored-file-suffixes (append '(
-                                                          ".un~"
-                                                          ".~undo-tree~")
-                                                        projectile-globally-ignored-files))
 
 (diminish 'projectile-mode)
 
 ;; I prefer to treat submodules as separate projects, so don't include
 ;; them in the main file listing:
 
-(setq projectile-git-submodule-command nil)
-
 ;; Teach Projectile about Borg modules
-(with-eval-after-load 'borg
+
+(defun thblt/borg-drones-to-projectile ()
   (dolist (clone (borg-clones))
     (projectile-add-known-project (borg-worktree clone))))
+
+(with-eval-after-load 'borg
+  (thblt/borg-drones-to-projectile))
 
 ;;;; UI Utilities
 
