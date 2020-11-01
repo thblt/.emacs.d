@@ -206,18 +206,19 @@
 ;;;;; Ace-window
 
 (unless (eq system-type 'gnu/linux)
-  (define-key global-map (kbd "C-x o") 'ace-window)
-  (define-key global-map (kbd "M-0") 'thblt/switch-to-minibuffer)
+  (define-key global-map (kbd "C-x o") 'ace-window))
 
-  ;; We use the value of aw-ignored-buffers, so we need the
-  ;; eval-after-load
-  (with-eval-after-load 'ace-window
-    (setq aw-scope 'frame
-          aw-background t
-          aw-ignore-on t
-          aw-ignored-buffers (append aw-ignored-buffers
-                                     (mapcar (lambda (n) (format " *Minibuf-%s*" n))
-                                             (number-sequence 0 20))))))
+(define-key global-map (kbd "C-c b") 'thblt/switch-to-minibuffer)
+
+;; We use the value of aw-ignored-buffers, so we need the
+;; eval-after-load
+(with-eval-after-load 'ace-window
+  (setq aw-scope 'frame
+        aw-background t
+        aw-ignore-on t
+        aw-ignored-buffers (append aw-ignored-buffers
+                                   (mapcar (lambda (n) (format " *Minibuf-%s*" n))
+                                           (number-sequence 0 20)))))
 
 (defun thblt/aw-switch-to-numbered-window (number)
   (aw-switch-to-window (nth (- number 1) (aw-window-list))))
@@ -856,6 +857,8 @@ the extension."
 ;;;; Settings
 
 ;; Some basic settings...
+
+(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
 
 (setq-default comment-empty-lines nil
               tab-width 2
