@@ -1197,7 +1197,7 @@ the extension."
 
 ;; An extra feature: update all remotes.  Probably very dirty.
 
-(require 'magit-repos)
+
 
 (defun thblt/magit-repolist-fetch-all ()
   "@TODO Add documentation"
@@ -1209,7 +1209,8 @@ the extension."
                     (expand-file-name (car d)))))
           magit-repository-directories)))
 
-(define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-fetch-all)
+(with-eval-after-load 'magit-repos
+  (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-fetch-all))
 
 ;;;; Misc utilities
 
