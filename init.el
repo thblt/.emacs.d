@@ -804,7 +804,7 @@ the extension."
   (sp-local-pair "«" "»")
   (sp-local-pair "“" "”"))
 
-;;;; Export
+;;;;; Export
 
 (require 'ox-extra)
 (ox-extras-activate '(ignore-headlines))
