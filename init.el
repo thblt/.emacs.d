@@ -367,15 +367,15 @@ This can be used to update the digit argument from arbitrary keys."
 
 (defvar bepo-programmer-mode-map
   (let ((keymap (make-keymap)))
-    (define-key keymap "é" (thblt/self-insert-char ?\())
-    (define-key keymap "É" (thblt/self-insert-char ?\)))
-    (define-key keymap "è" (thblt/self-insert-char ?{))
-    (define-key keymap "È" (thblt/self-insert-char ?}))
-    (define-key keymap "à" (thblt/self-insert-char ?\[))
-    (define-key keymap "À" (thblt/self-insert-char ?\]))
-    (define-key keymap "ê" (thblt/self-insert-char ?\"))
-    (define-key keymap "«" (thblt/self-insert-char ?\{))
-    (define-key keymap "»" (thblt/self-insert-char ?\}))
+    ;; (define-key keymap "é" (thblt/self-insert-char ?\())
+    ;; (define-key keymap "É" (thblt/self-insert-char ?\)))
+    ;; (define-key keymap "è" (thblt/self-insert-char ?{))
+    ;; (define-key keymap "È" (thblt/self-insert-char ?}))
+    ;; (define-key keymap "à" (thblt/self-insert-char ?\[))
+    ;; (define-key keymap "À" (thblt/self-insert-char ?\]))
+    ;; (define-key keymap "ê" (thblt/self-insert-char ?\"))
+    (define-key keymap "«" (thblt/self-insert-char ?\<))
+    (define-key keymap "»" (thblt/self-insert-char ?\>))
     ;; (define-key keymap "Ê" (thblt/self-insert-char ?))
     keymap))
 
@@ -384,67 +384,6 @@ This can be used to update the digit argument from arbitrary keys."
 useful programming symbols"
   :keymap bepo-programmer-mode-map
   :lighter " BÉPROG")
-
-;; (add-hook 'conf-mode-hook 'bepo-programmer-mode)
-;; (add-hook 'prog-mode-hook 'bepo-programmer-mode)
-
-;; EXPERIMENTAL Vim-like motion with modifiers
-
-;; (defun k (seq)
-;;  (let ((substs '(("left"  . "t")
-;;                  ("down"  . "s")
-;;                  ("up"    . "r")
-;;                  ("right" . "n"))))
-;;    (dolist (s substs)
-;;      (setq seq (replace-regexp-in-string (format "%%%s%%" (car s)) (cdr s) seq)))
-;;    (kbd seq)))
-
-;; (define-key global-map (k "C-b") nil)
-;; (define-key global-map (k "C-f") nil)
-;; (define-key global-map (k "C-p") nil)
-;; (define-key global-map (k "M-d") nil)
-;; (define-key global-map (k "M-n") nil)
-;; (define-key global-map (k "M-b") nil)
-;; (define-key global-map (k "M-f") nil)
-;; (define-key global-map (k "M-p") nil)
-;; (define-key global-map (k "M-n") nil)
-;; (define-key global-map (k "M-v") nil)
-
-;; ;; Motion
-
-;; (define-key global-map (k "C-%left%")             'backward-char)
-;; (define-key global-map (k "M-%left%")             'backward-word)
-;; (define-key smartparens-mode-map (k "C-M-%left%") 'sp-backward-sexp)
-;; (define-key global-map (k "C-%down%")             'next-line)
-;; (define-key global-map (k "M-%down%")             nil)
-;; (define-key smartparens-mode-map (k "C-M-%down%") nil)
-;; (define-key global-map (k "C-%up%")             'previous-line)
-;; (define-key global-map (k "M-%up%")             nil)
-;; (define-key smartparens-mode-map (k "C-M-%up%") nil)
-;; (define-key global-map (k "C-%right%")             'forward-char)
-;; (define-key global-map (k "M-%right%")             'forward-word)
-;; (define-key smartparens-mode-map (k "C-M-%right%") 'sp-forward-sexp)
-
-;; ;; Isearch
-
-;; (define-key global-map (k "C-v")   'isearch-backward)
-;; (define-key global-map (k "C-d")   'isearch-forward)
-;; (define-key global-map (k "C-M-d") 'isearch-forward-regexp)
-;; (define-key global-map (k "M-d .") 'isearch-forward-symbol-at-point)
-;; (define-key global-map (k "M-d o") 'occur)
-;; (define-key global-map (k "M-d w") 'isearch-forward-symbol-at-point)
-;; (define-key global-map (k "C-M-d") 'isearch-forward-regexp)
-
-;; (define-key isearch-mode-map (k "C-v") 'isearch-repeat-backward)
-;; (define-key isearch-mode-map (k "C-d") 'isearch-repeat-forward)
-;; (define-key isearch-mode-map (k "C-v") 'isearch-repeat-backward)
-
-;; ;; Killing
-;; (define-key global-map (k "C-q") 'delete-char)
-;; (define-key global-map (k "M-q") 'kill-word)
-;; (define-key text-mode-map (k "C-M-q") 'kill-sentence)
-;; (define-key prog-mode-map (k "C-M-q") 'kill-sentence)
-;; (define-key global-map (k "C-'") 'kill-line)
 
 ;;; Editing text
 
@@ -842,9 +781,9 @@ the extension."
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 
 (with-eval-after-load 'org-indent
-  (diminish 'org-indent-mode))4
+  (diminish 'org-indent-mode))
 
-;;;; Pairs
+;;;;; Pairs
 
 (defun sp--org-skip-asterisk (ms mb me)
   (or (and (= (line-beginning-position) mb)
