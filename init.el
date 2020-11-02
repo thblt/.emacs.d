@@ -394,7 +394,18 @@ useful programming symbols"
 ;; This chapter deals with /general/ text editing.  The next two configure
 ;; prose and code editing, respectively.
 
-(define-key global-map (kbd "M-i") 'imenu)
+(define-key global-map (kbd "M-i")
+  (lambda (arg)
+    "With no arg, execute `counsel-imenu'. With an argument,
+`counsel-outline'. If the function to execute isn't defined,
+execute `imenu' instead." ; Yes I know docstrings need a symbol.
+    (interactive "P")
+    (message "is %s" arg)
+    (cond ((and (not arg) (fboundp 'counsel-imenu))
+           (counsel-imenu))
+          ((and arg (fboundp 'counsel-outline))
+           (counsel-outline))
+          (t (imenu)))))
 
 ;;;; The editor view hydra
 
