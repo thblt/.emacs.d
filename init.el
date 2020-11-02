@@ -453,7 +453,7 @@ nil; otherwise it's evaluated normally."
   (interactive)
   (when (or
          activate
-         visual-fill-column-mode)
+         (bound-and-true-p visual-fill-column-mode))
     (visual-fill-column-mode -1)
     (visual-fill-column-mode t)))
 
@@ -483,16 +483,16 @@ nil; otherwise it's evaluated normally."
 (defun thblt/visual-fill-column-toggle-centering ()
   "For use by `hydra-editor-appearance/body'."
   (interactive)
-  (setq visual-fill-column-center-text (not visual-fill-column-center-text))
-  (thblt/visual-fill-column-reset t))
+  (if
+      (setq visual-fill-column-center-text (not (bound-and-true-p visual-fill-column-center-text)))
+      (thblt/visual-fill-column-reset visual-fill-column-center-text)
+    (visual-fill-column-mode 0)))
 
 (defun thblt/visual-fill-column-width-adjust (delta)
   "For use by `hydra-editor-appearance/body'."
   (interactive)
-  (setq visual-fill-column-width (+ delta
-                                    (or
-                                     visual-fill-column-width
-                                     fill-column)))
+  (setq visual-fill-column-width
+        (+ delta (or visual-fill-column-width fill-column)))
   (thblt/visual-fill-column-reset))
 
 (defun thblt/visual-fill-column-width-increase ()
