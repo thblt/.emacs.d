@@ -926,6 +926,14 @@ the extension."
 
 ;;;;; Outline, hideshow, bicyle
 
+;; @FIXME Need to simulate Outshine behavior of generating Outline
+;; defs given a comment-delimiter.  It's easy enough, eg Haskell:
+;;
+;; (setq outline-regexp (rx (* space) "-- " (group (one-or-more "*")) (* any))
+;;      outline-level (lambda () (length (match-string 1))))
+;;
+;; See the default impl of outline-level before overriding it.
+
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
@@ -953,6 +961,17 @@ the extension."
 
 (define-key outline-minor-mode-map (kbd "C-M-o") 'hydra-outline/body)
 (define-key org-mode-map (kbd "C-M-o") 'hydra-outline/body)
+
+(defun thblt/bicycle-tab ()
+  "If point is on an outline heading, run `bicycle-cycle'.
+Otherwise, disable bicycle-tab and reemit binding."
+  (interactive)
+  (if (outline-on-heading-p)
+      (call-interactively 'bicycle-cycle)
+    (let ((outline-minor-mode nil))
+      (call-interactively (key-binding (kbd "TAB"))))))
+
+(define-key outline-minor-mode-map (kbd "<tab>") 'thblt/bicycle-tab)
 
 (with-eval-after-load 'outline
   (diminish 'outline-minor-mode))
