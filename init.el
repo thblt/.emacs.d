@@ -924,7 +924,7 @@ the extension."
     (define-key map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
     (define-key map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs)))
 
-;;;;; Outline, hideshow, bicyle
+;;;;; Outline, hideshow, bicycle
 
 ;; @FIXME Need to simulate Outshine behavior of generating Outline
 ;; defs given a comment-delimiter.  It's easy enough, eg Haskell:
