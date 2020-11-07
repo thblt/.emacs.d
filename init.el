@@ -273,6 +273,7 @@
              (with-current-buffer buffer
                (and (eq major-mode 'magit-diff-mode) magit-display-buffer-noselect))))
          :select nil)
+        (magit-status-mode :same t)
         ("^magit.*$'" :regexp t :frame nil)
         (magit-log-mode :same t)
         (magit-submodule-list-mode :same t)
