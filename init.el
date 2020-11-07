@@ -1222,7 +1222,7 @@ Otherwise, disable bicycle-tab and reemit binding."
         ("↑U"         5   magit-repolist-column-unpushed-to-upstream)
         ("↓P"         5   magit-repolist-column-unpulled-from-pushremote)
         ("↑P"         5   magit-repolist-column-unpushed-to-pushremote)
-        (""           6   magit-repolist-column-dirty)
+        (""           6   magit-repolist-column-flag)
         ("Path"       99  magit-repolist-column-path nil)))
 
 ;; An extra feature: update all remotes.  Probably very dirty.
