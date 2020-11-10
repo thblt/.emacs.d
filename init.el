@@ -31,15 +31,12 @@
 ;; Borg comes second, because it comes first.  The second initialized
 ;; manager will be the first in load-path.
 
-(add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
-(require 'borg)
-(borg-initialize)
+(eval-and-compile
+  (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
+  (require 'borg)
+  (borg-initialize))
 
-;;;; Fundamental packages
-
-;; Recompile what needs recompiling
-(require 'auto-compile)
-(auto-compile-on-load-mode)
+;;;;;; Paths
 
 (require 'no-littering)
 
@@ -75,11 +72,16 @@
       browse-url-generic-program "firefox")
 ;; browse-url-generic-args '("xdg-open"))
 
+(setq custom-file "/dev/null")
 (load custom-file t)
 
 (setq-default major-mode 'text-mode)
 
 (defun thblt/disable-key-translations (&optional frame)
+  "Disable key translations used for terminal compatibility, selecting FRAME.
+
+Notice the variables this sets are terminal-local, not frame
+local."
   (with-selected-frame (or frame (selected-frame))
     (when (display-graphic-p)
       (define-key input-decode-map [?\C-m] [C-m])
@@ -119,10 +121,6 @@
 
 ;; Cursor configuration
 (setq-default  cursor-type 'box)
-(defun thblt/update-cursor-color ()
-  (set-cursor-color (if overwrite-mode "#ff0000" (face-attribute 'default :foreground))))
-(add-hook 'overwrite-mode-hook 'thblt/update-cursor-color)
-(thblt/update-cursor-color)
 (blink-cursor-mode)
 ;; @FIXME Set color per-buffer
 
@@ -156,12 +154,12 @@
 ;; Configure the default font:
 (add-to-list 'default-frame-alist '(font . "Iosevka"))
 (set-face-attribute 'default nil
-                    :height (pcase system-name
+                    :height (pcase (system-name)
                               ("dru" 100)
                               ("maladict" 090)))
 
-(add-to-list 'custom-theme-load-path borg-drone-directory)
-(add-to-list 'load-path borg-drone-directory)
+(add-to-list 'custom-theme-load-path borg-drones-directory)
+(add-to-list 'load-path borg-drones-directory)
 (setq x-underline-at-descent-line t)
 
 (defun thblt/disable-all-themes ()
@@ -169,12 +167,14 @@
   (mapc 'disable-theme custom-enabled-themes))
 
 ;; Note to self: theme is configured in solaris.el
-(defun thblt/dark-theme () (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
-(defun thblt/light-theme () (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
+(defun thblt/dark-theme () "Activate dark theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
+(defun thblt/light-theme () "Activate light theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
 
 ;; Theme is loaded at the very end of this file.
 
 ;;;; Projectile
+
+(eval-when-compile (require 'projectile))
 
 (setq projectile-completion-system 'ivy
       ;; globally ignore undo-files and similar byproducts.
@@ -183,7 +183,7 @@
       ;; Manage submodules as distinct projects.
       projectile-git-submodule-command nil)
 
-(projectile-global-mode)
+(projectile-mode)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (counsel-projectile-mode)
 
@@ -195,11 +195,10 @@
 ;; Teach Projectile about Borg modules
 
 (defun thblt/borg-drones-to-projectile ()
+  "Teach Projectile about Borg drones."
   (dolist (clone (borg-clones))
     (projectile-add-known-project (borg-worktree clone))))
 
-(with-eval-after-load 'borg
-  (thblt/borg-drones-to-projectile))
 
 ;;;; UI Utilities
 
@@ -211,9 +210,15 @@
 
 ;;;;; Hydra
 
+(eval-when-compile
+  (require 'hydra))
+
 (setq hydra-hint-display-type 'message)
 
 ;;;;; Ivy
+
+(eval-when-compile
+  (require 'ivy))
 
 (setq ivy-use-virtual-buffers t
       ivy-read-action-function 'ivy-read-action-by-key)
@@ -238,6 +243,10 @@
 
 ;;;;; Shackle
 
+(eval-when-compile
+  (require 'magit)
+  (require 'shackle))
+
 (setq shackle-rules
       `(("*Help*" :align t :select t)
         ;; ** Magit **
@@ -258,6 +267,8 @@
         ;; ** Proced **
         ("*Proced*" :same t)
         (" *Marked Processes*" :frame nil :popup t :select t)
+        ;; ** Byte-compiler
+        ("*Compile-Log*" :frame nil :popup t :select t)
         ;; ** Misc **
         ("*Org PDF LaTeX Output*" :select nil)
         (" *undo-tree*" :frame nil)
@@ -290,6 +301,7 @@
 ;; A small function to identify the face at point.  Nice to have when
 ;; writing themes, and faster than C-u C-x =
 (defun what-face (pos)
+  "Show face at POS, defaulting to point."
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
@@ -300,7 +312,7 @@
 ;; Unshifted digit argument
 
 (defmacro thblt/digit-argument-with-value (char)
-  "Return an (interactive) lambda that calls `digit-argument' as if CHAR had been pressed.
+  "Simulate `digit-argument' as if it was called by pressing CHAR.
 
 This can be used to update the digit argument from arbitrary keys."
   `(lambda () (interactive)
@@ -334,39 +346,12 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key global-map (kbd "C-'") 'unfill-paragraph)
                                         ; @FIXME In prog-mode, this could be reformat-defun or something.
 
-;;;;; BEPO programmer
-
-(defmacro thblt/self-insert-char (char)
-  "Return a closure that calls `self-insert-command' as if CHAR had been pressed."
-  (unless (integerp char) (error "CHAR must be a character (not a string)."))
-  `(lambda () (interactive)
-     (setq last-command-event ,char)
-     (call-interactively 'self-insert-command)))
-
-(defvar bepo-programmer-mode-map
-  (let ((keymap (make-keymap)))
-    ;; (define-key keymap "é" (thblt/self-insert-char ?\())
-    ;; (define-key keymap "É" (thblt/self-insert-char ?\)))
-    ;; (define-key keymap "è" (thblt/self-insert-char ?{))
-    ;; (define-key keymap "È" (thblt/self-insert-char ?}))
-    ;; (define-key keymap "à" (thblt/self-insert-char ?\[))
-    ;; (define-key keymap "À" (thblt/self-insert-char ?\]))
-    ;; (define-key keymap "ê" (thblt/self-insert-char ?\"))
-    (define-key keymap "«" (thblt/self-insert-char ?\<))
-    (define-key keymap "»" (thblt/self-insert-char ?\>))
-    ;; (define-key keymap "Ê" (thblt/self-insert-char ?))
-    keymap))
-
-(define-minor-mode bepo-programmer-mode
-  "A minor mode to convert BÉPO accentuated characters into
-useful programming symbols"
-  :keymap bepo-programmer-mode-map
-  :lighter " BÉPROG")
-
 ;;; Editing text
 
 ;; This chapter deals with /general/ text editing.  The next two configure
 ;; prose and code editing, respectively.
+
+(setq shift-select-mode nil)
 
 (define-key global-map (kbd "M-i")
   (lambda (arg)
@@ -379,9 +364,12 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
            (counsel-imenu))
           ((and arg (fboundp 'counsel-outline))
            (counsel-outline))
-          (t (imenu)))))
+          (t (call-interactively 'imenu)))))
 
 ;;;; The editor view hydra
+
+(eval-when-compile
+  (require 'visual-fill-column))
 
 (defmacro thblt/hydra-indicator (desc active)
   "Return DESC with a state indicator determined by ACTIVE.
@@ -434,7 +422,9 @@ nil; otherwise it's evaluated normally."
 (define-key global-map (kbd "C-c l") 'hydra-editor-appearance/body)
 
 (defun thblt/visual-fill-column-reset (&optional activate)
-  "For use by `hydra-editor-appearance/body'."
+  "Turn visual-fill-column off and on again.  Also ACTIVATE it if non-nil.
+
+For use by `hydra-editor-appearance/body'."
   (interactive)
   (when (or
          activate
@@ -474,7 +464,7 @@ nil; otherwise it's evaluated normally."
     (visual-fill-column-mode 0)))
 
 (defun thblt/visual-fill-column-width-adjust (delta)
-  "For use by `hydra-editor-appearance/body'."
+  "Adjust visual fill column by DELTA."
   (interactive)
   (setq visual-fill-column-width
         (+ delta (or visual-fill-column-width fill-column)))
@@ -491,6 +481,10 @@ nil; otherwise it's evaluated normally."
   (thblt/visual-fill-column-width-adjust -5))
 
 ;;;; Spell checking
+
+(eval-when-compile
+  (require 'flyspell)
+  (require 'ispell))
 
 (setq ispell-program-name "aspell"
       ispell-silently-savep t)
@@ -521,6 +515,9 @@ nil; otherwise it's evaluated normally."
 
 ;;;;; beginend
 
+(eval-when-compile
+  (require 'beginend))
+
 (beginend-global-mode)
 
 (mapc (lambda (m) (diminish (cdr m)))
@@ -528,6 +525,9 @@ nil; otherwise it's evaluated normally."
 (diminish 'beginend-global-mode)
 
 ;;;;; mwim
+
+(eval-when-compile
+  (require 'haskell-interactive-mode))
 
 ;; (define-key global-map (kbd "C-a") 'mwim-beginning-of-code-or-line)
 ;; (define-key global-map (kbd "C-e") 'mwim-end-of-code-or-line)
@@ -542,7 +542,7 @@ nil; otherwise it's evaluated normally."
 ;;;;; nav-flash (don't get lost)
 
 (face-spec-set 'nav-flash-face '((t (:inherit pulse-highlight-face :extend t))))
-(advice-add 'recenter-top-bottom :after (lambda (x) (nav-flash-show)))
+(advice-add 'recenter-top-bottom :after (lambda (_) (nav-flash-show)))
 
 ;;;; Replace
 
@@ -637,9 +637,10 @@ nil; otherwise it's evaluated normally."
     list))
 
 (defun thblt/guess-module-name-from-path (path &optional keep-extension)
-  "Guess a Haskell-ish module name by concatenating path
-components that don't start with a lowercase letter and dropping
-the extension."
+  "Guess a Haskell-ish module name.
+
+This works by concatenating PATH components that don't start with
+a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
   (let ((module)
         (case-fold-search nil))
     (mapc (lambda (item)
@@ -659,35 +660,12 @@ the extension."
 
 ;;;; Misc
 
-(setq shift-select-mode nil)
-
-;; From https://www.emacswiki.org/emacs/CopyingWholeLines
-(defun copy-line (arg)
-  "Copy lines (as many as prefix argument) in the kill ring.
-      Ease of use features:
-      - Move to start of next line.
-      - Appends the copy on sequential calls.
-      - Use newline as last char even on the last line of the buffer.
-      - If region is active, copy its lines."
-  (interactive "p")
-  (let ((beg (line-beginning-position))
-        (end (line-end-position arg)))
-    (when mark-active
-      (if (> (point) (mark))
-          (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
-        (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
-    (if (eq last-command 'copy-line)
-        (kill-append (buffer-substring beg end) (< end beg))
-      (kill-ring-save beg end)))
-  (kill-append "\n" nil)
-  (beginning-of-line (or (and arg (1+ arg)) 2))
-  (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
-
 (defun kill-duplicate-blank-lines ()
+  "Replace successive empty lines by a single one."
   (interactive)
   (let ((regexp (rx bol (* whitespace) eol)))
     (save-excursion
-      (beginning-of-buffer)
+      (goto-char (point-min))
       (while (re-search-forward regexp nil t)
         (forward-line 1)
         (while (looking-at-p regexp)
@@ -748,6 +726,10 @@ the extension."
 
 ;;;; Org-Mode
 
+(eval-when-compile
+  (require 'org)
+  (require 'ox-latex))
+
 (setq org-catch-invisible-edits t
       org-hide-leading-stars t
       org-hide-emphasis-markers nil
@@ -774,7 +756,8 @@ the extension."
 
 ;;;;; Pairs
 
-(defun sp--org-skip-asterisk (ms mb me)
+(defun sp--org-skip-asterisk (_ mb me)
+  "I assume: skip opening * in matched string _ between MB and ME."
   (or (and (= (line-beginning-position) mb)
            (eq 32 (char-after (1+ mb))))
       (and (= (1+ (line-beginning-position)) me)
@@ -791,28 +774,12 @@ the extension."
 
 ;;;;; Export
 
-(require 'ox-extra)
-(ox-extras-activate '(ignore-headlines))
+(with-eval-after-load 'org
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines)))
 
 (setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
 (setq org-latex-pdf-process (list "latexmk -f -pdfxe -xelatex %f"))
-
-;; Identify position in buffer:
-
-(defun thblt/org-where-am-i ()
-  "Return a string of headers indicating where point is in the current tree."
-  (interactive)
-  (let (headers)
-    (save-excursion
-      (while (condition-case nil
-                 (progn
-                   (push (nth 4 (org-heading-components)) headers)
-                   (outline-up-heading 1))
-               (error nil))))
-    (message (mapconcat #'identity headers " > "))))
-
-(define-key org-mode-map (kbd  "<f1> <f1>") 'thblt/org-where-am-i)
-(define-key org-mode-map (kbd  "C-'") nil)
 
 ;;;; Org-agenda:
 
@@ -829,6 +796,7 @@ the extension."
 ;;;; Stuff
 
 (defun thblt/org-insert-magic-link (url)
+  "Auto create org links to Wikipedia URL."
   (interactive "sLink to? ")
   (require 'url-util)
   (let ((title))
@@ -862,41 +830,23 @@ the extension."
 (dolist (mode '(emacs-lisp-mode-hook lisp-mode-hook))
   (add-hook mode 'aggressive-indent-mode))
 
-;;;;; Color-identifiers
-
-(add-hook 'prog-mode-hook 'color-identifiers-mode)
-
-(with-eval-after-load 'color-identifiers-mode
-  (advice-add 'load-theme :after (lambda (&rest _)
-                                   (color-identifiers:regenerate-colors)
-                                   (color-identifiers:refresh)))
-  (add-to-list
-   'color-identifiers:modes-alist'
-   `(haskell-mode . ("[^.][[:space:]]*"
-                     "\\_<\\([[:lower:][:upper:]]\\([_]??[[:lower:][:upper:]\\$0-9]+\\)*\\(_+[#:<=>@!%&*+/?\\\\^|~-]+\\|_\\)?\\)"
-                     (nil scala-font-lock:var-face font-lock-variable-name-face))))
-
-  (diminish 'color-identifiers-mode))
-
 ;;;;; Company
+
+(eval-when-compile
+  (require 'company))
 
 (add-hook 'prog-mode-hook 'company-mode)
 
 (with-eval-after-load 'company
   (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
   (diminish 'company-mode "C⋯"))
-(setq company-auto-complete t)
+(setq company-auto-commit t)
 
 ;;;;; Evil Nerd Commenter
 
 (dolist (map (list org-mode-map prog-mode-map))
   (define-key map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
   (define-key map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs))
-
-(with-eval-after-load 'auctex
-  (dolist (map (list latex-mode-map LaTeX-mode-map  tex-mode-map))
-    (define-key map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
-    (define-key map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs)))
 
 ;;;;; Outline, hideshow, bicycle
 
@@ -965,10 +915,11 @@ Otherwise, disable bicycle-tab and reemit binding."
           (lambda ()
             (local-set-key (kbd "C-c o") 'ff-find-other-file)))
 
-(add-hook 'c-mode-common-hook (lambda nil (setq-local
-                                           format-buffer-function 'clang-format)))
-
 ;;;;; Elisp
+
+(require 'auto-compile)
+(auto-compile-on-load-mode)
+(auto-compile-on-save-mode)
 
 (add-hook 'lisp-mode-hook 'aggressive-indent-mode)
 
@@ -976,11 +927,6 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 (setq haskell-interactive-popup-errors nil)
-
-;;;;; Nix
-
-(with-eval-after-load 'nix-mode
-  (add-hook 'nix-mode-hook (lambda nil (setq format-buffer-function 'nix-mode-format))))
 
 ;;; Tools
 
@@ -1163,11 +1109,12 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;; Use Projectile projects as a source of repositories:
 
 (defun thblt/update-magit-repository-directories (&rest _)
+  "Feed Projectile projects to Magit."
   (interactive)
   (setq magit-repository-directories
         (-non-nil
          (mapcar (lambda (x)
-                   (unless (string-prefix-p borg-drone-directory (expand-file-name x))
+                   (unless (string-prefix-p borg-drones-directory (expand-file-name x))
                      (cons x 0)))
                  projectile-known-projects))))
 
@@ -1194,8 +1141,6 @@ Otherwise, disable bicycle-tab and reemit binding."
         ("Path"       99  magit-repolist-column-path nil)))
 
 ;; An extra feature: update all remotes.  Probably very dirty.
-
-
 
 (defun thblt/magit-repolist-fetch-all ()
   "@TODO Add documentation"
