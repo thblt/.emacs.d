@@ -203,33 +203,6 @@
 
 ;;;; UI Utilities
 
-;;;;; Ace-window
-
-(unless (eq system-type 'gnu/linux)
-  (define-key global-map (kbd "C-x o") 'ace-window))
-
-(define-key global-map (kbd "C-c b") 'thblt/switch-to-minibuffer)
-
-;; We use the value of aw-ignored-buffers, so we need the
-;; eval-after-load
-(with-eval-after-load 'ace-window
-  (setq aw-scope 'frame
-        aw-background t
-        aw-ignore-on t
-        aw-ignored-buffers (append aw-ignored-buffers
-                                   (mapcar (lambda (n) (format " *Minibuf-%s*" n))
-                                           (number-sequence 0 20)))))
-
-(defun thblt/aw-switch-to-numbered-window (number)
-  (aw-switch-to-window (nth (- number 1) (aw-window-list))))
-
-(defun thblt/switch-to-minibuffer ()
-  "Switch to minibuffer window."
-  (interactive)
-  (if (active-minibuffer-window)
-      (select-window (active-minibuffer-window))
-    (error "Minibuffer is not active")))
-
 ;;;;; Buffer management (ibuffer)
 
 ;; Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
@@ -1156,27 +1129,21 @@ Otherwise, disable bicycle-tab and reemit binding."
                            (visual-line-mode 1)
                            (setq-local wrap-prefix "  ")))
 
-;; ZNC doesn't know how to use auth-source, and I'm too lazy to
-;; implement it.  Instead, this function will initialize znc-servers
-;; on first start, reading the password from auth-source.
-
 (defun znc ()
-  "A quick and dirty function to read ZNC password before connecting"
+  "Connect to ZNC"
   (interactive)
-  (require 'znc)
-  (unless znc-servers
-    (--if-let (plist-get
-               (car
-                (auth-source-search
-                 :max 1
-                 :host "znc.thb.lt"))
-               :secret)
-        (setq znc-servers
-              `(("k9.thb.lt" 2002 t
-                 ((freenode "thblt" ,(funcall it))))))
-      (message "Cannot read ZNC secret!")))
-  (when znc-servers
-    (call-interactively 'znc-all)))
+  (let ((user "thblt")
+        (pass (funcall (plist-get
+                        (car
+                         (auth-source-search
+                          :max 1
+                          :host "znc.thb.lt"))
+                        :secret))))
+    (erc-tls
+     :server "k9.thb.lt"
+     :port 2002
+     :nick user
+     :password (format "%s:%s" user pass))))
 
 ;;;; Magit and Git
 
