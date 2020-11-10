@@ -163,10 +163,6 @@
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
 	branch = master
-[submodule "move-text"]
-	path = lib/move-text
-	url = https://github.com/emacsfodder/move-text
-	branch = master
 [submodule "mu4e"]
 	path = lib/mu4e
 	url = https://github.com/djcb/mu

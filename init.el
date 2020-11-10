@@ -199,6 +199,9 @@ local."
   (dolist (clone (borg-clones))
     (projectile-add-known-project (borg-worktree clone))))
 
+;; @FIXME This takes a half second. Find a better way.
+;;(with-eval-after-load 'projectile
+;;  (thblt/borg-drones-to-projectile))
 
 ;;;; UI Utilities
 
@@ -401,9 +404,7 @@ nil; otherwise it's evaluated normally."
   ("-" toggle-word-wrap (thblt/hydra-indicator "Word wrap" word-wrap))
   ("L" display-line-numbers-mode (thblt/hydra-indicator "Line numbers" display-line-numbers-mode))
 
-  ("v d" rainbow-delimiters-mode (thblt/hydra-indicator "Rainbow delimiters" rainbow-delimiters-mode) :column "Helpers")
-  ("v r" rainbow-mode (thblt/hydra-indicator "Rainbow" rainbow-mode))
-  ("v i" highlight-indent-guides-mode (thblt/hydra-indicator "Highlight indent" highlight-indent-guides-mode))
+  ("r" rainbow-mode (thblt/hydra-indicator "Rainbow" rainbow-mode) :column "Helpers")
 
   ("W" superword-mode (thblt/hydra-indicator "super-word" superword-mode))
   ("w" subword-mode (thblt/hydra-indicator "SubWord" subword-mode))
@@ -557,12 +558,6 @@ For use by `hydra-editor-appearance/body'."
 (with-eval-after-load 'autorevert
   (diminish 'auto-revert-mode " 🔃"))
 
-;;;;; Move text
-
-;; Move lines of text with =M-<up>= and =M-<down>=.
-(move-text-default-bindings)
-;; Configured with Outshine to DWIM on Outshine headings
-
 ;;;;; Recentf
 
 (recentf-mode)
@@ -624,6 +619,7 @@ For use by `hydra-editor-appearance/body'."
       (list (no-littering-expand-etc-file-name "snippets")
             (borg-worktree "yasnippet-snippets/snippets")))
 
+;; @FIXME Takes almost a second!
 (yas-global-mode)
 (diminish 'yas-minor-mode)
 
@@ -866,25 +862,6 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 (advice-add 'outline-flag-region :after 'backline-update)
 (add-hook 'outline-minor-mode-hook
           'outline-minor-faces-add-font-lock-keywords)
-
-(defhydra hydra-outline ()
-  ("p" outline-previous-visible-heading "prev")
-  ("<down>" outline-previous-visible-heading "prev")
-  ("n" outline-next-visible-heading "next")
-  ("<up>" outline-next-visible-heading "prev")
-  ("P" outline-move-subtree-up "up")
-  ("N" outline-move-subtree-down "down")
-  ("b" outline-promote "+")
-  ("f" outline-demote "-")
-  ("w" outshine-narrow-to-subtree "Narrow")
-  ("c" outshine-cycle "Cycle")
-  ("<tab>" outshine-cycle "Cycle")
-  ("C" outshine-cycle-buffer "Cycle buffer")
-  ("M-<tab>" outshine-cycle-buffer)
-  ("o" outline-hide-other "Hide others"))
-
-(define-key outline-minor-mode-map (kbd "C-M-o") 'hydra-outline/body)
-(define-key org-mode-map (kbd "C-M-o") 'hydra-outline/body)
 
 (defun thblt/bicycle-tab ()
   "If point is on an outline heading, run `bicycle-cycle'.
@@ -1140,21 +1117,6 @@ Otherwise, disable bicycle-tab and reemit binding."
         (""           6   magit-repolist-column-flag)
         ("Path"       99  magit-repolist-column-path nil)))
 
-;; An extra feature: update all remotes.  Probably very dirty.
-
-(defun thblt/magit-repolist-fetch-all ()
-  "@TODO Add documentation"
-  (interactive)
-  (mapc (lambda (d)
-          (shell-command
-           (format "git -C %s fetch --all &"
-                   (shell-quote-argument
-                    (expand-file-name (car d)))))
-          magit-repository-directories)))
-
-(with-eval-after-load 'magit-repos
-  (define-key magit-repolist-mode-map (kbd "G") 'thblt/magit-repolist-fetch-all))
-
 ;;;; Misc utilities
 
 (define-key global-map (kbd "C-x C-p") 'proced)
@@ -1170,8 +1132,10 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;; [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from
 ;; here]].
 
-(with-eval-after-load 'mu4e
+(eval-when-compile
+  (require 'mu4e))
 
+(with-eval-after-load 'mu4e
   (require 'mu4e-contrib)
 
   (defun mu4e-message-maildir-matches (msg rx)
@@ -1195,7 +1159,6 @@ Otherwise, disable bicycle-tab and reemit binding."
         mu4e-get-mail-command "mbsync -a"
         mu4e-headers-auto-update t
         mu4e-html2text-command 'mu4e-shr2text
-        mu4e-maildir "~/.Mail/"
         mu4e-update-interval 60 ;; seconds
         mu4e-sent-messages-behavior 'sent
 
@@ -1240,14 +1203,6 @@ Otherwise, disable bicycle-tab and reemit binding."
                               (:from-or-to     . 25)
                               (:thread-subject . nil))
 
-        mu4e-user-mail-address-list '("thblt@thb.lt"
-                                      "thibault.polge@ac-amiens.fr"
-                                      "thibault.polge@ac-orleans-tours.fr"
-                                      "thibault.polge@etu.univ-paris1.fr"
-                                      "thibault.polge@malix.univ-paris1.fr"
-                                      "thibault.polge@univ-paris1.fr"
-                                      "thibault@thb.lt"
-                                      "tpolge@gmail.com")
         mu4e-refile-folder (lambda (msg)
                              (let ((maildir (mu4e-message-field msg :maildir)))
                                (message "This is in %s" maildir)
@@ -1322,7 +1277,11 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;; (setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
 
-(pdf-tools-install)
+(eval-when-compile
+  (require 'tex)
+  (require 'pdf-misc))
+
+(pdf-tools-install) ;; @FIXME takes half a second.
 
 (with-eval-after-load 'tex
   (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
@@ -1333,8 +1292,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode)))
 
-(setq pdf-misc-print-programm (executable-find "lpr")
-      pdf-misc-print-programm-args '("-o media=A4" "-o fitplot"))
+(setq pdf-misc-print-program (executable-find "lpr")
+      pdf-misc-print-program-args '("-o media=A4" "-o fitplot"))
 
 (define-key pdf-view-mode-map (kbd "s a") 'pdf-view-auto-slice-minor-mode)
 (define-key pdf-view-mode-map (kbd "s r") 'pdf-view-reset-slice)
@@ -1349,6 +1308,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;; paste.lisp.org, and similar services.  It generates a HTML page out
 ;; of a buffer or region and publishes it using scp.
 
+(eval-when-compile
+  (require 'scpaste))
+
 (setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
       scpaste-http-destination "https://paste.thb.lt"
       scpaste-user-address "https://thb.lt"
@@ -1359,14 +1321,14 @@ Otherwise, disable bicycle-tab and reemit binding."
   noisy when reading.  We advise scpaste so a few minor modes get
   disabled before it runs, and restored afterwards."
   (let ((tmm transient-mark-mode)
-        (hig (bound-and-true-p highlight-indent-guides-mode))
+        ;; (hig (bound-and-true-p highlight-indent-guides-mode))
         (flyc (bound-and-true-p flycheck-mode))
         (flys (bound-and-true-p flyspell-mode))
         (ssp (bound-and-true-p show-smartparens-mode)))
     (when tmm
       (transient-mark-mode 0))
-    (when hig
-      (highlight-indent-guides-mode -1))
+    ;; (when hig
+    ;;   (highlight-indent-guides-mode -1))
     (when flyc
       (flycheck-mode -1))
     (flyspell-mode -1)
@@ -1375,8 +1337,8 @@ Otherwise, disable bicycle-tab and reemit binding."
     (apply f args) ; Run wrapped function
     (when tmm
       (transient-mark-mode 1))
-    (when hig
-      (highlight-indent-guides-mode 1))
+    ;; (when hig
+    ;;   (highlight-indent-guides-mode 1))
     (when flyc
       (flycheck-mode 1))
     (when flys
@@ -1419,31 +1381,13 @@ Otherwise, disable bicycle-tab and reemit binding."
   (setq server-name name)
   (server-start))
 
-;;;; Handmade persistent scratch
+;;;; Report success
 
 (setq initial-scratch-message
       (concat
        ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n"
-  ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
-  ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
-
-(defun persistent-scratch-insert-sig ()
-  (insert (if buffer-file-name
-              (format "Persisting to %s" buffer-file-name)
-            "(Ephemeral buffer)")))
-
-(with-current-buffer "*scratch*"
-  (let ((fn (no-littering-expand-var-file-name "scratches/default")))
-    (setq-local buffer-file-name fn)
-    (if (file-exists-p fn)
-        (revert-buffer nil t)
-      (persistent-scratch-insert-sig)
-      (make-directory (file-name-directory fn) t)
-      (save-buffer)))
-  (auto-revert-mode t)
-  (when (fboundp 'super-save-mode) (super-save-mode t)))
-
-;;;; Report success
+       ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
+       ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
 
 ;; We finally set the initial contents of the scratch buffer.  This
 ;; makes it easy to notice when something went wrong (this may not be
