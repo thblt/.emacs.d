@@ -1118,7 +1118,6 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (defun thblt/magit-repos-from-projectile (&rest _)
   "Overwrite `magit-repository-directories' with `projectile-known-projects'."
-  (message "Advice ran.")
   (setq magit-repository-directories
         (mapcar (lambda (p) (cons p 0))
                 projectile-known-projects)))
