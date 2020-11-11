@@ -167,10 +167,6 @@
 	path = lib/mwim
 	url = https://github.com/alezost/mwim.el
 	branch = master
-[submodule "nav-flash"]
-	path = lib/nav-flash
-	url = https://github.com/rolandwalker/nav-flash
-	branch = master
 [submodule "nix-mode"]
 	path = lib/nix-mode
 	url = https://github.com/NixOS/nix-mode

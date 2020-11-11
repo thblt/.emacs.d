@@ -540,10 +540,11 @@ For use by `hydra-editor-appearance/body'."
 (with-eval-after-load 'haskell-interactive-mode
   (define-key haskell-interactive-mode-map (kbd "C-a") 'haskell-interactive-mode-bol))
 
-;;;;; nav-flash (don't get lost)
+;;;;; pulse (don't get lost)
 
-(face-spec-set 'nav-flash-face '((t (:inherit pulse-highlight-face :extend t))))
-(advice-add 'recenter-top-bottom :after (lambda (_) (nav-flash-show)))
+(advice-add 'recenter-top-bottom :after (lambda (_) (pulse-momentary-highlight-one-line (point))))
+(advice-add 'scroll-down-command :after (lambda (_) (pulse-momentary-highlight-one-line (point))))
+(advice-add 'scroll-up-command :after (lambda (_) (pulse-momentary-highlight-one-line (point))))
 
 ;;;; Replace
 
