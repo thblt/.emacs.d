@@ -1,5 +1,9 @@
 ;;; ~thblt/.emacs.d/init.el -*- lexical-binding: t; -*-
 
+(setq gc-cons-percentage 100
+      gc-cons-threshold most-positive-fixnum
+      garbage-collection-messages t)
+
 (message "███████╗███╗   ███╗ █████╗  ██████╗███████╗")
 (message "██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝")
 (message "█████╗  ██╔████╔██║███████║██║     ███████╗")
@@ -1325,5 +1329,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;; obvious in daemon mode)
 
 (thblt/light-theme)
+
+(setq gc-cons-percentage (car (get 'gc-cons-percentage 'standard-value))
+      gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value))
+      garbage-collection-messages nil)
 
 (message "Reached the end of init.el")
