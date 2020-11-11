@@ -179,7 +179,7 @@ local."
 (setq projectile-completion-system 'ivy
       ;; globally ignore undo-files and similar byproducts.
       projectile-globally-ignored-file-suffixes '(".un~"
-						  ".~undo-tree~")
+						                                      ".~undo-tree~")
       ;; Manage submodules as distinct projects.
       projectile-git-submodule-command nil)
 
@@ -1122,152 +1122,46 @@ Otherwise, disable bicycle-tab and reemit binding."
 (define-key global-map (kbd "C-x C-p") 'proced)
 (define-key global-map (kbd "<f12>") 'sunrise)
 
-;;;; Mu4e
-
-;; Each of my accounts is synced (by =mbsync=) to a folder at the root
-;; of the Maildir (eg, =~/.Mail/Academic/=).  We then need a function
-;; to switch contexts based on a regular expression on the current
-;; Maildir path.  For some reason, this doesn't come included with
-;; mu4e, so here it is, and it probably comes
-;; [[https://www.reddit.com/r/emacs/comments/47t9ec/share_your_mu4econtext_configs/d0fsih6/][from
-;; here]].
+;;;; Notmuch
 
 (eval-when-compile
-  (require 'mu4e))
+  (require 'notmuch)
+  (require 'smtpmail))
 
-(with-eval-after-load 'mu4e
-  (require 'mu4e-contrib)
+(setq notmuch-saved-searches
+      '((:name "Inbox" :query "tag:inbox" :key "i")
+        (:name "Inbox (unread)" :query "tag:inbox and tag:unread" :key "I")
+        (:name "Sent" :query "tag:sent" :key "s")
+        (:name "Drafts" :query "tag:draft" :key "d")
+        (:name "Lost" :query "tag:lost" :key "l"))
+      notmuch-fcc-dirs
+      '(("thibault@thb.lt" . "thb.lt/Sent +thb.lt +sent -inbox ")
+        ("thibault.polge@ac-amiens.fr" . "ac-amiens/Sent +ac-amiens +sent -inbox ")))
 
-  (defun mu4e-message-maildir-matches (msg rx)
-    (when rx
-      (if (listp rx)
-          ;; if rx is a list, try each one for a match
-          (or (mu4e-message-maildir-matches msg (car rx))
-              (mu4e-message-maildir-matches msg (cdr rx)))
-        ;; not a list, check rx
-        (string-match rx (mu4e-message-field msg :maildir)))))
+(defun thblt/smtpconfig-ac-amiens.fr ()
+  "SMTP settings for ac-amiens.fr."
+  (setq smtpmail-smtp-server  "smtp.ac-amiens.fr"
+        smtpmail-smtp-user    "tpolge"
+        smtpmail-stream-type  'tls
+        smtpmail-smtp-service 465))
 
-  ;; Then the bulk of the config:
+(defun thblt/smtpconfig-thb.lt ()
+  "SMTP settings for thb.lt."
+  (setq smtpmail-smtp-server  "ssl0.ovh.net"
+        smtpmail-smtp-user    "thibault@thb.lt"
+        smtpmail-stream-type  'tls
+        smtpmail-smtp-service 465))
 
-  (setq mu4e-completing-read-function 'ivy-completing-read
+(defun thblt/message-send-configure-smtp ()
+  "Pick SMTP server by From field."
 
-        ;; General settings
-        mu4e-mu-binary (expand-file-name "mu/mu" (borg-worktree "mu4e"))
-        message-send-mail-function 'smtpmail-send-it
-        message-kill-buffer-on-exit t
-        mu4e-change-filenames-when-moving t  ; Required for mbsync
-        mu4e-get-mail-command "mbsync -a"
-        mu4e-headers-auto-update t
-        mu4e-html2text-command 'mu4e-shr2text
-        mu4e-update-interval 60 ;; seconds
-        mu4e-sent-messages-behavior 'sent
+  (pcase (message-field-value "From")
 
-        ;; Behavior
-        mu4e-compose-dont-reply-to-self t
+    ((rx "thb.lt>" eol) (thblt/smtpconfig-thb.lt))
+    ((rx "ac-amiens.fr>" eol) (thblt/smtpconfig-ac-amiens.fr))
+    (_ (error "I don't know how to configure SMTP here"))))
 
-        ;; UI settings
-        mu4e-confirm-quit nil
-        mu4e-hide-index-messages t
-        mu4e-split-view 'vertical
-        mu4e-headers-include-related t  ; Include related messages in threads
-        mu4e-view-show-images t
-
-        ;; UI symbols
-        mu4e-use-fancy-chars t
-        mu4e-headers-attach-mark '("A" . "A")
-        mu4e-headers-encrypted-mark '("" . "")
-        mu4e-headers-flagged-mark '("+" . "+")
-        mu4e-headers-list-mark '("" . "")
-        mu4e-headers-new-mark '("" . "")
-        mu4e-headers-read-mark '("" . "")
-        mu4e-headers-replied-mark '("" . "↩")
-        mu4e-headers-seen-mark '("" . "")
-        mu4e-headers-unseen-mark '("" . "")
-        mu4e-headers-unread-mark '("" . "")
-        mu4e-headers-signed-mark '("" . "")
-        mu4e-headers-trashed-mark '("T" . "T")
-
-        mu4e-headers-from-or-to-prefix '("" . "→ ")
-
-        mu4e-headers-default-prefix '(" " . " ─")
-        mu4e-headers-duplicate-prefix '("D" . "D")
-        mu4e-headers-empty-parent-prefix '("X" . " X")
-        mu4e-headers-first-child-prefix '("|" . "╰─")
-        mu4e-headers-has-child-prefix '("+" . "╰┬")
-
-        mu4e-attachment-dir "~"
-
-        mu4e-headers-fields '((:flags          . 5)
-                              (:mailing-list   . 18)
-                              (:human-date     . 12)
-                              (:from-or-to     . 25)
-                              (:thread-subject . nil))
-
-        mu4e-refile-folder (lambda (msg)
-                             (let ((maildir (mu4e-message-field msg :maildir)))
-                               (message "This is in %s" maildir)
-                               (if (string-suffix-p "/Inbox" maildir)
-                                   (concat (substring maildir 0 -5) "Archive")
-                                 maildir)))
-
-        mu4e-context-policy 'pick-first
-        mu4e-compose-context-policy 'ask
-
-        mu4e-contexts `(
-                        ,(make-mu4e-context
-                          :name "OVH"
-                          :enter-func (lambda () (mu4e-message "OVH"))
-                          :match-func (lambda (msg)
-                                        (when msg
-                                          (mu4e-message-maildir-matches msg "^/OVH/")))
-                          :vars '(( user-mail-address   . "thibault@thb.lt"  )
-                                  ( mu4e-sent-folder        . "/OVH/Sent" )
-                                  ( mu4e-drafts-folder      . "/OVH/Drafts" )
-                                  ( mu4e-trash-folder       . "/OVH/Trash" )
-                                  ;; ( mu4e-refile-folder      . "/OVH/Archive" )
-                                  ( smtpmail-local-domain   . "thb.lt" )
-                                  ( smtpmail-smtp-server    . "ssl0.ovh.net" )
-                                  ( smtpmail-smtp-user      . "thibault@thb.lt" )
-                                  ( smtpmail-stream-type    . tls )
-                                  ( smtpmail-smtp-service   . 465 )))
-
-                        ,(make-mu4e-context
-                          :name "Académie"
-                          :enter-func (lambda () (mu4e-message "Académie"))
-                          :match-func (lambda (msg)
-                                        (when msg
-                                          (mu4e-message-maildir-matches msg "^/Académique/")))
-                          :vars '(( user-mail-address       . "thibault.polge@ac-amiens.fr"  )
-                                  ( mu4e-sent-folder        . "/Académique/Sent" )
-                                  ( mu4e-drafts-folder      . "/Académique/Drafts" )
-                                  ( mu4e-trash-folder       . "/Académique/Trash" )
-                                  ( smtpmail-local-domain   . "ac-amiens.fr" )
-                                  ( smtpmail-smtp-server    . "smtp.ac-amiens.fr" )
-                                  ( smtpmail-smtp-user      . "tpolge" )
-                                  ( smtpmail-stream-type    . tls )
-                                  ( smtpmail-smtp-service   . 465 ))))
-
-        mu4e-bookmarks `(("(m:/OVH/INBOX) or (m:/Académique/INBOX) or (m:/Ac/INBOX)"
-                          "Global inbox" ?i)
-                         ("(m:/OVH/Archive) or (m:/Académique/Archive) or (m:/Ac/Archive)"
-                          "Archives" ?a)
-                         ("(flag:flagged)" "Flagged" ?f)
-                         ("(m:/OVH/Sent) or (m:/Académique/Sent) or (m:/Ac/Sent)"
-                          "Sent" ?s)
-                         ("(m:/OVH/Drafts) or (m:/Académique/Drafts) or (m:/Ac/Drafts)"
-                          "Drafts"       ?d))
-        )
-
-  (add-hook 'mu4e-view-mode-hook (lambda ()
-                                   (setq visual-fill-column-width 80)
-                                   (visual-line-mode 1)
-                                   (visual-fill-column-mode 1)))
-
-  (define-key mu4e-headers-mode-map (kbd "(") 'mu4e-headers-prev-unread)
-  (define-key mu4e-headers-mode-map (kbd ")") 'mu4e-headers-next-unread)
-  (define-key mu4e-view-mode-map (kbd "(") 'mu4e-view-headers-prev-unread)
-  (define-key mu4e-view-mode-map (kbd ")") 'mu4e-view-headers-next-unread)
-  (define-key mu4e-view-mode-map  (kbd "c") 'visual-fill-column-mode))
+(add-hook 'message-send-hook 'thblt/message-send-configure-smtp)
 
 ;;;; Password management (password-store)
 
@@ -1317,7 +1211,11 @@ Otherwise, disable bicycle-tab and reemit binding."
       scpaste-make-name-function 'scpaste-make-name-from-timestamp)
 
 (defun thblt/scpaste-without-noise (f &rest args)
-  "A lot of packages add overlays which are useful when editing,
+  "Disable visual helpers before calling F with ARGS.
+
+  This is meant to be an advice.
+
+  A lot of packages add overlays which are useful when editing,
   noisy when reading.  We advise scpaste so a few minor modes get
   disabled before it runs, and restored afterwards."
   (let ((tmm transient-mark-mode)
@@ -1386,8 +1284,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 (setq initial-scratch-message
       (concat
        ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n"
-       ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
-       ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
+  ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
+  ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
 
 ;; We finally set the initial contents of the scratch buffer.  This
 ;; makes it easy to notice when something went wrong (this may not be

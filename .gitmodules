@@ -163,18 +163,6 @@
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
 	branch = master
-[submodule "mu4e"]
-	path = lib/mu4e
-	url = https://github.com/djcb/mu
-	branch = master
-	build-nix-shell-packages = gnumake autoconf automake m4 libtool pkgconfig glib gmime3 xapian emacs texinfo
-	build-step = ./autogen.sh
-	build-step = make
-	build-step = borg-update-autoloads
-	build-step = borg-byte-compile
-	build-step = borg-makeinfo
-	load-path = mu4e
-	info-path = mu4e
 [submodule "mwim"]
 	path = lib/mwim
 	url = https://github.com/alezost/mwim.el
@@ -191,6 +179,10 @@
 	path = lib/no-littering
 	url = https://github.com/tarsius/no-littering
 	branch = master
+[submodule "notmuch"]
+	path = lib/notmuch
+	url = https://git.notmuchmail.org/git/notmuch
+ 	load-path = emacs
 [submodule "org"]
 	path = lib/org
 	url = https://code.orgmode.org/bzg/org-mode.git
