@@ -181,27 +181,36 @@ local."
       projectile-globally-ignored-file-suffixes '(".un~"
 						                                      ".~undo-tree~")
       ;; Manage submodules as distinct projects.
-      projectile-git-submodule-command nil)
+      projectile-git-submodule-command nil
+
+      ;; This slows down bootstrap, and doesn't make much sense since
+      ;; Projectile persists its project list.
+      projectile-auto-discover nil
+
+      projectile-project-search-path
+      (mapcar 'expand-file-name '("~"
+                                  "~/.emacs.d/lib/"
+                                  "~/Documents/"
+                                  "~/Documents/Code")))
 
 (projectile-mode)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+;; If we don't have any project, discover them
+(unless projectile-known-projects
+  (message "Looking for projects in `projectile-project-search-path'.  This will happen only once.")
+  (projectile-discover-projects-in-search-path)
+  (message "Found %s projects." (length projectile-known-projects)))
+
+(setq counsel-projectile-sort-buffers t
+      counsel-projectile-sort-directories t
+      counsel-projectile-sort-files t
+      counsel-projectile-sort-projects t)
+
 (counsel-projectile-mode)
 
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
 (diminish 'projectile-mode)
-
-;; I prefer to treat submodules as separate projects, so don't include
-;; them in the main file listing:
-
-;; Teach Projectile about Borg modules
-
-(defun thblt/borg-drones-to-projectile ()
-  "Teach Projectile about Borg drones."
-  (dolist (clone (borg-clones))
-    (projectile-add-known-project (borg-worktree clone))))
-
-;; @FIXME This takes a half second. Find a better way.
-;;(with-eval-after-load 'projectile
-;;  (thblt/borg-drones-to-projectile))
 
 ;;;; UI Utilities
 
@@ -912,6 +921,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;; Borg
 
+;;;;; Helpers
+
 (defun thblt/borg-fix-branch-declarations ()
   "Verify that all Borg drones have a branch declared in .gitmodules."
   (interactive)
@@ -951,6 +962,16 @@ Otherwise, disable bicycle-tab and reemit binding."
             (unless (string-prefix-p "http" url)
               (message "Bad remote URL on %s: %s" drone url))))
         (borg-drones)))
+
+;;;;; Projectile integration
+
+(defun thblt/borg-projectile-update (clone &rest _)
+  "Make Projectile discover Borg drone CLONE."
+  (projectile-add-known-project (borg-worktree clone)))
+
+(advice-add 'borg-clone :after 'thblt/borg-projectile-update)
+(advice-add 'borg-assimilate :after 'thblt/borg-projectile-update)
+(advice-add 'borg-remove :after (lambda (&rest _) (projectile-cleanup-known-projects)))
 
 ;;;; Divine or Boon
 
@@ -1072,32 +1093,41 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;;;; Magit and Git
 
 (defhydra hydra-magit-launcher (:color blue)
-  ("g" magit-status "Status")
-  ("C-g" magit-status)
+  ("g" thblt/magit-status "Status")
+  ("C-g" thblt/magit-status)
   ("l" magit-list-repositories "List repos")
   ("c" magit-clone "Clone")
   ("i" magit-init "Init"))
 
-(define-key global-map (kbd "C-x g") 'magit-status)
+(define-key global-map (kbd "C-x g") 'thblt/magit-status)
+(define-key global-map [remap magit-status] 'thblt/magit-status)
 (define-key global-map (kbd "C-x C-g") 'hydra-magit-launcher/body)
 
 (with-eval-after-load 'magit
   (require 'forge))
 
-;; Use Projectile projects as a source of repositories:
+;;;;; Steal repository list from Projectile
 
-(defun thblt/update-magit-repository-directories (&rest _)
-  "Feed Projectile projects to Magit."
-  (interactive)
+;; All Projectile projects will be git directories, so it's kinda
+;; pointless to maintain two separate lists.  We instrument Magit to
+;; steal projectile-known-projects every time it makes sense.
+
+(defun thblt/magit-repos-from-projectile (&rest _)
+  "Overwrite `magit-repository-directories' with `projectile-known-projects'."
+  (message "Advice ran.")
   (setq magit-repository-directories
-        (-non-nil
-         (mapcar (lambda (x)
-                   (unless (string-prefix-p borg-drones-directory (expand-file-name x))
-                     (cons x 0)))
-                 projectile-known-projects))))
+        (mapcar (lambda (p) (cons p 0))
+                projectile-known-projects)))
 
-(advice-add 'magit-status :before 'thblt/update-magit-repository-directories)
-(advice-add 'magit-list-repositories :before 'thblt/update-magit-repository-directories)
+(advice-add 'magit-list-repositories :before 'thblt/magit-repos-from-projectile)
+
+(defun thblt/magit-status (&optional arg)
+  "Run Magit status using Projectile as the source of repository
+  completion."
+  (interactive "P")
+  (require 'magit)
+  (or (and (not arg) (magit-toplevel) (magit-status-setup-buffer))
+      (counsel-projectile-switch-project "v")))
 
 ;;;;; magit-list-repositories
 
@@ -1128,6 +1158,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 (eval-when-compile
   (require 'notmuch)
   (require 'smtpmail))
+
+(define-key global-map (kbd "M-<f12>") 'notmuch)
 
 (setq notmuch-saved-searches
       '((:name "Inbox" :query "tag:inbox" :key "i")
