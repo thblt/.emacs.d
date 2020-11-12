@@ -299,19 +299,6 @@ local."
 
 (shackle-mode)
 
-;;;;; Windmove [DISABLED]
-
-;; (setq windmove-wrap-around t)
-
-;; (define-key global-map (kbd "S-<up>") 'windmove-up)
-;; (define-key global-map (kbd "S-<left>") 'windmove-left)
-;; (define-key global-map (kbd "S-<right>") 'windmove-right)
-;; (define-key global-map (kbd "S-<down>") 'windmove-down)
-
-;;;;; Winner
-
-(winner-mode)
-
 ;;;;; Customization helper
 
 ;; A small function to identify the face at point.  Nice to have when
