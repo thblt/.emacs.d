@@ -834,11 +834,17 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 ;;;; Minor modes
 ;;;;; Aggressive indent
 
-(with-eval-after-load 'aggressive-indent
-  (diminish 'aggressive-indent-mode " ⭾"))
+(require 'aggressive-indent)
 
-(dolist (mode '(emacs-lisp-mode-hook lisp-mode-hook))
-  (add-hook mode 'aggressive-indent-mode))
+(setq aggressive-indent-dont-electric-modes
+      '( haskell-mode
+         python-mode
+         ruby-mode
+         org-mode ))
+
+(aggressive-indent-global-mode)
+
+(diminish 'aggressive-indent-mode " ⭾")
 
 ;;;;; Company
 
@@ -911,8 +917,6 @@ Otherwise, disable bicycle-tab and reemit binding."
 (require 'auto-compile)
 (auto-compile-on-load-mode)
 (auto-compile-on-save-mode)
-
-(add-hook 'lisp-mode-hook 'aggressive-indent-mode)
 
 ;;;;; Haskell
 
