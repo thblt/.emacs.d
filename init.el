@@ -862,12 +862,6 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 (add-hook 'prog-mode-hook 'hs-minor-mode)
-(define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
-(define-key outline-minor-mode-map (kbd "C-M-<tab>") 'bicycle-cycle-global)
-
-(advice-add 'outline-flag-region :after 'backline-update)
-(add-hook 'outline-minor-mode-hook
-          'outline-minor-faces-add-font-lock-keywords)
 
 (defun thblt/bicycle-tab ()
   "If point is on an outline heading, run `bicycle-cycle'.
@@ -878,10 +872,16 @@ Otherwise, disable bicycle-tab and reemit binding."
     (let ((outline-minor-mode nil))
       (call-interactively (key-binding (kbd "TAB"))))))
 
-(define-key outline-minor-mode-map (kbd "<tab>") 'thblt/bicycle-tab)
-
 (with-eval-after-load 'outline
+  (define-key outline-minor-mode-map (kbd "C-<tab>") 'bicycle-cycle)
+  (define-key outline-minor-mode-map (kbd "C-M-<tab>") 'bicycle-cycle-global)
+  (define-key outline-minor-mode-map (kbd "<tab>") 'thblt/bicycle-tab)
+  (advice-add 'outline-flag-region :after 'backline-update)
+  (add-hook 'outline-minor-mode-hook
+            'outline-minor-faces-add-font-lock-keywords)
   (diminish 'outline-minor-mode))
+
+
 
 (with-eval-after-load 'hideshow
   (diminish 'hs-minor-mode))
