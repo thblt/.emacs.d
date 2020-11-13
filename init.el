@@ -100,18 +100,6 @@ local."
 (define-key global-map [remap suspend-frame] 'ignore) ; nil doesn't unset.
 (define-key global-map [remap suspend-emacs] 'ignore)
 
-;;;; Resurrecting *scratch*
-
-(defun thblt/resurrect-scratch (&optional only-install)
-  "Add self as a hook to scratch, creating it if it doesn't exist already."
-  (interactive)
-  (unless only-install
-    (rename-buffer "*this-scratch-is-no-more*" t))
-  (with-current-buffer (get-buffer-create "*scratch*")
-    (when (eq (point-min) (point-max))
-      (insert initial-scratch-message))
-    (lisp-interaction-mode)
-    (add-hook 'kill-buffer-query-functions 'thblt/resurrect-scratch)))
 
 ;;; User interface
 
@@ -165,6 +153,18 @@ local."
 
 ;; Fringes are pointless
 (fringe-mode 0)
+
+;; Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; A small function to identify the face at point.  Nice to have when
+;; writing themes, and faster than C-u C-x =
+(defun what-face (pos)
+  "Show face at POS, defaulting to point."
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 ;;;; Fonts and themes
 
@@ -232,11 +232,6 @@ local."
 
 ;;;; UI Utilities
 
-;;;;; Buffer management (ibuffer)
-
-;; Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
-
-(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;;;;; Hydra
 
@@ -313,16 +308,19 @@ local."
 
 (shackle-mode)
 
-;;;;; Customization helper
 
-;; A small function to identify the face at point.  Nice to have when
-;; writing themes, and faster than C-u C-x =
-(defun what-face (pos)
-  "Show face at POS, defaulting to point."
-  (interactive "d")
-  (let ((face (or (get-char-property (point) 'read-face-name)
-                  (get-char-property (point) 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+;;;; Resurrecting *scratch*
+
+(defun thblt/resurrect-scratch (&optional only-install)
+  "Add self as a hook to scratch, creating it if it doesn't exist already."
+  (interactive)
+  (unless only-install
+    (rename-buffer "*this-scratch-is-no-more*" t))
+  (with-current-buffer (get-buffer-create "*scratch*")
+    (when (eq (point-min) (point-max))
+      (insert initial-scratch-message))
+    (lisp-interaction-mode)
+    (add-hook 'kill-buffer-query-functions 'thblt/resurrect-scratch)))
 
 ;;;; BÉPO adjustments
 
