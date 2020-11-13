@@ -543,12 +543,10 @@ For use by `hydra-editor-appearance/body'."
 (eval-when-compile
   (require 'haskell-interactive-mode))
 
-;; (define-key global-map (kbd "C-a") 'mwim-beginning-of-code-or-line)
-;; (define-key global-map (kbd "C-e") 'mwim-end-of-code-or-line)
-(define-key prog-mode-map (kbd "C-a") 'mwim-beginning)
-(define-key prog-mode-map (kbd "C-e") 'mwim-end)
-(define-key global-map (kbd "<home>") 'mwim-beginning-of-line-or-code)
-(define-key global-map (kbd "<end>") 'mwim-end-of-line-or-code)
+(define-key global-map [remap move-beginning-of-line] 'mwim-beginning)
+(define-key global-map [remap move-end-of-line] 'mwim)
+(define-key visual-line-mode-map [remap move-beginning-of-line] 'mwim-beginning)
+(define-key visual-line-mode-map [remap move-end-of-line] 'mwim-end)
 ;; but…
 (with-eval-after-load 'haskell-interactive-mode
   (define-key haskell-interactive-mode-map (kbd "C-a") 'haskell-interactive-mode-bol))
