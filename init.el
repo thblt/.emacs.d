@@ -28,7 +28,7 @@
 (require 'package)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
-(package-initialize)
+(package-initialize 'no-activate)
 
 ;;;;;; Borg
 
@@ -785,10 +785,11 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 
 ;;;; Org-babel
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((dot . t)
-   (shell . t)))
+(with-eval-after-load 'org
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((dot . t)
+     (shell . t))))
 
 ;;;; Stuff
 
@@ -1196,13 +1197,23 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;; PDF Tools
 
-;; (setq pdf-info-epdfinfo-program (expand-file-name "server/epdfinfo" (borg-worktree "pdf-tools")))
-
 (eval-when-compile
   (require 'tex)
-  (require 'pdf-misc))
+  (require 'pdf-misc)
+  (require 'pdf-tools))
 
-(pdf-tools-install) ;; @FIXME takes half a second.
+(add-to-list 'magic-mode-alist '("%PDF" . pdf-view-mode))
+
+(setq pdf-misc-print-program (executable-find "lpr")
+      pdf-misc-print-program-args '("-o media=A4" "-o fitplot"))
+
+(with-eval-after-load 'pdf-view
+  (pdf-tools-install :no-query)
+  (add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode)))
+
+  (define-key pdf-view-mode-map (kbd "s a") 'pdf-view-auto-slice-minor-mode)
+  (define-key pdf-view-mode-map (kbd "s r") 'pdf-view-reset-slice)
+  (define-key pdf-view-mode-map (kbd "V") 'thblt/open-pdf-externally))
 
 (with-eval-after-load 'tex
   (unless (assoc "PDF Tools" TeX-view-program-list-builtin)
@@ -1211,13 +1222,18 @@ Otherwise, disable bicycle-tab and reemit binding."
   (add-to-list 'TeX-view-program-selection
                '(output-pdf "PDF Tools")))
 
-(add-hook 'pdf-view-mode-hook (lambda () (auto-revert-mode)))
+(defvar thblt/external-pdf-viewer (executable-find "evince")
+  "External viewer for PDF files.")
 
-(setq pdf-misc-print-program (executable-find "lpr")
-      pdf-misc-print-program-args '("-o media=A4" "-o fitplot"))
+(defun thblt/open-pdf-externally (file)
+  "Open FILE in `thblt/external-pdf-viewer'.
 
-(define-key pdf-view-mode-map (kbd "s a") 'pdf-view-auto-slice-minor-mode)
-(define-key pdf-view-mode-map (kbd "s r") 'pdf-view-reset-slice)
+Interactively, use buffer-file-name."
+  (interactive `(,(or buffer-file-name
+                      (error "Need a file!"))))
+  (start-process "PDF viewer" nil thblt/external-pdf-viewer file))
+
+t;;;; Regular expression builder
 
 ;;;; Regular expression builder
 
