@@ -1171,7 +1171,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (define-key global-map (kbd "M-<f12>") 'notmuch)
 
-(setq notmuch-saved-searches
+(setq send-mail-function 'smtpmail-send-it
+      notmuch-saved-searches
       '((:name "Inbox" :query "tag:inbox" :key "i")
         (:name "Inbox (unread)" :query "tag:inbox and tag:unread" :key "I")
         (:name "Sent" :query "tag:sent" :key "s")
