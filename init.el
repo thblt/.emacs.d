@@ -848,9 +848,7 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 
 ;;;;; Evil Nerd Commenter
 
-(dolist (map (list org-mode-map prog-mode-map))
-  (define-key map (kbd "M-,") 'evilnc-comment-or-uncomment-lines)
-  (define-key map (kbd "C-M-,") 'evilnc-comment-or-uncomment-paragraphs))
+(define-key global-map [remap comment-dwim] 'evilnc-comment-or-uncomment-lines)
 
 ;;;;; Outline, hideshow, bicycle
 
@@ -1048,6 +1046,10 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;; ERC
 
+(eval-when-compile
+  (require 'erc)
+  (require 'erc-track))
+
 (setq erc-server-auto-reconnect t
       erc-kill-buffer-on-part t
 
@@ -1071,7 +1073,7 @@ Otherwise, disable bicycle-tab and reemit binding."
                            (setq-local wrap-prefix "  ")))
 
 (defun znc ()
-  "Connect to ZNC"
+  "Connect to ZNC."
   (interactive)
   (let ((user "thblt")
         (pass (funcall (plist-get
@@ -1117,8 +1119,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 (advice-add 'magit-list-repositories :before 'thblt/magit-repos-from-projectile)
 
 (defun thblt/magit-status (&optional arg)
-  "Run Magit status using Projectile as the source of repository
-  completion."
+  "Run Magit status using Projectile as the source of repository completion."
   (interactive "P")
   (require 'magit)
   (or (and (not arg) (magit-toplevel) (magit-status-setup-buffer))
@@ -1235,7 +1236,8 @@ Interactively, use buffer-file-name."
 
 t;;;; Regular expression builder
 
-;;;; Regular expression builder
+(eval-when-compile
+  (require 're-builder))
 
 (setq reb-re-syntax 'string)
 
@@ -1310,11 +1312,10 @@ t;;;; Regular expression builder
 (defun thblt/reload-all-emacsen ()
   "Execute `thblt/reload-emacs' on all servers."
   (interactive)
-  (dolist (instance (directory-files server-socket-dir nil (rx bol (not (any ".")))))
+  (dolist (instance (directory-files server-socket-dir nil (rx bol (not "."))))
     (unless (equal instance server-name)
-      (async-shell-command (format "emacsclient -s %s --eval \"(thblt/reload-emacs)\"" instance)))))
-
-;; Also, some utility function:
+      (async-shell-command (format "emacsclient -s %s --eval \"(thblt/reload-emacs)\"" instance))))
+  (thblt/reload-emacs))
 
 (defun thblt/server-start (name)
   "Prompt for NAME, then start the Emacs server under that name."
@@ -1324,20 +1325,20 @@ t;;;; Regular expression builder
 
 ;;;; Report success
 
-(setq initial-scratch-message
-      (concat
-       ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n"
-  ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
-  ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
-
 ;; We finally set the initial contents of the scratch buffer.  This
 ;; makes it easy to notice when something went wrong (this may not be
 ;; obvious in daemon mode)
+(setq initial-scratch-message
+      (concat
+       ";; ╔═╗┌─┐┬─┐┌─┐┌┬┐┌─┐┬ ┬\n"
+       ";; ╚═╗│  ├┬┘├─┤ │ │  ├─┤\n"
+       ";; ╚═╝└─┘┴└─┴ ┴ ┴ └─┘┴ ┴\n\n"))
 
 (thblt/light-theme)
 
+;; Restore GC settings.
 (setq gc-cons-percentage (car (get 'gc-cons-percentage 'standard-value))
       gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value))
       garbage-collection-messages nil)
 
-(message "Reached the end of init.el")
+(message "Reached the end of init.el.")

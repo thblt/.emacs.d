@@ -60,7 +60,7 @@
        `(org-done ((,class (:inherit org-todo :background ,green))))
        `(org-block ((,class (:background ,base02 :extend t))))
        `(org-block-begin-line ((,class (:background ,base02 :foreground ,base01 :underline ,base01 :extend t))))
-       `(org-block-end-line   ((,class (:inherit org-block-begin-line :underline nil :overline ,base01))))
+       `(org-block-end-line ((,class (:inherit org-block-begin-line :underline nil :overline ,base01))))
        ;;;; outshine/outline-minor
        `(outline-minor-1 ,ol-gray-blocks-1)
        `(outline-minor-2 ,ol-gray-blocks-2)
