@@ -2,6 +2,8 @@
   "Return non-nil is the car of A is smaller than the car or B."
   (> (car a) (car b)))
 
+(defmacro eval-when-compile (&rest _))
+
 (defun bench-buffer (&optional buffer)
   (interactive)
   (setq buffer (or buffer (current-buffer)))
