@@ -1,4 +1,4 @@
-(defun solaris--heading-height (x) x)
+(defun solaris--heading-height (x) (if solarized-scale-outline-headlines x 1.0))
 (setq solarized-high-contrast-mode-line t)
 (defvar solaris-theme
   '("Solaris, like Solarized, but with less fruit salad."
