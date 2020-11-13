@@ -205,7 +205,8 @@ local."
       projectile-auto-discover nil
 
       projectile-project-search-path
-      (mapcar 'expand-file-name '("~"
+      (mapcar 'expand-file-name '("/etc/"
+                                  "~"
                                   "~/.emacs.d/lib/"
                                   "~/Documents/"
                                   "~/Documents/Code")))
