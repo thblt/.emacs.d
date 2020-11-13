@@ -901,6 +901,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;;;;; Elisp
 
 (require 'auto-compile)
+
+(setq auto-compile-display-buffer nil)
+
 (auto-compile-on-load-mode)
 (auto-compile-on-save-mode)
 
