@@ -100,7 +100,6 @@ local."
 (define-key global-map [remap suspend-frame] 'ignore) ; nil doesn't unset.
 (define-key global-map [remap suspend-emacs] 'ignore)
 
-
 ;;; User interface
 
 ;;;; Settings and general configuration
@@ -232,7 +231,6 @@ local."
 
 ;;;; UI Utilities
 
-
 ;;;;; Hydra
 
 (eval-when-compile
@@ -307,7 +305,6 @@ local."
       shackle-inhibit-window-quit-on-same-windows t)
 
 (shackle-mode)
-
 
 ;;;; Resurrecting *scratch*
 
@@ -543,7 +540,7 @@ For use by `hydra-editor-appearance/body'."
   (require 'haskell-interactive-mode))
 
 (define-key global-map [remap move-beginning-of-line] 'mwim-beginning)
-(define-key global-map [remap move-end-of-line] 'mwim)
+(define-key global-map [remap move-end-of-line] 'mwim-end)
 (define-key visual-line-mode-map [remap move-beginning-of-line] 'mwim-beginning)
 (define-key visual-line-mode-map [remap move-end-of-line] 'mwim-end)
 ;; but…
@@ -890,8 +887,6 @@ Otherwise, disable bicycle-tab and reemit binding."
   (add-hook 'outline-minor-mode-hook
             'outline-minor-faces-add-font-lock-keywords)
   (diminish 'outline-minor-mode))
-
-
 
 (with-eval-after-load 'hideshow
   (diminish 'hs-minor-mode))
