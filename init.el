@@ -310,14 +310,13 @@ local."
 
 (defun thblt/resurrect-scratch (&optional only-install)
   "Add self as a hook to scratch, creating it if it doesn't exist already."
-  (interactive)
   (unless only-install
     (rename-buffer "*this-scratch-is-no-more*" t))
   (with-current-buffer (get-buffer-create "*scratch*")
     (when (eq (point-min) (point-max))
       (insert initial-scratch-message))
     (lisp-interaction-mode)
-    (add-hook 'kill-buffer-query-functions 'thblt/resurrect-scratch)))
+    (add-hook 'kill-buffer-query-functions 'thblt/resurrect-scratch 0 t)))
 
 ;;;; BÉPO adjustments
 
