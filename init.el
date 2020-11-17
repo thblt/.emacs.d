@@ -267,8 +267,10 @@ local."
 ;;;;; Shackle
 
 (eval-when-compile
-  (require 'magit)
-  (require 'shackle))
+  (require 'magit))
+
+(require 'shackle)
+(require 'sway)
 
 (setq shackle-rules
       `(("*Help*" :align t :select t)
@@ -302,7 +304,8 @@ local."
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
       shackle-default-rule '(:frame t)
       shackle-default-size 0.4
-      shackle-inhibit-window-quit-on-same-windows t)
+      shackle-inhibit-window-quit-on-same-windows t
+      shackle-display-buffer-frame-function 'sway-shackle-display-buffer-frame)
 
 (shackle-mode)
 
