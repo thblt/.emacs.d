@@ -744,7 +744,7 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
       org-imenu-depth 8
       org-src-fontify-natively t
       org-use-speed-commands nil
-      org-ellipsis " ▼"
+      ;;org-ellipsis " ▼"
       org-special-ctrl-a/e t
       org-special-ctrl-k t)
 
