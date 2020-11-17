@@ -1232,6 +1232,7 @@ Otherwise, disable bicycle-tab and reemit binding."
   (require 'pdf-tools))
 
 (add-to-list 'magic-mode-alist '("%PDF" . pdf-view-mode))
+(autoload 'pdf-view-mode "pdf-tools")
 
 (setq pdf-misc-print-program (executable-find "lpr")
       pdf-misc-print-program-args '("-o media=A4" "-o fitplot"))
