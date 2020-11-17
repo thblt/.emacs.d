@@ -378,9 +378,10 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
            (counsel-outline))
           (t (call-interactively 'imenu)))))
 
-;;;; The editor view hydra
+;;;; The editor appearance hydra
 
 (eval-when-compile
+  (require 'hydra)
   (require 'visual-fill-column))
 
 (defmacro thblt/hydra-indicator (desc active)
