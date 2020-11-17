@@ -868,7 +868,7 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 ;; See the default impl of outline-level before overriding it.
 
 (add-hook 'prog-mode-hook 'outline-minor-mode)
-(add-hook 'prog-mode-hook 'hs-minor-mode)
+;; (remove-hook 'prog-mode-hook 'hs-minor-mode)
 
 (defun thblt/bicycle-tab ()
   "If point is on an outline heading, run `bicycle-cycle'.
