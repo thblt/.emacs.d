@@ -891,6 +891,20 @@ Otherwise, disable bicycle-tab and reemit binding."
 (with-eval-after-load 'hideshow
   (diminish 'hs-minor-mode))
 
+;;;;;; Outline heading generator (outshine-style)
+
+(defun thblt/outline-configure (delimiter)
+  "Configure Outshine-style headings for the current major mode."
+  (interactive (list (read-from-minibuffer "Delimiter: " comment-start)))
+  (setq outline-regexp
+        ;;; FIXME Add support for lisp-style
+        (rx (literal delimiter) (zero-or-more space) "*" (group (zero-or-more "*")))
+        outline-heading-alist
+        (mapcar
+         (lambda (n) (cons (format "%s *%s" delimiter (make-string n ?*)) n))
+         (number-sequence 0 15))
+        outline-level (lambda () (length (match-string 1)))))
+
 ;;;;; Rainbow mode
 
 (diminish 'rainbow-mode)
