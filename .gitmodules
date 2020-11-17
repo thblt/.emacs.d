@@ -179,6 +179,7 @@
 	path = lib/notmuch
 	url = https://git.notmuchmail.org/git/notmuch
  	load-path = emacs
+	branch = master
 [submodule "org"]
 	path = lib/org
 	url = https://code.orgmode.org/bzg/org-mode.git
@@ -240,6 +241,10 @@
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
+	branch = master
+[submodule "solaris"]
+	path = lib/solaris
+	url = https://github.com/thblt/solaris-theme-emacs.git
 	branch = master
 [submodule "solarized"]
 	path = lib/solarized
