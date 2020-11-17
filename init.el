@@ -1172,7 +1172,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;;;; Misc utilities
 
 (define-key global-map (kbd "C-x C-p") 'proced)
+
 (define-key global-map (kbd "<f12>") 'sunrise)
+(setq dired-omit-files "^\\.")
 
 ;;;; Notmuch
 
