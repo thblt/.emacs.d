@@ -388,17 +388,18 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
   (require 'hydra)
   (require 'visual-fill-column))
 
-(defmacro thblt/hydra-indicator (desc active)
-  "Return DESC with a state indicator determined by ACTIVE.
+(eval-and-compile
+  (defmacro thblt/hydra-indicator (desc active)
+    "Return DESC with a state indicator determined by ACTIVE.))
 
 If at runtime ACTIVE is an unbound symbol it is interpreted as
 nil; otherwise it's evaluated normally."
-  `(format "[%s] %s" (if ,(if (symbolp active)
-                              `(bound-and-true-p ,active)
-                            active)
-                         (propertize "✔" 'face 'bold)
-                       (propertize "-" 'face 'shadow))
-           ,desc))
+    `(format "[%s] %s" (if ,(if (symbolp active)
+                                `(bound-and-true-p ,active)
+                              active)
+                           (propertize "✔" 'face 'bold)
+                         (propertize "-" 'face 'shadow))
+             ,desc)))
 
 (defhydra hydra-editor-appearance ()
   ("b" text-scale-decrease "Size -" :column "Font and theme")
