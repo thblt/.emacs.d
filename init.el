@@ -367,6 +367,8 @@ This can be used to update the digit argument from arbitrary keys."
 
 (setq shift-select-mode nil)
 
+(define-key global-map (kbd "M-<SPC>") 'cycle-spacing)
+
 (define-key global-map (kbd "M-i")
   (lambda (arg)
     "With no arg, execute `counsel-imenu'. With an argument,
