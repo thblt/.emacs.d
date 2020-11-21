@@ -370,12 +370,11 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key global-map (kbd "M-<SPC>") 'cycle-spacing)
 
 (define-key global-map (kbd "M-i")
-  (lambda (arg)
+  (defun thblt/imenu-or-outline (arg)
     "With no arg, execute `counsel-imenu'. With an argument,
 `counsel-outline'. If the function to execute isn't defined,
 execute `imenu' instead." ; Yes I know docstrings need a symbol.
     (interactive "P")
-    (message "is %s" arg)
     (cond ((and (not arg) (fboundp 'counsel-imenu))
            (counsel-imenu))
           ((and arg (fboundp 'counsel-outline))
