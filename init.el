@@ -557,6 +557,8 @@ For use by `hydra-editor-appearance/body'."
 (advice-add 'recenter-top-bottom :after (lambda (_) (pulse-momentary-highlight-one-line (point))))
 (advice-add 'scroll-down-command :after (lambda (_) (pulse-momentary-highlight-one-line (point))))
 (advice-add 'scroll-up-command :after (lambda (_) (pulse-momentary-highlight-one-line (point))))
+(advice-add 'yank :after (lambda (_) (pulse-momentary-highlight-region (point) (mark))))
+(advice-add 'yank-pop :after (lambda (_) (pulse-momentary-highlight-region (point) (mark))))
 
 ;;;; Replace
 
