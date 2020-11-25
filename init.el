@@ -569,7 +569,12 @@ For use by `hydra-editor-appearance/body'."
 
 ;;;;; Smartparens
 
+;; This is a temporary fix until https://github.com/Fuco1/smartparens/pull/1054
+;; is merged
+(defalias 'sp--while-no-input 'while-no-input)
+
 (require 'smartparens-config) ;; Load default config
+
 (smartparens-global-mode)
 (show-smartparens-global-mode)
 
