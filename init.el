@@ -350,16 +350,6 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key global-map(kbd "M-ê") 'beginning-of-buffer)
 (define-key global-map (kbd "M-Ê") 'end-of-buffer)
 
-;; Fast and efficient killing: q instead of k
-
-;;(define-key global-map (kbd "C-q") 'kill-line)
-(define-key smartparens-mode-map (kbd "C-M-q")  'sp-kill-sexp)
-
-;; Fill and unfill
-(define-key global-map (kbd "M-'") 'fill-paragraph)
-(define-key global-map (kbd "C-'") 'unfill-paragraph)
-                                        ; @FIXME In prog-mode, this could be reformat-defun or something.
-
 ;;; Editing text
 
 ;; This chapter deals with /general/ text editing.  The next two configure
@@ -647,6 +637,8 @@ For use by `hydra-editor-appearance/body'."
       (push base list))
     list))
 
+;;;;;; Snippet helpers
+
 (defun thblt/guess-module-name-from-path (path &optional keep-extension)
   "Guess a Haskell-ish module name.
 
@@ -660,8 +652,7 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
               (push item module)))
           (thblt/split-path path))
     (unless keep-extension
-      (setf (car module) (file-name-base (car module)))
-      )
+      (setf (car module) (file-name-base (car module))))
     (mapconcat 'identity (reverse module) ".")))
 
 (defun thblt/guess-module-name (&optional buffer)
