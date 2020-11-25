@@ -396,8 +396,8 @@ nil; otherwise it's evaluated normally."
                                                      (not (bound-and-true-p text-scale-mode))))
   ("p" text-scale-increase "Size +")
   ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
-  ("t l" thblt/light-theme "Light theme")
-  ("t d" thblt/dark-theme "Dark theme")
+  ("tl" thblt/light-theme "Light theme")
+  ("td" thblt/dark-theme "Dark theme")
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
   ;; @FIXME This breaks is `visual-fill-column' hasn't been loaded yet.
@@ -413,9 +413,11 @@ nil; otherwise it's evaluated normally."
   ("W" superword-mode (thblt/hydra-indicator "super-word" superword-mode))
   ("w" subword-mode (thblt/hydra-indicator "SubWord" subword-mode))
 
-  ("a" auto-fill-mode (thblt/hydra-indicator "Auto fill" auto-fill-function) :column "Electricity")
+  ("a" auto-fill-mode (thblt/hydra-indicator "Auto fill" auto-fill-function) :column "Magic/more magic")
   ("A" refill-mode (thblt/hydra-indicator "Auto refill" refill-mode))
   ("I" aggressive-indent-mode (thblt/hydra-indicator "Aggressive indent" aggressive-indent-mode))
+  ("de" toggle-debug-on-error (thblt/hydra-indicator "Debug on error" debug-on-error))
+  ("dq" toggle-debug-on-quit (thblt/hydra-indicator "Debug on quit" debug-on-quit))
 
   ("!" flycheck-mode (thblt/hydra-indicator "Code" flycheck-mode) :column "Utility")
   ("?" flyspell-mode  (thblt/hydra-indicator "Spell" flyspell-mode))
