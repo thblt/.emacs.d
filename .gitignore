@@ -1,6 +1,7 @@
 .yas-compiled-snippets.el
 forge-database.sqlite
 elpa
+eshell/**
 etc/abbrev.el
 dotemacs*
 var
