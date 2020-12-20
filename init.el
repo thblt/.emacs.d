@@ -114,6 +114,8 @@ local."
 
  disabled-command-function nil)
 
+(minibuffer-depth-indicate-mode)
+
 ;; Line numbers
 (setq-default display-line-numbers-type 'relative
               display-line-numbers-major-tick 10
