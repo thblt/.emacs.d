@@ -173,7 +173,7 @@ local."
 (add-to-list 'default-frame-alist '(font . "Iosevka"))
 (set-face-attribute 'default nil
                     :height (pcase (system-name)
-                              ("dru" 100)
+                              ("dru" 105)
                               ("maladict" 090)))
 
 (add-to-list 'custom-theme-load-path borg-drones-directory)
