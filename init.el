@@ -362,6 +362,9 @@ This can be used to update the digit argument from arbitrary keys."
 
 (setq shift-select-mode nil)
 
+(editorconfig-mode)
+(diminish 'editorconfig-mode "")
+
 (define-key global-map (kbd "M-<SPC>") 'cycle-spacing)
 
 (define-key global-map (kbd "M-i")

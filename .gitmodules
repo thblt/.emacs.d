@@ -71,6 +71,9 @@
 	path = lib/diminish
 	url = https://github.com/myrjola/diminish.el
 	branch = master
+[submodule "editorconfig"]
+	path = lib/editorconfig
+	url = https://github.com/editorconfig/editorconfig-emacs
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = https://github.com/skeeto/emacsql
