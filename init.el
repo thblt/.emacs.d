@@ -187,6 +187,9 @@ local."
 ;; Note to self: theme is configured in solaris.el
 (defun thblt/dark-theme () "Activate dark theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
 (defun thblt/light-theme () "Activate light theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
+(defun thblt/dark-hc-theme () "Activate dark (high contrast) theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark-high-contrast t))
+(defun thblt/light-hc-theme () "Activate light (high contrast) theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light-high-contrast t))
+(defun thblt/zenburn-theme () "Activate Zenburn-ish theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-zenburn t))
 
 ;; Theme is loaded at the very end of this file.
 
@@ -399,7 +402,10 @@ nil; otherwise it's evaluated normally."
   ("p" text-scale-increase "Size +")
   ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
   ("tl" thblt/light-theme "Light theme")
+  ("tL" thblt/light-hc-theme "Light (high contrast) theme")
   ("td" thblt/dark-theme "Dark theme")
+  ("tD" thblt/dark-hc-theme "Dark (high contrast) theme")
+  ("tz" thblt/zenburn-theme "Zenburn theme")
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
   ;; @FIXME This breaks is `visual-fill-column' hasn't been loaded yet.
