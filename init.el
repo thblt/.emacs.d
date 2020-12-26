@@ -63,7 +63,7 @@
       create-lockfiles nil
       ;; Don't lose the contents of system clipboard when killing from Emacs:
       save-interprogram-paste-before-kill t
-      custom-file (no-littering-expand-var-file-name "customize.el")
+      custom-file "/dev/null" ;; (no-littering-expand-var-file-name "customize.el")
 
       inhibit-compacting-font-caches (eq system-type 'windows-nt) ; This prevents slowdown when using strange characters.
 
@@ -76,7 +76,6 @@
       browse-url-generic-program "firefox")
 ;; browse-url-generic-args '("xdg-open"))
 
-(setq custom-file "/dev/null")
 (load custom-file t)
 
 (setq-default major-mode 'text-mode)
