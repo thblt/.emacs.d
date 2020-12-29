@@ -74,6 +74,7 @@
 [submodule "editorconfig"]
 	path = lib/editorconfig
 	url = https://github.com/editorconfig/editorconfig-emacs
+	branch = master
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = https://github.com/skeeto/emacsql
