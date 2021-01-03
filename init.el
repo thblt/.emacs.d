@@ -354,6 +354,27 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key global-map(kbd "M-ê") 'beginning-of-buffer)
 (define-key global-map (kbd "M-Ê") 'end-of-buffer)
 
+(defmacro thblt/self-insert-this (char)
+  "Run `self-insert' as if it was called by pressing CHAR."
+  `(lambda () (interactive)
+     (let ((last-command-event ,char))
+       (call-interactively 'self-insert-command))))
+
+(defvar thblt/normalize-spaces-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd " ") (thblt/self-insert-this ? ))
+    (define-key map (kbd " ") (thblt/self-insert-this ?_))
+    map))
+
+;; Fuck shift-space in prog-mode
+(define-minor-mode thblt/normalize-spaces-mode
+  "Map various non-breaking spaces to a regular space."
+  :lighter " spaces"
+  :keymap thblt/normalize-spaces-mode-map)
+
+(add-hook 'prog-mode-hook 'thblt/normalize-spaces-mode)
+(diminish 'thblt/normalize-spaces-mode)
+
 ;;; Editing text
 
 ;; This chapter deals with /general/ text editing.  The next two configure
