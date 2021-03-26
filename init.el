@@ -730,7 +730,7 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 ;;; Writing prose
 
 ;;;; Common settings and minor modes
-;;;; bbrev
+;;;; abbrev
 
 (add-hook 'text-mode-hook (lambda () (abbrev-mode t)))
 (diminish 'abbrev-mode)
