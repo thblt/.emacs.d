@@ -286,7 +286,7 @@
 	branch = master
 [submodule "undo-tree"]
 	path = lib/undo-tree
-	url = https://gitlab.com/tsc25/undo-tree
+	url = https://gitlab.com/tsc25/undo-tree.git/
 	branch = master
 [submodule "unfill"]
 	path = lib/unfill
