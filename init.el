@@ -817,20 +817,19 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 (setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
 (setq org-latex-pdf-process (list "latexmk -f -pdfxe -xelatex %f"))
 
-;;;; Org-agenda:
+;;;;; Org-agenda:
 
 (setq org-agenda-files (list "~/Documents/LOG.org")
       org-default-notes-file "~/Documents/LOG.org")
 
-;;;; Org-babel
+;;;;; Org-babel
 
 (with-eval-after-load 'org
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((dot . t)
      (shell . t))))
-
-;;;; Stuff
+;;;;; Stuff
 
 (defun thblt/org-insert-magic-link (url)
   "Auto create org links to Wikipedia URL."
@@ -842,6 +841,23 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
       (setq title (decode-coding-string (url-unhex-string (substring url 30)) 'utf-8)))
      (t (error "I have no idea what to do with this")))
     (org-insert-link nil url title)))
+
+(setq org-num-skip-unnumbered t)
+(defun thblt/org-num-format-function/cours (numbers)
+  (let ((seance (car numbers))
+        (partie (cadr numbers))
+        (sous-partie (caddr numbers))
+        (section (cadddr numbers))
+        (moment (nth 4 numbers)))
+    (cond
+     (moment (format "(%s) "
+                     (nth (- moment 1) (mapcar 'char-to-string (number-sequence ?α ?ω)))))
+     (section (format "(%s) " section))
+     (sous-partie (format "%s/ "
+                          (nth (- sous-partie 1) (mapcar 'char-to-string (number-sequence ?A ?Z)))))
+     (partie (format "%s/ " (org-export-number-to-roman partie)))
+     (seance (format "[SÉANCE %s] " seance))
+     (t ""))))
 
 ;;; Writing code
 ;;;; Settings
