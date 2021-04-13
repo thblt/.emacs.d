@@ -300,6 +300,7 @@ local."
         ("*Compile-Log*" :frame nil :popup t :select t)
         ;; ** Misc **
         ("*Org PDF LaTeX Output*" :select nil)
+        ("*Org Preview LaTeX Output*" :select nil)
         (" *undo-tree*" :frame nil)
         ("*Register Preview*" :frame nil :noselect t)
         (flycheck-error-list-mode :select t)
