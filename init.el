@@ -1115,7 +1115,10 @@ Otherwise, disable bicycle-tab and reemit binding."
   ("q" nil)
   ("g" nil))
 
-(define-key smartparens-mode-map (kbd "M-o") 'hydra-smartparens/body)
+(add-hook 'smartparens-mode-hook
+          (lambda ()
+            (unless (minibufferp)
+              (local-set-key (kbd "M-o") 'hydra-smartparens/body))))
 
 ;;;; ERC
 
