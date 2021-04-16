@@ -977,6 +977,14 @@ Otherwise, disable bicycle-tab and reemit binding."
           (lambda ()
             (local-set-key (kbd "C-c o") 'ff-find-other-file)))
 
+(add-hook 'c-mode-hook
+          (lambda ()
+            (thblt/outline-configure "// ")))
+
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (thblt/outline-configure "// ")))
+
 ;;;;; Elisp
 
 (require 'auto-compile)
@@ -990,6 +998,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 (setq haskell-interactive-popup-errors nil)
+
+(add-hook 'haskell-mode-hook (lambda ()
+                               (thblt/outline-configure "-- ")))
 
 ;;; Tools
 
