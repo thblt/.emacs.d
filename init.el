@@ -23,14 +23,14 @@
 
 ;;;; Package managers
 
-;;;;;; package.el
+;;;;; package.el
 
 (require 'package)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 (package-initialize 'no-activate)
 
-;;;;;; Borg
+;;;;; Borg
 
 ;; Borg comes second, because it comes first.  The second initialized
 ;; manager will be the first in load-path.
@@ -40,7 +40,7 @@
   (require 'borg)
   (borg-initialize))
 
-;;;;;; Paths
+;;;;; Paths
 
 (require 'no-littering)
 
