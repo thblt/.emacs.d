@@ -907,6 +907,16 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 
 (define-key global-map [remap comment-dwim] 'evilnc-comment-or-uncomment-lines)
 
+;;;;; Hi-lock
+
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (interactive)
+            (hi-lock-mode t)
+            (hi-lock-set-pattern "@?FIXME" 'hi-red-b)
+            (hi-lock-set-pattern "@?XXX" 'hi-red-b)
+            (hi-lock-set-pattern "@?TODO" 'hi-aquamarine))) ; @TODO Find a better face
+
 ;;;;; Outline, hideshow, bicycle
 
 ;; @FIXME Need to simulate Outshine behavior of generating Outline
