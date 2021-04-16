@@ -318,8 +318,9 @@ local."
 
 (defun thblt/resurrect-scratch (&optional only-install)
   "Add self as a hook to scratch, creating it if it doesn't exist already."
-  (unless (and only-install (string= (buffer-name) "*scratch*"))
-    (rename-buffer "*this-scratch-is-no-more*" t))
+  (unless only-install
+    (with-current-buffer (get-buffer "*scratch*")
+      (rename-buffer "*this-scratch-is-no-more*" t)))
   (with-current-buffer (get-buffer-create "*scratch*")
     (when (eq (point-min) (point-max))
       (insert initial-scratch-message))
