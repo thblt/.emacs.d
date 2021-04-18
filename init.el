@@ -279,17 +279,17 @@ local."
 (setq shackle-rules
       `(("*Help*" :align t :select t)
         ;; ** Magit **
+        (magit-status-mode :frame t)
         ((:custom
           ,(lambda (buffer)
              (with-current-buffer buffer
                (and (eq major-mode 'magit-diff-mode) magit-display-buffer-noselect))))
-         :select nil)
-        (magit-status-mode :same t)
-        ("^magit.*$'" :regexp t :frame nil)
+         :select nil :frame t :same nil)
         (magit-log-mode :same t)
         (magit-submodule-list-mode :same t)
         (magit-revision-mode :same t)
         (magit-process-mode :frame nil)
+        ("^magit.*$'" :regexp t :frame nil)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
@@ -298,6 +298,8 @@ local."
         (" *Marked Processes*" :frame nil :popup t :select t)
         ;; ** Byte-compiler
         ("*Compile-Log*" :frame nil :popup t :select t)
+        ;; ** Local variables warning **
+        ("*Local Variables*" :same t :frame nil :popup t :select t)
         ;; ** Misc **
         ("*Org PDF LaTeX Output*" :select nil)
         ("*Org Preview LaTeX Output*" :select nil)
@@ -313,6 +315,7 @@ local."
       shackle-display-buffer-frame-function 'sway-shackle-display-buffer-frame)
 
 (shackle-mode)
+(swaysock-tracker-mode)
 
 ;;;; Resurrecting *scratch*
 
