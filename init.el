@@ -1006,10 +1006,16 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;;;;; Haskell
 
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-(setq haskell-interactive-popup-errors nil)
+(setq haskell-interactive-popup-errors nil
+      haskell-svg-render-images t
+      ;; This vvv is required for that ^^^.
+      ;;; See the texi version of the manual in the source tree.
+      haskell-interactive-mode-eval-mode 'fundamental-mode)
 
 (add-hook 'haskell-mode-hook (lambda ()
                                (thblt/outline-configure "-- ")))
+
+
 
 ;;; Tools
 
