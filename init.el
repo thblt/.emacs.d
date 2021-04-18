@@ -279,16 +279,24 @@ local."
 (setq shackle-rules
       `(("*Help*" :align t :select t)
         ;; ** Magit **
-        (magit-status-mode :frame t)
+        (magit-status-mode :same t)
         ((:custom
           ,(lambda (buffer)
              (with-current-buffer buffer
-               (and (eq major-mode 'magit-diff-mode) magit-display-buffer-noselect))))
-         :select nil :frame t)
+               (and
+                (eq major-mode 'magit-diff-mode)
+                magit-display-buffer-noselect))))
+         :select nil :frame t :dedicate t)
+        ((:custom
+          ,(lambda (buffer)
+             (with-current-buffer buffer
+               (bound-and-true-p magit-display-buffer-noselect))))
+         :select nil :frame nil :dedicate t)
         (magit-log-mode :same t)
         (magit-submodule-list-mode :same t)
         (magit-revision-mode :same t)
         (magit-process-mode :frame nil)
+        ("COMMIT_EDITMSG" :popup t :select t)
         ("^magit.*$'" :regexp t :frame nil)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
         ;; ** Sunrise commander **
@@ -309,13 +317,15 @@ local."
         ((compilation-mode "\\`\\*firestarter\\*\\'"
                            "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
+
       shackle-default-rule '(:frame t)
       shackle-default-size 0.4
       shackle-inhibit-window-quit-on-same-windows t
       shackle-display-buffer-frame-function 'sway-shackle-display-buffer-frame)
 
 (shackle-mode)
-(swaysock-tracker-mode)
+(sway-socket-tracker-mode)
+(sway-undertaker-mode)
 
 ;;;; Resurrecting *scratch*
 
