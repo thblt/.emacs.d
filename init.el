@@ -262,12 +262,6 @@ local."
 
 (diminish 'ivy-mode)
 
-;; (setq ivy-posframe-display-functions-alist
-;;      '((t . ivy-posframe-display-at-frame-center)))
-
-;; (ivy-posframe-mode 1)
-;; (diminish 'ivy-posframe-mode)
-
 ;;;;; Shackle
 
 (eval-when-compile
