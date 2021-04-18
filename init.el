@@ -371,7 +371,7 @@ This can be used to update the digit argument from arbitrary keys."
     (define-key map (kbd " ") (thblt/self-insert-this ?_))
     map))
 
-;; Fuck shift-space in prog-mode
+;; Fuck BÉPO's shift-space in prog-mode
 (define-minor-mode thblt/normalize-spaces-mode
   "Map various non-breaking spaces to a regular space."
   :lighter " spaces"
@@ -400,7 +400,7 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
     (interactive "P")
     (cond ((and (not arg) (fboundp 'counsel-imenu))
            (counsel-imenu))
-          ((and arg (fboundp 'counsel-outline))
+          ((fboundp 'counsel-outline)
            (counsel-outline))
           (t (call-interactively 'imenu)))))
 
@@ -865,6 +865,7 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
      (t ""))))
 
 ;;; Writing code
+
 ;;;; Settings
 
 ;; Some basic settings...
@@ -920,6 +921,8 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
             (hi-lock-set-pattern "@?XXX" 'hi-red-b)
             (hi-lock-set-pattern "@?TODO" 'hi-aquamarine))) ; @TODO Find a better face
 
+(diminish 'hi-lock-mode)
+
 ;;;;; Outline, hideshow, bicycle
 
 ;; @FIXME Need to simulate Outshine behavior of generating Outline
@@ -953,6 +956,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (with-eval-after-load 'hideshow
   (diminish 'hs-minor-mode))
+
+(add-hook 'outline-mode-hook 'reveal-mode)
+(diminish 'reveal-mode)
 
 ;;;;;; Outline heading generator (outshine-style)
 
@@ -1025,7 +1031,6 @@ Otherwise, disable bicycle-tab and reemit binding."
           (borg-drones))
     (when errors
       (borg--sort-submodule-sections borg-gitmodules-file)
-                                        ; (sort errors 'string<)
       (message "These modules were updated: %s" errors))))
 
 (defun thblt/borg-drones-track-upstream ()
@@ -1251,6 +1256,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (define-key global-map (kbd "<f12>") 'sunrise)
 (setq dired-omit-files "^\\.")
+
+(defalias 'tdoe 'toggle-debug-on-error)
 
 ;;;; Notmuch
 
