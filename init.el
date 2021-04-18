@@ -284,7 +284,7 @@ local."
           ,(lambda (buffer)
              (with-current-buffer buffer
                (and (eq major-mode 'magit-diff-mode) magit-display-buffer-noselect))))
-         :select nil :frame t :same nil)
+         :select nil :frame t)
         (magit-log-mode :same t)
         (magit-submodule-list-mode :same t)
         (magit-revision-mode :same t)
@@ -1076,11 +1076,10 @@ Otherwise, disable bicycle-tab and reemit binding."
 (advice-add 'borg-assimilate :after 'thblt/borg-projectile-update)
 (advice-add 'borg-remove :after (lambda (&rest _) (projectile-cleanup-known-projects)))
 
-;;;; Divine or Boon
+;;;; Divine
 
-;; (require 'divine)
-;; (divine-global-mode)
-;; (require 'boon-thblt)
+(require 'divine)
+(divine-global-mode)
 
 (defun divine-reload ()
   "Force reload Divine."
