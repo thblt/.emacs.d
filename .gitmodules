@@ -119,6 +119,7 @@
 	branch = master
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
+  info-path = doc
 	url = https://github.com/haskell/haskell-mode
 	branch = master
 [submodule "ht"]
