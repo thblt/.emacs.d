@@ -923,15 +923,19 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 
 ;;;;; Hi-lock
 
+(eval-when-compile
+  (require 'hi-lock))
+
 (add-hook 'prog-mode-hook
           (lambda ()
             (interactive)
-            (hi-lock-mode t)
+            (hi-lock-mode 1)
             (hi-lock-set-pattern "@?FIXME" 'hi-red-b)
             (hi-lock-set-pattern "@?XXX" 'hi-red-b)
             (hi-lock-set-pattern "@?TODO" 'hi-aquamarine))) ; @TODO Find a better face
 
-(diminish 'hi-lock-mode)
+(with-eval-after-load 'hi-lock
+  (diminish 'hi-lock-mode))
 
 ;;;;; Outline, hideshow, bicycle
 
