@@ -74,6 +74,7 @@
 [submodule "divine"]
 	path = lib/divine
 	url = https://github.com/thblt/divine
+	branch = master
 [submodule "editorconfig"]
 	path = lib/editorconfig
 	url = https://github.com/editorconfig/editorconfig-emacs
