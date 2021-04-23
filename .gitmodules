@@ -276,7 +276,7 @@
 [submodule "sway"]
 	path = lib/sway
 	url = https://github.com/thblt/sway.el
-	branch = master
+	branch = main
 [submodule "tablist"]
 	path = lib/tablist
 	url = https://github.com/politza/tablist

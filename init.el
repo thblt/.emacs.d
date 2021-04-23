@@ -320,6 +320,7 @@ local."
 (shackle-mode)
 (sway-socket-tracker-mode)
 (sway-undertaker-mode)
+(sway-x-focus-through-sway-mode)
 
 ;;;; Resurrecting *scratch*
 
