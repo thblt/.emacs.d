@@ -1,5 +1,6 @@
 .yas-compiled-snippets.el
 forge-database.sqlite
+eln-cache
 elpa
 eshell/**
 etc/abbrev.el
