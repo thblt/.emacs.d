@@ -753,7 +753,8 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 
 ;;;; AucTex
 
-(require 'tex-site nil t) ; I don't build this on Windows.
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
 
 (add-hook 'LaTeX-mode-hook
           (lambda ()
@@ -769,6 +770,9 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 (sp-with-modes 'latex-mode
   (sp-local-pair "«" "»")
   (sp-local-pair "“" "”"))
+
+(with-eval-after-load 'latex
+  (define-key LaTeX-mode-map (kbd "M-RET") 'latex-insert-item))
 
 ;;;; Org-Mode
 
