@@ -302,6 +302,7 @@ local."
         ("*Compile-Log*" :frame nil :popup t :select t)
         ;; ** Local variables warning **
         ("*Local Variables*" :same t :frame nil :popup t :select t)
+        ("*Backtrace*" :frame t :select t :dedicate t)
         ;; ** Misc **
         ("*Org PDF LaTeX Output*" :select nil)
         ("*Org Preview LaTeX Output*" :select nil)
@@ -928,11 +929,11 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 (add-hook 'prog-mode-hook
           (lambda ()
             (interactive)
-            (hi-lock-mode 1)
             (hi-lock-set-pattern "@?FIXME" 'hi-red-b)
             (hi-lock-set-pattern "@?XXX" 'hi-red-b)
             (hi-lock-set-pattern "@?TODO" 'hi-aquamarine))) ; @TODO Find a better face
 
+(global-hi-lock-mode)
 (with-eval-after-load 'hi-lock
   (diminish 'hi-lock-mode))
 
