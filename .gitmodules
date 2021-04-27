@@ -146,6 +146,9 @@
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
 	branch = master
+[submodule "llama"]
+	path = lib/llama
+	url = https://git.sr.ht/~tarsius/llama
 [submodule "lsp-haskell"]
 	path = lib/lsp-haskell
 	url = https://github.com/emacs-lsp/lsp-haskell
