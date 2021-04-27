@@ -1017,6 +1017,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 (auto-compile-on-load-mode)
 (auto-compile-on-save-mode)
 
+(with-eval-after-load 'eldoc
+  (diminish 'eldoc-mode))
+
 ;;;;; Haskell
 
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
