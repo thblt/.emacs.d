@@ -127,7 +127,6 @@ local."
 ;; Cursor configuration
 (setq-default  cursor-type 'box)
 (blink-cursor-mode)
-;; @FIXME Set color per-buffer
 
 ;; Never use the "safe" ~yes-or-no~ function:
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -1104,7 +1103,7 @@ Otherwise, disable bicycle-tab and reemit binding."
   (dolist (module (list "divine-core.el" "divine-commands.el" "divine.el"))
     (load (expand-file-name module (borg-worktree "divine")))))
 
-(defhydra hydra-smartparens (:hint nil)
+(defhydra hydra-smartparens (:hint nil :color pink)
   "
  Moving^^^^                       Slurp & Barf^^   Wrapping^^            Sexp juggling^^^^               Destructive
 ------------------------------------------------------------------------------------------------------------------------
