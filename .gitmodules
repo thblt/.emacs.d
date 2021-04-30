@@ -149,6 +149,7 @@
 [submodule "llama"]
 	path = lib/llama
 	url = https://git.sr.ht/~tarsius/llama
+	branch = main
 [submodule "lsp-haskell"]
 	path = lib/lsp-haskell
 	url = https://github.com/emacs-lsp/lsp-haskell
