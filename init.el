@@ -912,8 +912,7 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 
 (with-eval-after-load 'company
   (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
-  (diminish 'company-mode "C⋯"))
-(setq company-auto-commit t)
+  (diminish 'company-mode " Co"))
 
 ;;;;; Evil Nerd Commenter
 
