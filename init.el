@@ -1220,7 +1220,8 @@ Otherwise, disable bicycle-tab and reemit binding."
   ("C-g" thblt/magit-status)
   ("l" magit-list-repositories "List repos")
   ("c" magit-clone "Clone")
-  ("i" magit-init "Init"))
+  ("i" magit-init "Init")
+  ("f" forge-list-repositories))
 
 (define-key global-map (kbd "C-x g") 'thblt/magit-status)
 (define-key global-map [remap magit-status] 'thblt/magit-status)
