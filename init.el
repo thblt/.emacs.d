@@ -1029,6 +1029,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 (add-hook 'haskell-mode-hook (lambda ()
                                (thblt/outline-configure "-- ")))
 
+(with-eval-after-load 'haskell-mode
+  (define-key haskell-mode-map (kbd "C-c C-f") 'haskell-mode-stylish-buffer))
 
 ;;;;; Python
 
