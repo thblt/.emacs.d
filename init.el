@@ -1030,6 +1030,11 @@ Otherwise, disable bicycle-tab and reemit binding."
                                (thblt/outline-configure "-- ")))
 
 
+;;;;; Python
+
+(add-hook 'python-mode-hook
+          (lambda ()
+            (thblt/outline-configure "# ")))
 
 ;;; Tools
 
