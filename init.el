@@ -582,7 +582,8 @@ For use by `hydra-editor-appearance/body'."
 (define-key visual-line-mode-map [remap move-end-of-line] 'mwim-end)
 ;; but…
 (with-eval-after-load 'haskell-interactive-mode
-  (define-key haskell-interactive-mode-map (kbd "C-a") 'haskell-interactive-mode-bol))
+  (define-key haskell-interactive-mode-map (kbd "C-a") 'haskell-interactive-mode-bol)
+  (diminish 'interactive-haskell-mode " λ"))
 
 ;;;;; pulse (don't get lost)
 
@@ -933,6 +934,13 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 (global-hi-lock-mode)
 (with-eval-after-load 'hi-lock
   (diminish 'hi-lock-mode))
+
+;;;;; LSP
+
+(with-eval-after-load 'lsp-mode
+  (define-key lsp-mode-map (kbd "C-c C-f")
+    (with-maybe-region
+     thblt/lsp-format lsp-format-region lsp-format-buffer)))
 
 ;;;;; Outline, hideshow, bicycle
 
