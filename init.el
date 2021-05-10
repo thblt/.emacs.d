@@ -717,6 +717,24 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
         (while (looking-at-p regexp)
           (kill-whole-line 1)))))) ; t because kill-line returns nil
 
+(defmacro with-maybe-region (name region-fun default-fun)
+  "Creates a command NAME wrapping REGION-FUN and DEFAULT-FUN.
+
+If the region is active, call REGION-FUN interactively, otherwise
+DEFAULT-FUN."
+  `(defun ,name ()
+     ,(format "Run %s if region is active, %s otherwise." region-fun default-fun)
+     (interactive)
+     (call-interactively
+      (if (use-region-p) ',region-fun ',default-fun))))
+
+(define-key global-map [remap upcase-word]
+  (with-maybe-region upcase-something upcase-region upcase-word))
+(define-key global-map [remap downcase-word]
+  (with-maybe-region downcase-something downcase-region downcase-word))
+(define-key global-map [remap capitalize-word]
+  (with-maybe-region capitalize-something capitalize-region capitalize-word))
+
 ;;;;; Bindings
 
 (global-set-key (kbd "C-S-k") 'kill-whole-line)
