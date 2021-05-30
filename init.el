@@ -199,7 +199,7 @@ local."
 
 (eval-when-compile (require 'projectile))
 
-(setq projectile-completion-system 'ivy
+(setq projectile-completion-system 'auto
       ;; globally ignore undo-files and similar byproducts.
       projectile-globally-ignored-file-suffixes '(".un~"
 						                                      ".~undo-tree~")
@@ -225,13 +225,6 @@ local."
   (projectile-discover-projects-in-search-path)
   (message "Found %s projects." (length projectile-known-projects)))
 
-(setq counsel-projectile-sort-buffers t
-      counsel-projectile-sort-directories t
-      counsel-projectile-sort-files t
-      counsel-projectile-sort-projects t)
-
-(counsel-projectile-mode)
-
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 (diminish 'projectile-mode)
@@ -247,23 +240,21 @@ local."
 
 ;;;;; Ivy
 
-(eval-when-compile
-  (require 'ivy))
+(vertico-mode)
+(marginalia-mode)
 
-(setq ivy-use-virtual-buffers t
-      ivy-read-action-function 'ivy-read-action-by-key)
-(ivy-mode)
+(require 'orderless)
+(setq completion-styles '(orderless))
 
-(define-key global-map [remap describe-function]'counsel-describe-function)
-(define-key global-map [remap describe-symbol]'counsel-describe-symbol)
-(define-key global-map [remap describe-variable]'counsel-describe-variable)
-(define-key global-map [remap execute-extended-command] 'counsel-M-x)
-(define-key global-map [remap find-file] 'counsel-find-file)
-(define-key global-map [remap insert-char]'counsel-unicode-char)
-(define-key global-map [remap imenu] 'counsel-imenu)
-(define-key global-map (kbd "C-S-s") 'swiper)
+(require 'embark-consult)
 
-(diminish 'ivy-mode)
+(define-key vertico-map (kbd "M-<RET>") 'embark-act)
+
+(setq embark-action-indicator
+      (lambda (map _target)
+        (which-key--show-keymap "Embark" map nil nil 'no-paging)
+        #'which-key--hide-popup-ignore-command)
+      embark-become-indicator embark-action-indicator)
 
 ;;;;; Shackle
 
@@ -403,14 +394,14 @@ This can be used to update the digit argument from arbitrary keys."
 
 (define-key global-map (kbd "M-i")
   (defun thblt/imenu-or-outline (arg)
-    "With no arg, execute `counsel-imenu'. With an argument,
-`counsel-outline'. If the function to execute isn't defined,
+    "With no arg, execute `consult-imenu'. With an argument,
+`consult-outline'. If the function to execute isn't defined,
 execute `imenu' instead." ; Yes I know docstrings need a symbol.
     (interactive "P")
-    (cond ((and (not arg) (fboundp 'counsel-imenu))
-           (counsel-imenu))
-          ((fboundp 'counsel-outline)
-           (counsel-outline))
+    (cond ((and (not arg) (fboundp 'consult-imenu))
+           (consult-imenu))
+          ((fboundp 'consult-outline)
+           (consult-outline))
           (t (call-interactively 'imenu)))))
 
 ;;;; The editor appearance hydra
@@ -548,7 +539,7 @@ For use by `hydra-editor-appearance/body'."
 ;; Correct words using Ivy instead of default method:
 
 (with-eval-after-load 'flyspell
-  (require 'flyspell-correct-ivy)
+  (require 'flyspell-correct)
   (define-key flyspell-mode-map (kbd "M-$") 'flyspell-auto-correct-previous-word)
   (define-key flyspell-mode-map (kbd "C-,") 'flyspell-correct-previous))
 
@@ -866,6 +857,7 @@ DEFAULT-FUN."
    'org-babel-load-languages
    '((dot . t)
      (shell . t))))
+
 ;;;;; Stuff
 
 (defun thblt/org-insert-magic-link (url)
@@ -1289,7 +1281,7 @@ Otherwise, disable bicycle-tab and reemit binding."
   (interactive "P")
   (require 'magit)
   (or (and (not arg) (magit-toplevel) (magit-status-setup-buffer))
-      (counsel-projectile-switch-project "v")))
+      (projectile-switch-project "v")))
 
 ;;;;; magit-list-repositories
 

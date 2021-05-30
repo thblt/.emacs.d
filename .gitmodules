@@ -59,10 +59,9 @@
 	path = lib/company-auctex
 	url = https://github.com/alexeyr/company-auctex
 	branch = master
-[submodule "counsel-projectile"]
-	path = lib/counsel-projectile
-	url = https://github.com/ericdanan/counsel-projectile
-	branch = master
+[submodule "consult"]
+	path = lib/consult
+	url = https://github.com/minad/consult
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
@@ -85,6 +84,9 @@
 	branch = master
 	build-nix-shell-packages = llvmPackages.clang.cc
   build-step = make binary
+[submodule "embark"]
+	path = lib/embark
+	url = https://github.com/oantolin/embark
 [submodule "emmet-mode"]
 	path = lib/emmet-mode
 	url = https://github.com/smihica/emmet-mode/
@@ -138,10 +140,6 @@
 	path = lib/hydra
 	url = https://github.com/abo-abo/hydra
 	branch = master
-[submodule "ivy"]
-	path = lib/ivy
-	url = https://github.com/abo-abo/swiper
-	branch = master
 [submodule "kurecolor"]
 	path = lib/kurecolor
 	url = https://github.com/emacsfodder/kurecolor
@@ -174,6 +172,9 @@
 	path = lib/magit-popup
 	url = https://github.com/magit/magit-popup
 	branch = master
+[submodule "marginalia"]
+	path = lib/marginalia
+	url = https://github.com/minad/marginalia
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
@@ -195,6 +196,9 @@
 	url = https://git.notmuchmail.org/git/notmuch
  	load-path = emacs
 	branch = master
+[submodule "orderless"]
+	path = lib/orderless
+	url = https://github.com/oantolin/orderless
 [submodule "org"]
 	path = lib/org
 	url = https://code.orgmode.org/bzg/org-mode.git
@@ -301,6 +305,9 @@
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
 	branch = master
+[submodule "vertico"]
+	path = lib/vertico
+	url = https://github.com/minad/vertico
 [submodule "visual-fill-column"]
 	path = lib/visual-fill-column
 	url = https://github.com/joostkremers/visual-fill-column
