@@ -287,6 +287,8 @@ local."
         ("COMMIT_EDITMSG" :popup t :select t)
         ("^magit.*$'" :regexp t :frame nil)
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
+        ;; ** Common Emacs UI elements **
+        ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
         ;; ** Proced **
@@ -1346,9 +1348,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (defun thblt/message-send-configure-smtp ()
   "Pick SMTP server by From field."
-
   (pcase (message-field-value "From")
-
     ((rx "thb.lt>" eol) (thblt/smtpconfig-thb.lt))
     ((rx "ac-amiens.fr>" eol) (thblt/smtpconfig-ac-amiens.fr))
     (_ (error "I don't know how to configure SMTP here"))))
