@@ -320,6 +320,9 @@
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor
 	branch = master
+[submodule "yaml"]
+	path = lib/yaml
+	url = https://github.com/zkry/yaml.el
 [submodule "yasnippet"]
 	path = lib/yasnippet
 	url = https://github.com/joaotavora/yasnippet
