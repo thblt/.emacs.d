@@ -289,6 +289,8 @@ local."
         (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
         ;; ** Common Emacs UI elements **
         ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
+        ;; ** Dired **
+        (" *Deletions*" :frame nil :popup t :select nil) ; Dired deletion info
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
         ;; ** Proced **
