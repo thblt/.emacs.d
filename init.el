@@ -876,8 +876,14 @@ DEFAULT-FUN."
      (t (error "I have no idea what to do with this")))
     (org-insert-link nil url title)))
 
-(setq org-num-skip-unnumbered t)
+;;;;;; Org-num
+
+(setq org-num-skip-unnumbered t
+      org-num-skip-commented t
+      org-num-skip-footnotes t)
+
 (defun thblt/org-num-format-function/cours (numbers)
+  "Fonction pour org-num qui correspond à mon orga pour les cours de philo G."
   (require 'ox)
   (let ((seance (car numbers))
         (partie (cadr numbers))
