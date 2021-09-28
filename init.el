@@ -62,7 +62,7 @@
       create-lockfiles nil
       ;; Don't lose the contents of system clipboard when killing from Emacs:
       save-interprogram-paste-before-kill t
-      custom-file "/dev/null" ;; (no-littering-expand-var-file-name "customize.el")
+      custom-file (no-littering-expand-var-file-name "customize.el")
 
       inhibit-compacting-font-caches (eq system-type 'windows-nt) ; This prevents slowdown when using strange characters.
 
