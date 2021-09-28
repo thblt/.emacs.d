@@ -238,7 +238,7 @@ local."
 
 (setq hydra-hint-display-type 'message)
 
-;;;;; Ivy
+;;;;; Vertico + Orderless + Embark
 
 (vertico-mode)
 (marginalia-mode)
@@ -384,30 +384,6 @@ This can be used to update the digit argument from arbitrary keys."
 (add-hook 'prog-mode-hook 'thblt/normalize-spaces-mode)
 (diminish 'thblt/normalize-spaces-mode)
 
-;;; Editing text
-
-;; This chapter deals with /general/ text editing.  The next two configure
-;; prose and code editing, respectively.
-
-(setq shift-select-mode nil)
-
-(editorconfig-mode)
-(diminish 'editorconfig-mode "")
-
-(define-key global-map (kbd "M-<SPC>") 'cycle-spacing)
-
-(define-key global-map (kbd "M-i")
-  (defun thblt/imenu-or-outline (arg)
-    "With no arg, execute `consult-imenu'. With an argument,
-`consult-outline'. If the function to execute isn't defined,
-execute `imenu' instead." ; Yes I know docstrings need a symbol.
-    (interactive "P")
-    (cond ((and (not arg) (fboundp 'consult-imenu))
-           (consult-imenu))
-          ((fboundp 'consult-outline)
-           (consult-outline))
-          (t (call-interactively 'imenu)))))
-
 ;;;; The editor appearance hydra
 
 (eval-when-compile
@@ -526,6 +502,30 @@ For use by `hydra-editor-appearance/body'."
   "For use by `hydra-editor-appearance/body'."
   (interactive)
   (thblt/visual-fill-column-width-adjust -5))
+
+;;; Editing text
+
+;; This chapter deals with /general/ text editing.  The next two configure
+;; prose and code editing, respectively.
+
+(setq shift-select-mode nil)
+
+(editorconfig-mode)
+(diminish 'editorconfig-mode "")
+
+(define-key global-map (kbd "M-<SPC>") 'cycle-spacing)
+
+(define-key global-map (kbd "M-i")
+  (defun thblt/imenu-or-outline (arg)
+    "With no arg, execute `consult-imenu'. With an argument,
+`consult-outline'. If the function to execute isn't defined,
+execute `imenu' instead." ; Yes I know docstrings need a symbol.
+    (interactive "P")
+    (cond ((and (not arg) (fboundp 'consult-imenu))
+           (consult-imenu))
+          ((fboundp 'consult-outline)
+           (consult-outline))
+          (t (call-interactively 'imenu)))))
 
 ;;;; Spell checking
 
