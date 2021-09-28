@@ -1126,8 +1126,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;; Divine
 
-(require 'divine)
-(divine-global-mode)
+;;(require 'divine)
+;;(divine-global-mode)
 
 (defun divine-reload ()
   "Force reload Divine."
