@@ -181,6 +181,9 @@ local."
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
 
+(setq solarized-scale-org-headlines nil
+      solarized-scale-outline-headlines nil)
+
 ;; Note to self: theme is configured in solaris.el
 (defun thblt/dark-theme () "Activate dark theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
 (defun thblt/light-theme () "Activate light theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
@@ -880,7 +883,8 @@ DEFAULT-FUN."
 
 (setq org-num-skip-unnumbered t
       org-num-skip-commented t
-      org-num-skip-footnotes t)
+      org-num-skip-footnotes t
+      org-num-skip-tags '("noexport"))
 
 (defun thblt/org-num-format-function/cours (numbers)
   "Fonction pour org-num qui correspond à mon orga pour les cours de philo G."
