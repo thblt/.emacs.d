@@ -286,11 +286,12 @@ local."
         (magit-process-mode :frame nil)
         ("COMMIT_EDITMSG" :popup t :select t)
         ("^magit.*$'" :regexp t :frame nil)
-        (" *transient*" :frame nil :popup t :select nil) ; Magit helper popups
+        (" *transient*" :frame nil :popup t :select nil)
         ;; ** Common Emacs UI elements **
         ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
         ;; ** Dired **
-        (" *Deletions*" :frame nil :popup t :select nil) ; Dired deletion info
+        (" *Deletions*" :frame nil :popup t :select t) ; Dired deletion info
+        (" *Marked Files*" :frame nil :popup t :select t)
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
         ;; ** Proced **
@@ -549,11 +550,11 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
 
 ;;;; Moving around
 
-(define-key global-map (kbd "M-\"") 'backward-paragraph)
-(define-key global-map (kbd "M-«") 'forward-paragraph)
+(define-key global-map (kbd "M-«") 'backward-paragraph)
+(define-key global-map (kbd "M-»") 'forward-paragraph)
 
-(define-key global-map (kbd "C-M-\"") 'beginning-of-defun)
-(define-key global-map (kbd "C-M-«") 'end-of-defun)
+(define-key global-map (kbd "C-M-«") 'beginning-of-defun)
+(define-key global-map (kbd "C-M-»") 'end-of-defun)
 
 ;;;;; avy
 
@@ -877,6 +878,7 @@ DEFAULT-FUN."
 
 (setq org-num-skip-unnumbered t)
 (defun thblt/org-num-format-function/cours (numbers)
+  (require 'ox)
   (let ((seance (car numbers))
         (partie (cadr numbers))
         (sous-partie (caddr numbers))
