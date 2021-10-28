@@ -249,17 +249,20 @@ local."
 (marginalia-mode)
 
 (require 'orderless)
-(setq completion-styles '(orderless))
+(setq completion-styles '(orderless)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles partial-completion))))
 
 (require 'embark-consult)
 
 (define-key vertico-map (kbd "M-<RET>") 'embark-act)
 
-(setq embark-action-indicator
-      (lambda (map _target)
-        (which-key--show-keymap "Embark" map nil nil 'no-paging)
-        #'which-key--hide-popup-ignore-command)
-      embark-become-indicator embark-action-indicator)
+(setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args)))
 
 ;;;;; Shackle
 
@@ -298,6 +301,8 @@ local."
         ;; ** Dired **
         (" *Deletions*" :frame nil :popup t :select t) ; Dired deletion info
         (" *Marked Files*" :frame nil :popup t :select t)
+        ;; ** Embark **
+        (" *Embark Actions*" :frame nil :popup t :select nil) ; Dired deletion info
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
         ;; ** Proced **
@@ -1077,6 +1082,12 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (with-eval-after-load 'haskell-mode
   (define-key haskell-mode-map (kbd "C-c C-f") 'haskell-mode-stylish-buffer))
+
+;;;;; Nix
+
+(add-hook 'nix-mode-hook
+          (lambda ()
+            (thblt/outline-configure "# ")))
 
 ;;;;; Python
 
