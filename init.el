@@ -1082,6 +1082,12 @@ Otherwise, disable bicycle-tab and reemit binding."
           (lambda ()
             (thblt/outline-configure "# ")))
 
+;;;;; Rust
+
+(add-hook 'rust-mode-hook
+          (lambda ()
+            (thblt/outline-configure "// ")))
+
 ;;; Tools
 
 ;; This section deals with tools that aren't editors.
