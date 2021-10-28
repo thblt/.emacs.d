@@ -257,6 +257,8 @@ local."
 
 (define-key vertico-map (kbd "M-<RET>") 'embark-act)
 
+;; This ↓ from Vertico doc.  Make Vertico work in tab-completion as
+;; well (ERC, M-:…)
 (setq completion-in-region-function
       (lambda (&rest args)
         (apply (if vertico-mode
