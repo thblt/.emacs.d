@@ -321,10 +321,6 @@
 	path = lib/visual-regexp
 	url = https://github.com/benma/visual-regexp.el
 	branch = master
-[submodule "which-key"]
-	path = lib/which-key
-	url = https://github.com/justbur/emacs-which-key
-	branch = master
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor
