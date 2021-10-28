@@ -1014,6 +1014,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (add-hook 'outline-mode-hook 'reveal-mode)
 (diminish 'reveal-mode)
+(add-hook 'org-mode-hook (## reveal-mode -1))
+
 
 ;;;;;; Outline heading generator (outshine-style)
 
