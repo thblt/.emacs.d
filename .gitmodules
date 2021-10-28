@@ -245,6 +245,10 @@
 	path = lib/rainbow-mode
 	url = https://github.com/emacsmirror/rainbow-mode
 	branch = master
+[submodule "rg"]
+	path = lib/rg
+	url = https://github.com/dajva/rg.el
+	branch = master
 [submodule "rust-mode"]
 	path = lib/rust-mode
 	url = https://github.com/rust-lang/rust-mode
