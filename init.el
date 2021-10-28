@@ -271,6 +271,7 @@ local."
 
 (setq shackle-rules
       `(("*Help*" :align t :select t)
+        ("*Error*" :align t :poput t :select t :frame nil)
         ;; ** Magit **
         (magit-status-mode :same t)
         ((:custom
@@ -405,8 +406,8 @@ nil; otherwise it's evaluated normally."
     `(format "[%s] %s" (if ,(if (symbolp active)
                                 `(bound-and-true-p ,active)
                               active)
-                           (propertize "✔" 'face 'bold)
-                         (propertize "-" 'face 'shadow))
+                           (propertize "█" 'face 'bold)
+                         (propertize " " 'face 'shadow))
              ,desc)))
 
 (defhydra hydra-editor-appearance ()
