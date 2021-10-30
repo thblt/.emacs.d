@@ -172,6 +172,9 @@ local."
                     :height (pcase (system-name)
                               ("dru" 105)
                               ("maladict" 100)))
+(set-face-attribute 'fixed-pitch nil
+                    :family "Iosevka")
+
 
 (add-to-list 'custom-theme-load-path borg-drones-directory)
 (add-to-list 'load-path borg-drones-directory)
