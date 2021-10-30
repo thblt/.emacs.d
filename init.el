@@ -989,7 +989,7 @@ DEFAULT-FUN."
 (with-eval-after-load 'lsp-mode
   (define-key lsp-mode-map (kbd "C-c C-f")
     (with-maybe-region
-     thblt/lsp-format lsp-format-region lsp-format-buffer))))
+     thblt/lsp-format lsp-format-region lsp-format-buffer)))
 
 ;;;;; Outline, hideshow, bicycle
 
