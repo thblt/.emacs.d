@@ -1074,9 +1074,10 @@ Otherwise, disable bicycle-tab and reemit binding."
 (auto-compile-on-save-mode)
 
 (with-eval-after-load 'eldoc
-(diminish 'eldoc-mode))
+  (diminish 'eldoc-mode))
 
 (add-hook 'emacs-lisp-mode-hook 'llama-mode)
+(add-hook 'lisp-interaction-mode-hook 'llama-mode)
 
 ;;;;; Haskell
 
