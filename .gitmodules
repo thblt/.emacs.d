@@ -206,7 +206,7 @@
 [submodule "org"]
 	path = lib/org
 	url = https://git.savannah.gnu.org/git/emacs/org-mode.git
-	branch = master
+	branch = main
 	load-path = lisp
 	load-path = contrib/lisp
 	info-path = doc
