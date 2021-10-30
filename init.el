@@ -52,8 +52,13 @@
       ;; prevents [[Mu4e][Mu4e]] from correctly rendering some HTML
       ;; e-mails.  We increase it from 1300 to 5000.
       max-specpdl-size 5000
+      ;; LSP wants this.
+      read-process-output-max (* 1024 1024)
+      ;; Less noise
+      native-comp-async-report-warnings-errors nil
       ;; Numbered backups, because catastrophes happen.  The numbers
       ;; may be a bit crazy, but better safe than sorry.
+
       version-control t
       kept-new-versions 500
       kept-old-versions 500
@@ -149,9 +154,6 @@ local."
 ;; And force leave the minibuffer with =C-M-]=
 (global-set-key (kbd "C-M-à") 'abort-recursive-edit)
 
-;; Fringes are pointless
-(fringe-mode 0)
-
 ;; Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
@@ -185,7 +187,8 @@ local."
   (mapc 'disable-theme custom-enabled-themes))
 
 (setq solarized-scale-org-headlines nil
-      solarized-scale-outline-headlines nil)
+      solarized-scale-outline-headlines nil
+      solarized-distinct-fringe-background t)
 
 ;; Note to self: theme is configured in solaris.el
 (defun thblt/dark-theme () "Activate dark theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
@@ -986,7 +989,7 @@ DEFAULT-FUN."
 (with-eval-after-load 'lsp-mode
   (define-key lsp-mode-map (kbd "C-c C-f")
     (with-maybe-region
-     thblt/lsp-format lsp-format-region lsp-format-buffer)))
+     thblt/lsp-format lsp-format-region lsp-format-buffer))))
 
 ;;;;; Outline, hideshow, bicycle
 
@@ -1071,7 +1074,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 (auto-compile-on-save-mode)
 
 (with-eval-after-load 'eldoc
-  (diminish 'eldoc-mode))
+(diminish 'eldoc-mode))
+
+(add-hook 'emacs-lisp-mode-hook 'llama-mode)
 
 ;;;;; Haskell
 
@@ -1547,7 +1552,8 @@ t;;;; Regular expression builder
 
 ;; Restore GC settings.
 (setq gc-cons-percentage (car (get 'gc-cons-percentage 'standard-value))
-      gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value))
+      ;; High value is better.
+      gc-cons-threshold 100000000
       garbage-collection-messages nil)
 
 (message "Reached the end of init.el.")
