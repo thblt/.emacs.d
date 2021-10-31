@@ -1359,6 +1359,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (define-key global-map (kbd "<f12>") 'sunrise)
 (setq dired-omit-files "^\\.")
+(add-hook 'dired-mode-hook 'hl-line-mode)
 
 (defalias 'tdoe 'toggle-debug-on-error)
 
