@@ -173,7 +173,7 @@ local."
 (set-face-attribute 'default nil
                     :height (pcase (system-name)
                               ("dru" 105)
-                              ("maladict" 100)))
+                              ("maladict" 110)))
 (set-face-attribute 'fixed-pitch nil
                     :family "Iosevka")
 
@@ -186,9 +186,13 @@ local."
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
 
-(setq solarized-scale-org-headlines nil
-      solarized-scale-outline-headlines nil
-      solarized-distinct-fringe-background t)
+(setq ;; Solarized
+ solarized-scale-org-headlines nil
+ solarized-scale-outline-headlines nil
+ solarized-distinct-fringe-background t
+ ;; Modus
+ modus-themes-fringes 'subtle
+ modus-themes-headings '((t . (background overline underline))))
 
 ;; Note to self: theme is configured in solaris.el
 (defun thblt/dark-theme () "Activate dark theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
@@ -261,7 +265,7 @@ local."
 
 (require 'embark-consult)
 
-(define-key vertico-map (kbd "M-<RET>") 'embark-act)
+(define-key global-map (kbd "M-é") 'embark-act)
 
 ;; This ↓ from Vertico doc.  Make Vertico work in tab-completion as
 ;; well (ERC, M-:…)
@@ -991,6 +995,12 @@ DEFAULT-FUN."
     (with-maybe-region
      thblt/lsp-format lsp-format-region lsp-format-buffer)))
 
+(add-hook 'c-mode 'lsp-deferred)
+(add-hook 'c++-mode 'lsp-deferred)
+(add-hook 'haskell-mode 'lsp-deferred)
+(add-hook 'nix-mode 'lsp-deferred)
+(add-hook 'rust-mode 'lsp-deferred)
+
 ;;;;; Outline, hideshow, bicycle
 
 ;; @FIXME Need to simulate Outshine behavior of generating Outline
@@ -1269,7 +1279,10 @@ Otherwise, disable bicycle-tab and reemit binding."
       erc-header-line-format nil
 
       erc-kill-server-buffer-on-quit t
-      erc-kill-queries-on-quit t)
+      erc-kill-queries-on-quit t
+
+      erc-hide-timestamps t
+      erc-echo-timestamps t)
 
 (advice-add 'load-theme :after (lambda (&rest _) (if (fboundp 'erc-hl-nicks-refresh-colors) (erc-hl-nicks-refresh-colors))))
 
