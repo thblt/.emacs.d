@@ -1000,6 +1000,7 @@ DEFAULT-FUN."
 (add-hook 'haskell-mode-hook 'lsp-deferred)
 (add-hook 'nix-mode-hook 'lsp-deferred)
 (add-hook 'rust-mode-hook 'lsp-deferred)
+(add-hook 'sh-mode-hook 'lsp-deferred)
 
 ;;;;; Outline, hideshow, bicycle
 
@@ -1121,6 +1122,12 @@ Otherwise, disable bicycle-tab and reemit binding."
 (add-hook 'rust-mode-hook
           (lambda ()
             (thblt/outline-configure "// ")))
+
+;;;;; Bash, shell, and so on
+
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (thblt/outline-configure "# ")))
 
 ;;; Tools
 
