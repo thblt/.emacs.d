@@ -995,11 +995,11 @@ DEFAULT-FUN."
     (with-maybe-region
      thblt/lsp-format lsp-format-region lsp-format-buffer)))
 
-(add-hook 'c-mode 'lsp-deferred)
-(add-hook 'c++-mode 'lsp-deferred)
-(add-hook 'haskell-mode 'lsp-deferred)
-(add-hook 'nix-mode 'lsp-deferred)
-(add-hook 'rust-mode 'lsp-deferred)
+(add-hook 'c-mode-hook 'lsp-deferred)
+(add-hook 'c++-mode-hook 'lsp-deferred)
+(add-hook 'haskell-mode-hook 'lsp-deferred)
+(add-hook 'nix-mode-hook 'lsp-deferred)
+(add-hook 'rust-mode-hook 'lsp-deferred)
 
 ;;;;; Outline, hideshow, bicycle
 
