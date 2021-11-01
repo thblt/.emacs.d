@@ -84,6 +84,8 @@
 	url = https://github.com/skeeto/emacsql
 	branch = master
 	build-nix-shell-packages = llvmPackages.clang.cc
+  comment = ↓ Instead of rm, try to run the binary and rm it if it fails.
+  build-step = rm sqlite/emacsql-sqlite
   build-step = make binary
 [submodule "embark"]
 	path = lib/embark
