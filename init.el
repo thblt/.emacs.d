@@ -310,6 +310,8 @@ local."
         (" *transient*" :frame nil :popup t :select nil)
         ;; ** Common Emacs UI elements **
         ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
+        ;; ** GPG prompts (for transparently editing GPG files)
+        ("*Keys*" :frame nil :popup t :select t)
         ;; ** Dired **
         (" *Deletions*" :frame nil :popup t :select t) ; Dired deletion info
         (" *Marked Files*" :frame nil :popup t :select t)
@@ -1152,7 +1154,10 @@ Otherwise, disable bicycle-tab and reemit binding."
       (message "These modules were updated: %s" errors))))
 
 (defun thblt/borg-drones-track-upstream ()
-  "Make all Borg drones track the branch they're configured to."
+  "Make all Borg drones track the branch they're configured to.
+
+This is probably obsolete because `git submodule update --remote'
+can read the branch name from .gitmodules."
   (interactive)
   (require 'magit-git)
   (dolist (drone (borg-drones))
