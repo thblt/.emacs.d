@@ -1368,8 +1368,13 @@ can read the branch name from .gitmodules."
   "Run Magit status using Projectile as the source of repository completion."
   (interactive "P")
   (require 'magit)
-  (or (and (not arg) (magit-toplevel) (magit-status-setup-buffer))
-      (projectile-switch-project "v")))
+  (or
+   ;; Fire up Magit if we have a project *and* not called with an arg.
+   (and (not arg) (magit-toplevel) (magit-status-setup-buffer))
+   ;; Otherwise, prompt.
+   (projectile-completing-read
+    "Magit for: " (projectile-relevant-known-projects)
+    :action 'magit-status)))
 
 ;;;;; magit-list-repositories
 
