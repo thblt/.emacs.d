@@ -367,7 +367,7 @@ local."
 (defmacro thblt/digit-argument-with-value (char)
   "Simulate `digit-argument' as if it was called by pressing CHAR.
 
-This can be used to update the digit argument from arbitrary keys."
+  This can be used to update the digit argument from arbitrary keys."
   `(lambda () (interactive)
      (prefix-command-preserve-state)
      (let ((last-command-event ,char))
@@ -566,7 +566,7 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
 
 ;; Enable Flyspell:
 (add-hook 'text-mode-hook (lambda () (flyspell-mode t)))
-(diminish 'flyspell-mode "Fly")
+(diminish 'flyspell-mode)
 
 ;; Correct words using Ivy instead of default method:
 
@@ -630,6 +630,9 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
 ;;;; Minor modes
 
 ;;;;; Auto-revert-mode
+
+(setq auto-revert-avoid-polling t
+      auto-revert-interval 1)
 
 (with-eval-after-load 'autorevert
   (diminish 'auto-revert-mode " 🔃"))
@@ -968,11 +971,16 @@ DEFAULT-FUN."
 
 (with-eval-after-load 'company
   (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
-  (diminish 'company-mode " Co"))
+  (diminish 'company-mode))
 
 ;;;;; Evil Nerd Commenter
 
 (define-key global-map [remap comment-dwim] 'evilnc-comment-or-uncomment-lines)
+
+
+;;;;; Flycheck
+(with-eval-after-load 'flycheck
+  (diminish 'flycheck-mode))
 
 ;;;;; Hi-lock
 
@@ -996,6 +1004,9 @@ DEFAULT-FUN."
   (define-key lsp-mode-map (kbd "C-c C-f")
     (with-maybe-region
      thblt/lsp-format lsp-format-region lsp-format-buffer)))
+
+(with-eval-after-load 'lsp-lens
+  (diminish 'lsp-lens-mode))
 
 (add-hook 'c-mode-hook 'lsp-deferred)
 (add-hook 'c++-mode-hook 'lsp-deferred)
@@ -1059,7 +1070,8 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;;; Rainbow mode
 
-(diminish 'rainbow-mode)
+(with-eval-after-load 'rainbow-mode
+  (diminish 'rainbow-mode))
 
 ;;;; Programming languages
 
