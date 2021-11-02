@@ -9,14 +9,14 @@
 # ask it to.
 
 rebuild () {
-    echo $1 | emacs --batch -l ~/.emacs.d/lib/borg/borg.el -f borg-initialize -f borg-build 2>&1 | sed  "s/^/[$1] /" &
-    pids+=" $!"
+    echo $1 | emacs --batch -l ~/.emacs.d/lib/borg/borg.el -f borg-initialize -f borg-build 2>&1 | sed  "s/^/[$1] /"
+    # pids+=" $!"
 }
 
 cd ~/.emacs.d
 
 if [ $# -eq 0 ]; then
-    pkgs=$(find lib -maxdepth 1 -type d  -exec basename {} \;);
+    pkgs=$(find lib -maxdepth 1 -mindepth 1 -type d -exec basename {} \;);
 else
     pkgs=$@
 fi
@@ -26,8 +26,8 @@ for p in $pkgs; do
 done;
 
 # wait for all pids
-for pid in ${pids[*]}; do
-    wait $pid
-done
+# for pid in ${pids[*]}; do
+#     wait $pid
+# done
 
 echo "ALL DONE"
