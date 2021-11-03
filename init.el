@@ -287,6 +287,7 @@ local."
 (setq shackle-rules
       `(("*Help*" :align t :select t)
         ("*Error*" :align t :poput t :select t :frame nil)
+        ("*Backtrace*" :align t :poput t :select t :frame nil)
         ;; ** Magit **
         (magit-status-mode :same t)
         ((:custom
