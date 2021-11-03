@@ -192,7 +192,7 @@ local."
  solarized-distinct-fringe-background t
  ;; Modus
  modus-themes-fringes 'subtle
- modus-themes-headings '((t . (background overline underline))))
+ modus-themes-headings '((t . (raindow background))))
 
 ;; Note to self: theme is configured in solaris.el
 (defun thblt/dark-theme () "Activate dark theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
@@ -749,10 +749,10 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
           (kill-whole-line 1)))))) ; t because kill-line returns nil
 
 (defmacro with-maybe-region (name region-fun default-fun)
-  "Creates a command NAME wrapping REGION-FUN and DEFAULT-FUN.
+  "Create a command NAME wrapping REGION-FUN and DEFAULT-FUN.
 
-If the region is active, call REGION-FUN interactively, otherwise
-DEFAULT-FUN."
+If the region is active and usable, call REGION-FUN
+interactively, DEFAULT-FUN otherwise ."
   `(defun ,name ()
      ,(format "Run %s if region is active, %s otherwise." region-fun default-fun)
      (interactive)
@@ -1402,6 +1402,8 @@ can read the branch name from .gitmodules."
 (define-key global-map (kbd "<f12>") 'sunrise)
 (setq dired-omit-files "^\\.")
 (add-hook 'dired-mode-hook 'hl-line-mode)
+(add-hook 'ibuffer-mode-hook 'hl-line-mode)
+(add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
 
 (defalias 'tdoe 'toggle-debug-on-error)
 
@@ -1410,6 +1412,8 @@ can read the branch name from .gitmodules."
 (eval-when-compile
   (require 'notmuch)
   (require 'smtpmail))
+
+(setq-default notmuch-search-oldest-first nil)
 
 (define-key global-map (kbd "M-<f12>") 'notmuch)
 
