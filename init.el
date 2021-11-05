@@ -157,6 +157,11 @@ local."
 ;; Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+;; No right fringe
+(fringe-mode '(nil . 0))
+;; Better truncation indicator
+(set-display-table-slot standard-display-table 'truncation ?▶)
+
 ;; A small function to identify the face at point.  Nice to have when
 ;; writing themes, and faster than C-u C-x =
 (defun what-face (pos)
