@@ -107,10 +107,6 @@
 	path = lib/f
 	url = https://github.com/rejeep/f.el
 	branch = master
-[submodule "finalize"]
-	path = lib/finalize
-	url = https://github.com/skeeto/elisp-finalize
-	branch = master
 [submodule "flycheck"]
 	path = lib/flycheck
 	url = https://github.com/flycheck/flycheck
