@@ -160,6 +160,8 @@ local."
 ;; No right fringe
 (fringe-mode '(nil . 0))
 ;; Better truncation indicator
+(unless standard-display-table
+  (setq standard-display-table (make-display-table)))
 (set-display-table-slot standard-display-table 'truncation ?▶)
 
 ;; A small function to identify the face at point.  Nice to have when
