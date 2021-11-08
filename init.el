@@ -1313,7 +1313,11 @@ can read the branch name from .gitmodules."
       erc-kill-server-buffer-on-quit t
       erc-kill-queries-on-quit t
 
+      ;;; Render timestamps as invisible,
       erc-hide-timestamps t
+      ;; actually disable them,
+      rc-timestamp-format-right nil
+      ;; but show them in the minibuffer.
       erc-echo-timestamps t)
 
 (advice-add 'load-theme :after (lambda (&rest _) (if (fboundp 'erc-hl-nicks-refresh-colors) (erc-hl-nicks-refresh-colors))))
