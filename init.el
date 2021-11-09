@@ -316,6 +316,10 @@ local."
         ("COMMIT_EDITMSG" :popup t :select t)
         ("^magit.*$'" :regexp t :frame nil)
         (" *transient*" :frame nil :popup t :select nil)
+        ;; ** Org **
+        ("*Org PDF LaTeX Output*" :select nil)
+        ("*Org Preview LaTeX Output*" :select nil)
+        ("*Org Export Dispatcher*" :frame nil)
         ;; ** Common Emacs UI elements **
         ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
         ;; ** GPG prompts (for transparently editing GPG files)
@@ -336,8 +340,6 @@ local."
         ("*Local Variables*" :same t :frame nil :popup t :select t)
         ("*Backtrace*" :frame t :select t :dedicate t)
         ;; ** Misc **
-        ("*Org PDF LaTeX Output*" :select nil)
-        ("*Org Preview LaTeX Output*" :select nil)
         (" *undo-tree*" :frame nil)
         ("*Register Preview*" :frame nil :noselect t)
         (flycheck-error-list-mode :select t)
