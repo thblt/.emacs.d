@@ -585,6 +585,15 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
   (define-key flyspell-mode-map (kbd "M-$") 'flyspell-auto-correct-previous-word)
   (define-key flyspell-mode-map (kbd "C-,") 'flyspell-correct-previous))
 
+;; Pulse
+
+(advice-add 'flyspell-auto-correct-previous-word
+            :after (defun thblt/flyspell-auto-correct-pulse (&rest _)
+                     (pulse-momentary-highlight-region
+                      (car flyspell-auto-correct-region)
+                      (+ (car flyspell-auto-correct-region)
+                         (cdr flyspell-auto-correct-region)))))
+
 ;;;; Moving around
 
 (define-key global-map (kbd "M-«") 'backward-paragraph)
