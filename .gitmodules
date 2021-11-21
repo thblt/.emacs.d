@@ -307,6 +307,9 @@
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
 	branch = master
+[submodule "unkillable-scratch"]
+	path = lib/unkillable-scratch
+	url = https://github.com/EricCrosson/unkillable-scratch
 [submodule "vertico"]
 	path = lib/vertico
 	url = https://github.com/minad/vertico
