@@ -268,7 +268,7 @@ local."
 (require 'orderless)
 (setq completion-styles '(orderless)
       completion-category-defaults nil
-      completion-category-overrides '((file (styles partial-completion))))
+      completion-category-overrides '((file (styles basic partial-completion))))
 
 (require 'embark-consult)
 
@@ -446,9 +446,9 @@ nil; otherwise it's evaluated normally."
   ("p" text-scale-increase "Size +")
   ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
   ("tl" thblt/light-theme "Light theme")
-  ("tL" thblt/light-hc-theme "Light (high contrast) theme")
+  ("tL" thblt/light-hc-theme "Light (hc) theme")
   ("td" thblt/dark-theme "Dark theme")
-  ("tD" thblt/dark-hc-theme "Dark (high contrast) theme")
+  ("tD" thblt/dark-hc-theme "Dark (hc) theme")
   ("tz" thblt/zenburn-theme "Zenburn theme")
   ("to" thblt/modus-operandi-theme "Modus Operandi")
   ("tv" thblt/modus-vivendi-theme "Modus Vivendi")
@@ -840,7 +840,8 @@ interactively, DEFAULT-FUN otherwise ."
   (sp-local-pair "“" "”"))
 
 (with-eval-after-load 'latex
-  (define-key LaTeX-mode-map (kbd "M-RET") 'latex-insert-item))
+  (define-key LaTeX-mode-map (kbd "M-RET") 'latex-insert-item)
+  (define-key LaTeX-mode-map [remap compile] 'TeX-command-run-all))
 
 ;;;; Org-Mode
 
@@ -965,6 +966,8 @@ interactively, DEFAULT-FUN otherwise ."
               indent-tabs-mode nil)
 
 (global-set-key (kbd "<f8>") 'ffap)
+(global-set-key (kbd "C-c C-b C-b") 'recompile)
+(global-set-key (kbd "C-c C-b b") 'compile)
 
 ;;;; Minor modes
 ;;;;; Aggressive indent
@@ -1155,6 +1158,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 (add-hook 'rust-mode-hook
           (lambda ()
             (thblt/outline-configure "// ")))
+
+(with-eval-after-load 'rust-mode
+  (define-key rust-mode-map [remap recompile] 'rustic-cargo-build))
 
 ;;;;; Bash, shell, and so on
 
