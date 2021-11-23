@@ -179,7 +179,7 @@ local."
 (add-to-list 'default-frame-alist '(font . "Iosevka"))
 (set-face-attribute 'default nil
                     :height (pcase (system-name)
-                              ("dru" 105)
+                              ("dru" 140)
                               ("maladict" 110)))
 (set-face-attribute 'fixed-pitch nil
                     :family "Iosevka")
@@ -948,7 +948,6 @@ interactively, DEFAULT-FUN otherwise ."
 
 (setq-default comment-empty-lines nil
               tab-width 2
-              c-basic-offset 2
               cperl-indent-level 2
               indent-tabs-mode nil)
 
