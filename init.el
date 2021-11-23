@@ -129,7 +129,7 @@ local."
 (column-number-mode)
 
 ;; Cursor configuration
-(setq-default  cursor-type 'box)
+(setq-default cursor-type 'box)
 (blink-cursor-mode)
 
 ;; Never use the "safe" ~yes-or-no~ function:
@@ -1324,12 +1324,25 @@ can read the branch name from .gitmodules."
       ;; but show them in the minibuffer.
       erc-echo-timestamps t)
 
-(advice-add 'load-theme :after (lambda (&rest _) (if (fboundp 'erc-hl-nicks-refresh-colors) (erc-hl-nicks-refresh-colors))))
+(advice-add 'load-theme :after
+            (lambda (&rest _)
+              (when (fboundp
+                     'erc-hl-nicks-refresh-colors)
+                (erc-hl-nicks-refresh-colors))))
 
 (add-hook 'erc-mode-hook (lambda ()
                            (erc-fill-mode -1)
                            (visual-line-mode 1)
-                           (setq-local wrap-prefix "  ")))
+                           (setq-local wrap-prefix "  ")
+                           ;; Add the cat notification
+                           (add-hook
+                            'read-only-mode-hook
+                            (lambda ()
+                              (message "IRC is now %s."
+                                       (if buffer-read-only
+                                           "safe from the cat"
+                                         "exposed to the beast's keyboard shenanigans")))
+                            0 t)))
 
 (defun znc ()
   "Connect to ZNC."
