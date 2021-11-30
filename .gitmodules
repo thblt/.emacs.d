@@ -322,6 +322,9 @@
 	path = lib/visual-regexp
 	url = https://github.com/benma/visual-regexp.el
 	branch = master
+[submodule "wgrep"]
+	path = lib/wgrep
+	url = https://github.com/mhayashi1120/Emacs-wgrep/
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor
