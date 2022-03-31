@@ -320,6 +320,7 @@ local."
         ("*Org PDF LaTeX Output*" :select nil)
         ("*Org Preview LaTeX Output*" :select nil)
         ("*Org Export Dispatcher*" :frame nil)
+        ("*Org Links*" :frame nil :select nil)
         ;; ** Common Emacs UI elements **
         ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
         ;; ** GPG prompts (for transparently editing GPG files)
@@ -1363,7 +1364,6 @@ can read the branch name from .gitmodules."
     (auth-source-forget-all-cached)
     (message "No password, maybe retry (I've cleared auth-source-cache)")))
 
-
 ;;;; Magit and Git
 
 (defhydra hydra-magit-launcher (:color blue)
@@ -1617,7 +1617,7 @@ t;;;; Regular expression builder
 ;;;; Report success
 
 ;; We finally set the initial contents of the scratch buffer.  This
-;; makes it easy to notice when something went wrong (this may not be
+;; makes it easy to notice when something went wrong (as it may not be
 ;; obvious in daemon mode)
 (setq initial-scratch-message
       (concat
@@ -1627,6 +1627,7 @@ t;;;; Regular expression builder
 
 (unkillable-scratch)
 
+;; We also activate the theme late, for the same reason.
 (thblt/light-theme)
 
 ;; Restore GC settings.
