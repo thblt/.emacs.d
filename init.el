@@ -1329,6 +1329,9 @@ can read the branch name from .gitmodules."
                      'erc-hl-nicks-refresh-colors)
                 (erc-hl-nicks-refresh-colors))))
 
+(with-eval-after-load 'erc
+  (add-to-list 'erc-modules 'notifications))
+
 (add-hook 'erc-mode-hook (lambda ()
                            (erc-fill-mode -1)
                            (visual-line-mode 1)
