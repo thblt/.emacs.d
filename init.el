@@ -157,6 +157,8 @@ local."
 ;; Rebind =C-x C-b= to =ibuffer= instead of =list-buffers=:
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+(global-set-key (kbd "C-c b") 'switch-to-minibuffer)
+
 ;; No right fringe
 (fringe-mode '(nil . 0))
 ;; Better truncation indicator
@@ -772,7 +774,7 @@ interactively, DEFAULT-FUN otherwise ."
 (define-key global-map [remap downcase-word]
   (with-maybe-region downcase-something downcase-region downcase-word))
 (define-key global-map [remap capitalize-word]
-  (with-maybe-region capitalize-something capitalize-region capitalize-word))
+            (with-maybe-region capitalize-something capitalize-region capitalize-word))
 
 ;;;;; Bindings
 
