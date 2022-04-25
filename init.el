@@ -695,10 +695,11 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
 
 (diminish 'smartparens-mode)
 
-;;;;; Undo-Tree
+;;;;; Vundo
 
-(global-undo-tree-mode)
-(diminish 'undo-tree-mode)
+(define-key global-map (kbd "C-x u") 'vundo)
+(with-eval-after-load 'vundo
+  (setq vundo-glyph-alist vundo-unicode-symbols))
 
 ;;;;; Yasnippet
 

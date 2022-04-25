@@ -213,6 +213,9 @@
 	info-path = doc
 	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
+[submodule "org-contrib"]
+	path = lib/org-contrib
+	url = https://git.sr.ht/~bzg/org-contrib
 [submodule "outline-minor-faces"]
 	path = lib/outline-minor-faces
 	url = https://github.com/tarsius/outline-minor-faces
@@ -302,10 +305,6 @@
 	path = lib/treepy
 	url = https://github.com/volrath/treepy.el
 	branch = master
-[submodule "undo-tree"]
-	path = lib/undo-tree
-	url = https://gitlab.com/tsc25/undo-tree.git/
-	branch = master
 [submodule "unfill"]
 	path = lib/unfill
 	url = https://github.com/purcell/unfill
@@ -325,6 +324,9 @@
 	path = lib/visual-regexp
 	url = https://github.com/benma/visual-regexp.el
 	branch = master
+[submodule "vundo"]
+	path = lib/vundo
+	url = https://github.com/casouri/vundo
 [submodule "wgrep"]
 	path = lib/wgrep
 	url = https://github.com/mhayashi1120/Emacs-wgrep/
