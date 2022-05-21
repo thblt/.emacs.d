@@ -109,6 +109,8 @@ local."
 
 (setq-default
  enable-recursive-minibuffers t
+ max-mini-window-height .6
+
  inhibit-startup-screen t
  use-dialog-box nil
  vc-follow-symlinks t
