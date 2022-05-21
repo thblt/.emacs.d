@@ -346,3 +346,8 @@
 	path = lib/yasnippet-snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets
 	branch = master
+[submodule "compat"]
+	path = lib/compat
+	url = https://git.sr.ht/~pkal/compat
+	build-nix-shell-packages = gnumake
+	build-step = make
