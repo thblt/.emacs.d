@@ -890,7 +890,7 @@ interactively, DEFAULT-FUN otherwise ."
   (when (require 'ox-extra nil t)
     (ox-extras-activate '(ignore-headlines))))
 
-(setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
+;; (setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
 (setq org-latex-pdf-process (list "latexmk -f -pdfxe -xelatex %f"))
 
 ;;;;; Org-agenda:
