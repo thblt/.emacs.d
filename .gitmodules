@@ -314,6 +314,8 @@
 	url = https://github.com/EricCrosson/unkillable-scratch
 [submodule "vertico"]
 	path = lib/vertico
+  load-path = .
+  load-path = extensions
 	url = https://github.com/minad/vertico
 	branch = main
 [submodule "visual-fill-column"]
