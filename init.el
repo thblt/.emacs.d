@@ -1435,7 +1435,7 @@ can read the branch name from .gitmodules."
 
 (define-key global-map (kbd "C-x C-p") 'proced)
 
-(define-key global-map (kbd "<f12>") 'sunrise)
+;; (define-key global-map (kbd "<f12>") 'sunrise)
 (setq dired-omit-files "^\\.")
 (add-hook 'dired-mode-hook 'hl-line-mode)
 (add-hook 'ibuffer-mode-hook 'hl-line-mode)
