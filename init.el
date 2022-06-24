@@ -772,11 +772,23 @@ interactively, DEFAULT-FUN otherwise ."
       (if (use-region-p) ',region-fun ',default-fun))))
 
 (define-key global-map [remap upcase-word]
-  (with-maybe-region upcase-something upcase-region upcase-word))
+            (with-maybe-region thblt/upcase-something upcase-region upcase-word))
 (define-key global-map [remap downcase-word]
-  (with-maybe-region downcase-something downcase-region downcase-word))
+            (with-maybe-region thblt/downcase-something downcase-region downcase-word))
 (define-key global-map [remap capitalize-word]
-            (with-maybe-region capitalize-something capitalize-region capitalize-word))
+            (with-maybe-region thblt/capitalize-something capitalize-region capitalize-word))
+(define-key global-map [remap kill-ring-save]
+            (with-maybe-region thblt/kill-ring-save kill-ring-save thblt/line-to-kill-ring))
+
+(defun thblt/line-to-kill-ring ()
+  "Copy the active line to kill-ring"
+  (interactive)
+  (let ((beg))
+    (save-excursion
+      (beginning-of-line)
+      (setq beg (point))
+      (end-of-line)
+      (kill-ring-save beg (point)))))
 
 ;;;;; Bindings
 
