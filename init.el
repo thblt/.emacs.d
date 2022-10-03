@@ -766,7 +766,7 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 If the region is active and usable, call REGION-FUN
 interactively, DEFAULT-FUN otherwise ."
   `(defun ,name ()
-     ,(format "Run %s if region is active, %s otherwise." region-fun default-fun)
+     ,(format "Run `%s' if region is active, `%s' otherwise." region-fun default-fun)
      (interactive)
      (call-interactively
       (if (use-region-p) ',region-fun ',default-fun))))
