@@ -188,7 +188,6 @@ local."
 (set-face-attribute 'fixed-pitch nil
                     :family "Iosevka")
 
-
 (add-to-list 'custom-theme-load-path borg-drones-directory)
 (add-to-list 'load-path borg-drones-directory)
 (setq x-underline-at-descent-line t)
@@ -939,14 +938,21 @@ interactively, DEFAULT-FUN otherwise ."
       org-num-skip-footnotes t
       org-num-skip-tags '("noexport"))
 
+(defvar-local thblt/org-num-format-function/cours/seances nil
+  "Si non-nil, `thblt/org-num-format-function/cours' place des
+séances au premier niveau hiérarchique.")
+
 (defun thblt/org-num-format-function/cours (numbers)
-  "Fonction pour org-num qui correspond à mon orga pour les cours de philo G."
+  "Fonction pour org-num qui correspond à mon orga pour les cours de
+philo G, à partir d'un découpage de premier niveau en séances."
   (require 'ox)
-  (let ((seance (car numbers))
-        (partie (cadr numbers))
-        (sous-partie (caddr numbers))
-        (section (cadddr numbers))
-        (moment (nth 4 numbers)))
+  (let* ((seancep thblt/org-num-format-function/cours/seances)
+         (seance (car numbers))
+         (partie (if seancep (cadr numbers) (car numbers)))
+         (sous-partie (if seancep (caddr numbers) (cadr numbers)))
+         (section (if seancep (cadddr numbers) (caddr numbers)))
+         (moment (nth (if seancep 4 3) numbers)))
+    (message "DEBUG: 1. %s 2. %s 3. %s 4. %s 5. %s" seance partie sous-partie section moment)
     (cond
      (moment (format "(%s) "
                      (nth (- moment 1) (mapcar 'char-to-string (number-sequence ?α ?ω)))))
