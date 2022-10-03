@@ -815,6 +815,7 @@ interactively, DEFAULT-FUN otherwise ."
 ;;;; Common settings and minor modes
 ;;;; abbrev
 
+(setq save-abbrevs 'silently)
 (add-hook 'text-mode-hook (lambda () (abbrev-mode t)))
 (diminish 'abbrev-mode)
 
