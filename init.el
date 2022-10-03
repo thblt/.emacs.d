@@ -1470,6 +1470,7 @@ can read the branch name from .gitmodules."
       notmuch-saved-searches
       '((:name "Inbox" :query "tag:inbox" :key "i")
         (:name "Inbox (unread)" :query "tag:inbox and tag:unread" :key "I")
+        (:name "Archived" :query "tag:archive" :key "a")
         (:name "Sent" :query "tag:sent" :key "s")
         (:name "Drafts" :query "tag:draft" :key "d")
         (:name "Lost" :query "tag:lost" :key "l"))
