@@ -323,6 +323,7 @@ local."
         ("*Org PDF LaTeX Output*" :select nil)
         ("*Org Preview LaTeX Output*" :select nil)
         ("*Org Export Dispatcher*" :frame nil)
+        ("*Org Select*" :frame nil)
         ("*Org Links*" :frame nil :select nil)
         ;; ** Common Emacs UI elements **
         ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
