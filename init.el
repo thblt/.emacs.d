@@ -121,6 +121,11 @@ local."
 
 (minibuffer-depth-indicate-mode)
 
+;; Don't warn when opening large files.  The warning *could* be
+;; useful, but it almost only happens with PDF files, which don't
+;; cause the kind of trouble this warning is meant to avoid.
+(setq large-file-warning-threshold nil)
+
 ;; Line numbers
 (setq-default display-line-numbers-type 'relative
               display-line-numbers-major-tick 10
@@ -362,7 +367,7 @@ local."
 (sway-undertaker-mode)
 (sway-x-focus-through-sway-mode)
 
-;;;; BÉPO adjustments
+;;;; BÉPO adjustments
 
 ;; Unshifted digit argument
 
