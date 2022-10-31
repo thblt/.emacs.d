@@ -59,6 +59,12 @@
 	path = lib/company-auctex
 	url = https://github.com/alexeyr/company-auctex
 	branch = master
+[submodule "compat"]
+	path = lib/compat
+	url = https://git.sr.ht/~pkal/compat
+	build-nix-shell-packages = gnumake
+	build-step = make
+	branch = master
 [submodule "consult"]
 	path = lib/consult
 	url = https://github.com/minad/consult
@@ -122,6 +128,7 @@
 [submodule "free-keys"]
 	path = lib/free-keys
 	url = https://github.com/Fuco1/free-keys
+	branch = master
 [submodule "ghub"]
 	path = lib/ghub
 	url = https://github.com/magit/ghub
@@ -216,6 +223,7 @@
 [submodule "org-contrib"]
 	path = lib/org-contrib
 	url = https://git.sr.ht/~bzg/org-contrib
+	branch = master
 [submodule "outline-minor-faces"]
 	path = lib/outline-minor-faces
 	url = https://github.com/tarsius/outline-minor-faces
@@ -312,6 +320,7 @@
 [submodule "unkillable-scratch"]
 	path = lib/unkillable-scratch
 	url = https://github.com/EricCrosson/unkillable-scratch
+	branch = master
 [submodule "vertico"]
 	path = lib/vertico
   load-path = .
@@ -329,9 +338,11 @@
 [submodule "vundo"]
 	path = lib/vundo
 	url = https://github.com/casouri/vundo
+	branch = master
 [submodule "wgrep"]
 	path = lib/wgrep
 	url = https://github.com/mhayashi1120/Emacs-wgrep/
+	branch = master
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor
@@ -348,8 +359,3 @@
 	path = lib/yasnippet-snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets
 	branch = master
-[submodule "compat"]
-	path = lib/compat
-	url = https://git.sr.ht/~pkal/compat
-	build-nix-shell-packages = gnumake
-	build-step = make
