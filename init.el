@@ -1264,7 +1264,18 @@ can read the branch name from .gitmodules."
   (dolist (module (list "divine-core.el" "divine-commands.el" "divine.el"))
     (load (expand-file-name module (borg-worktree "divine")))))
 
-(defhydra hydra-smartparens (:hint nil :color pink)
+
+(defun thblt/restore-cursor-color ()
+  (set-cursor-color
+   (face-attribute 'default :foreground)))
+
+(defhydra hydra-smartparens
+  (
+   :hint nil
+   :color pink
+   :pre (set-cursor-color "green")
+   :post (thblt/restore-cursor-color)
+   :foreign-keys warn)
   "
  Moving^^^^                       Slurp & Barf^^   Wrapping^^            Sexp juggling^^^^               Destructive
 ------------------------------------------------------------------------------------------------------------------------
