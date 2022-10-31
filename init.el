@@ -1399,12 +1399,12 @@ can read the branch name from .gitmodules."
 (defhydra hydra-magit-launcher (:color blue)
   ("g" thblt/magit-status "Status")
   ("C-g" thblt/magit-status)
+  ("d" magit-dispatch "Dispatch")
+  ("f" magit-file-dispatch "File dispatch")
   ("l" magit-list-repositories "List repos")
-  ("c" magit-clone "Clone")
-  ("i" magit-init "Init")
-  ("f" forge-list-repositories))
+  ("L" forge-list-repositories "List forge repos"))
 
-(define-key global-map (kbd "C-x g") 'thblt/magit-status)
+(define-key global-map (kbd "C-x g") 'hydra-magit-launcher/body)
 (define-key global-map [remap magit-status] 'thblt/magit-status)
 (define-key global-map (kbd "C-x C-g") 'hydra-magit-launcher/body)
 
