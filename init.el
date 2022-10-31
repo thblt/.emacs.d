@@ -305,14 +305,14 @@ local."
         ("*Backtrace*" :align t :poput t :select t :frame nil)
         ;; ** Magit **
         (magit-status-mode :same t)
-        ((:custom
+        ((:custom ;; Magit diffs
           ,(lambda (buffer)
              (with-current-buffer buffer
                (and
                 (eq major-mode 'magit-diff-mode)
                 magit-display-buffer-noselect))))
          :select nil :frame t :dedicate t)
-        ((:custom
+        ((:custom ;; Support noselect
           ,(lambda (buffer)
              (with-current-buffer buffer
                (bound-and-true-p magit-display-buffer-noselect))))
@@ -323,7 +323,7 @@ local."
         (magit-process-mode :frame nil)
         ("COMMIT_EDITMSG" :popup t :select t)
         ("^magit.*$'" :regexp t :frame nil)
-        (" *transient*" :frame nil :popup t :select nil)
+        (" *transient*" :frame nil :popup t :select nil :align below)
         ;; ** Org **
         ("*Org PDF LaTeX Output*" :select nil)
         ("*Org Preview LaTeX Output*" :select nil)
