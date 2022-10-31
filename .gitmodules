@@ -20,8 +20,8 @@
 	build-step = borg-makeinfo
 [submodule "auto-compile"]
 	path = lib/auto-compile
-	url = https://github.com/tarsius/auto-compile
-	branch = master
+	url = https://github.com/emacscollective/auto-compile
+	branch = main
 [submodule "avy"]
 	path = lib/avy
 	url = https://github.com/abo-abo/avy
@@ -271,8 +271,8 @@
 	branch = master
 [submodule "scpaste"]
 	path = lib/scpaste
-	url = https://github.com/technomancy/scpaste
-	branch = master
+	url = https://git.sr.ht/~technomancy/scpaste
+	branch = main
 [submodule "shackle"]
 	path = lib/shackle
 	url = https://depp.brause.cc/shackle.git
