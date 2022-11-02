@@ -1066,8 +1066,8 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 (define-key global-map [remap comment-dwim] 'evilnc-comment-or-uncomment-lines)
 
-
 ;;;;; Flycheck
+
 (with-eval-after-load 'flycheck
   (diminish 'flycheck-mode))
 
