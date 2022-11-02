@@ -48,10 +48,6 @@
 (setq user-full-name "Thibault Polge"
       user-mail-address "thibault@thb.lt"
 
-      ;; For some reason, the default value of =max-specpdl-size=
-      ;; prevents [[Mu4e][Mu4e]] from correctly rendering some HTML
-      ;; e-mails.  We increase it from 1300 to 5000.
-      max-specpdl-size 5000
       ;; LSP wants this.
       read-process-output-max (* 1024 1024)
       ;; Less noise
@@ -198,8 +194,11 @@ local."
 (setq x-underline-at-descent-line t)
 
 (defun thblt/disable-all-themes ()
+  "Disable all themes."
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
+
+(eval-when-compile (require 'solarized))
 
 (setq ;; Solarized
  solarized-scale-org-headlines nil
@@ -222,7 +221,7 @@ local."
 
 ;;;; Projectile
 
-(eval-when-compile (require 'projectile))
+(require 'projectile)
 
 (setq projectile-completion-system 'auto
       ;; globally ignore undo-files and similar byproducts.
@@ -265,6 +264,7 @@ local."
 
 ;;;;; Vertico + Orderless + Embark
 
+(require 'vertico)
 (vertico-mode)
 (marginalia-mode)
 
@@ -336,7 +336,7 @@ local."
         (" *Deletions*" :frame nil :popup t :select t) ; Dired deletion info
         (" *Marked Files*" :frame nil :popup t :select t)
         ;; ** Embark **
-        (" *Embark Actions*" :frame nil :popup t :align above :select nil) ; Dired deletion info
+        (" *Embark Actions*" :frame nil :align right :select nil) ; Dired deletion info
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
         ;; ** Proced **
@@ -485,7 +485,10 @@ nil; otherwise it's evaluated normally."
 (define-key global-map (kbd "C-c l") 'hydra-editor-appearance/body)
 
 (defun thblt/visual-fill-column-reset (&optional activate)
-  "Turn visual-fill-column off and on again.  Also ACTIVATE it if non-nil.
+  "Turn visual-fill-column off and on again.
+
+If visual-fill-column isn't enabled, activate it if ACTIVATE,
+otherwise do nothing.
 
 For use by `hydra-editor-appearance/body'."
   (interactive)
@@ -555,17 +558,18 @@ For use by `hydra-editor-appearance/body'."
 
 (define-key global-map (kbd "M-<SPC>") 'cycle-spacing)
 
-(define-key global-map (kbd "M-i")
-  (defun thblt/imenu-or-outline (arg)
-    "With no arg, execute `consult-imenu'. With an argument,
+(defun thblt/imenu-or-outline (arg)
+  "With no arg, execute `consult-imenu'. With an argument,
 `consult-outline'. If the function to execute isn't defined,
-execute `imenu' instead." ; Yes I know docstrings need a symbol.
-    (interactive "P")
-    (cond ((and (not arg) (fboundp 'consult-imenu))
-           (consult-imenu))
-          ((fboundp 'consult-outline)
-           (consult-outline))
-          (t (call-interactively 'imenu)))))
+execute `imenu' instead."
+  (interactive "P")
+  (cond ((and (not arg) (fboundp 'consult-imenu))
+         (consult-imenu))
+        ((fboundp 'consult-outline)
+         (consult-outline))
+        (t (call-interactively 'imenu))))
+
+(define-key global-map (kbd "M-i") 'thblt/imenu-or-outline)
 
 ;;;; Spell checking
 
@@ -711,6 +715,8 @@ execute `imenu' instead." ; Yes I know docstrings need a symbol.
 
 ;;;;; Vundo
 
+(eval-when-compile (require 'vundo))
+
 (define-key global-map (kbd "C-x u") 'vundo)
 (with-eval-after-load 'vundo
   (setq vundo-glyph-alist vundo-unicode-symbols))
@@ -837,6 +843,10 @@ interactively, DEFAULT-FUN otherwise ."
 
 ;;;; AucTex
 
+(eval-when-compile
+  (require 'latex)
+  (require 'tex-site))
+
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
 
@@ -863,9 +873,10 @@ interactively, DEFAULT-FUN otherwise ."
 
 (eval-when-compile
   (require 'org)
+  (require 'org-num)
   (require 'ox-latex))
 
-(setq org-catch-invisible-edits t
+(setq org-fold-catch-invisible-edits t
       org-hide-leading-stars t
       org-hide-emphasis-markers nil
       org-html-htmlize-output-type 'css
@@ -908,6 +919,8 @@ interactively, DEFAULT-FUN otherwise ."
   (sp-local-pair "“" "”"))
 
 ;;;;; Export
+
+(eval-when-compile (require 'ox-extra))
 
 (with-eval-after-load 'org
   (when (require 'ox-extra nil t)
@@ -1087,6 +1100,9 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 ;;;;; LSP
 
+(eval-when-compile
+  (require 'lsp))
+
 (with-eval-after-load 'lsp-mode
   (define-key lsp-mode-map (kbd "C-c C-f")
     (with-maybe-region
@@ -1193,6 +1209,9 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;;; Haskell
 
+(eval-when-compile
+  (require 'haskell-svg))
+
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 (setq haskell-interactive-popup-errors nil
       haskell-svg-render-images t
@@ -1219,6 +1238,8 @@ Otherwise, disable bicycle-tab and reemit binding."
             (thblt/outline-configure "# ")))
 
 ;;;;; Rust
+
+(eval-when-compile (require 'rust-mode))
 
 (add-hook 'rust-mode-hook
           (lambda ()
@@ -1409,7 +1430,7 @@ can read the branch name from .gitmodules."
       ;;; Render timestamps as invisible,
       erc-hide-timestamps t
       ;; actually disable them,
-      rc-timestamp-format-right nil
+      erc-timestamp-format-right nil
       ;; but show them in the minibuffer.
       erc-echo-timestamps t)
 
@@ -1519,6 +1540,10 @@ can read the branch name from .gitmodules."
 
 ;;;;; Dired
 
+(eval-when-compile
+  (require 'dired)
+  (require 'dired-x))
+
 ;; (define-key global-map (kbd "<f12>") 'sunrise)
 (setq dired-omit-files "^\\.")
 (add-hook 'dired-mode-hook 'hl-line-mode)
@@ -1592,7 +1617,7 @@ can read the branch name from .gitmodules."
 (add-to-list 'magic-mode-alist '("%PDF" . pdf-view-mode))
 (autoload 'pdf-view-mode "pdf-tools")
 
-(setq pdf-misc-print-program (executable-find "lpr")
+(setq pdf-misc-print-program-executable (executable-find "lpr")
       pdf-misc-print-program-args '("-o media=A4" "-o fitplot"))
 
 (with-eval-after-load 'pdf-view
