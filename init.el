@@ -225,41 +225,14 @@ local."
 
 ;; Theme is loaded at the very end of this file.
 
-;;;; Projectile
-
-(require 'projectile)
-
-(setq projectile-completion-system 'auto
-      ;; globally ignore undo-files and similar byproducts.
-      projectile-globally-ignored-file-suffixes '(".un~"
-						                                      ".~undo-tree~")
-      ;; Manage submodules as distinct projects.
-      projectile-git-submodule-command nil
-
-      ;; This slows down bootstrap, and doesn't make much sense since
-      ;; Projectile persists its project list.
-      projectile-auto-discover nil
-
-      projectile-project-search-path
-      (mapcar 'expand-file-name '("/etc/"
-                                  "~"
-                                  "~/.emacs.d/lib/"
-                                  "~/Documents/"
-                                  "~/Documents/Code")))
-
-(projectile-mode)
-
-;; If we don't have any project, discover them
-(unless projectile-known-projects
-  (message "Looking for projects in `projectile-project-search-path'.  This will happen only once.")
-  (projectile-discover-projects-in-search-path)
-  (message "Found %s projects." (length projectile-known-projects)))
-
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-
-(diminish 'projectile-mode)
-
 ;;;; UI Utilities
+
+;;;;; Hydra
+
+(eval-when-compile
+  (require 'hydra))
+
+(setq hydra-hint-display-type 'lv)
 
 ;;;;; Vertico + Orderless + Embark
 
@@ -285,13 +258,6 @@ local."
                    #'consult-completion-in-region
                  #'completion--in-region)
                args)))
-
-;;;;;; Embark + projectile
-
-;; Specify type for projectile functions.
-;; See https://www.reddit.com/r/emacs/comments/t7cdlp/comment/hziin2z/
-(add-to-list 'marginalia-command-categories '(projectile-find-file . file))
-(add-to-list 'marginalia-command-categories '(projectile-switch-project . file))
 
 ;;;;;; Embark + magit
 
@@ -387,6 +353,22 @@ local."
 
 (define-key global-map [remap switch-to-buffer] 'consult-buffer)
 (define-key global-map [remap goto-line] 'consult-goto-line)
+
+;;;;; project.el
+
+(rg-define-search thblt/project-rg :query ask :format regexp :files "everything" :case-fold-search smart :dir
+  (if (project-current) (project-root (project-current))
+    (project-prompt-project-dir))
+  :confirm prefix :flags
+  ("--hidden -g !.git"))
+
+(defun thblt/project-magit (default-directory)
+  (interactive (list (if (project-current) (project-root (project-current))
+                       (project-prompt-project-dir))))
+  (magit-status))
+
+(define-key project-prefix-map (kbd "g") 'thblt/project-rg)
+(define-key project-prefix-map (kbd "v") 'thblt/project-magit)
 
 ;;;; BÉPO adjustments
 
@@ -1333,15 +1315,19 @@ can read the branch name from .gitmodules."
               (message "Bad remote URL on %s: %s" drone url))))
         (borg-drones)))
 
-;;;;; Projectile integration
+;;;;; Project integration
 
-(defun thblt/borg-projectile-update (clone &rest _)
-  "Make Projectile discover Borg drone CLONE."
-  (projectile-add-known-project (borg-worktree clone)))
+(defun thblt/borg-project-update (clone &rest _)
+  "Make Project discover Borg drone CLONE."
+  (project-remember-project (borg-worktree clone)))
 
-(advice-add 'borg-clone :after 'thblt/borg-projectile-update)
-(advice-add 'borg-assimilate :after 'thblt/borg-projectile-update)
-(advice-add 'borg-remove :after (lambda (&rest _) (projectile-cleanup-known-projects)))
+(defun thblt/borg-project-remove (clone &rest _)
+  "Make Project discover Borg drone CLONE."
+  (project-forget-project (borg-worktree clone)))
+
+(advice-add 'borg-clone :after 'thblt/borg-project-update)
+(advice-add 'borg-assimilate :after 'thblt/borg-project-update)
+(advice-add 'borg-remove :after (lambda (&rest _) ))
 
 ;;;; Divine
 
@@ -1496,9 +1482,9 @@ can read the branch name from .gitmodules."
 ;;;; Magit and Git
 
 (defhydra hydra-magit-launcher (:color blue :idle 1)
-  ("g" thblt/magit-status "Status")
+  ("g" magit-status "Status")
   ("C-g" thblt/magit-status)
-  ("o" thblt/magit-status-prompt "Status (other)")
+  ("o" magit-status "Status (other)")
   ("d" magit-dispatch "Dispatch")
   ("f" magit-file-dispatch "File dispatch")
   ("l" magit-list-repositories "List repos")
@@ -1510,37 +1496,6 @@ can read the branch name from .gitmodules."
 
 (with-eval-after-load 'magit
   (require 'forge))
-
-;;;;; Steal repository list from Projectile
-
-;; All Projectile projects will be git directories, so it's kinda
-;; pointless to maintain two separate lists.  We instrument Magit to
-;; steal projectile-known-projects every time it makes sense.
-
-(defun thblt/magit-repos-from-projectile (&rest _)
-  "Overwrite `magit-repository-directories' with `projectile-known-projects'."
-  (setq magit-repository-directories
-        (mapcar (lambda (p) (cons p 0))
-                projectile-known-projects)))
-
-(advice-add 'magit-list-repositories :before 'thblt/magit-repos-from-projectile)
-
-(defun thblt/magit-status (&optional arg)
-  "Run Magit status using Projectile as the source of repository completion."
-  (interactive "P")
-  (require 'magit)
-  (or
-   ;; Fire up Magit if we have a project *and* not called with an arg.
-   (and (not arg) (magit-toplevel) (magit-status-setup-buffer))
-   ;; Otherwise, prompt.
-   (projectile-completing-read
-    "Magit for: " (projectile-relevant-known-projects)
-    :action 'magit-status)))
-
-(defun thblt/magit-status-prompt ()
-  "Like `thblt/magit-status', but always prompt for a repo."
-  (interactive)
-  (thblt/magit-status t))
 
 ;;;;; magit-list-repositories
 

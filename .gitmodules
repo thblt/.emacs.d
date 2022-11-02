@@ -230,10 +230,6 @@
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
-[submodule "projectile"]
-	path = lib/projectile
-	url = https://github.com/bbatsov/projectile
-	branch = master
 [submodule "queue"]
 	path = lib/queue
 	url = https://github.com/emacsmirror/queue
