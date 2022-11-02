@@ -276,6 +276,7 @@ local."
 (require 'embark-consult)
 
 (define-key global-map (kbd "M-é") 'embark-act)
+(define-key vertico-map (kbd "C-<return>") 'embark-act)
 
 ;; This ↓ from Vertico doc.  Make Vertico work in tab-completion as
 ;; well (ERC, M-:…)
@@ -335,7 +336,7 @@ local."
         (" *Deletions*" :frame nil :popup t :select t) ; Dired deletion info
         (" *Marked Files*" :frame nil :popup t :select t)
         ;; ** Embark **
-        (" *Embark Actions*" :frame nil :popup t :select nil) ; Dired deletion info
+        (" *Embark Actions*" :frame nil :popup t :align above :select nil) ; Dired deletion info
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
         ;; ** Proced **
