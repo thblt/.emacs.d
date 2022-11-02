@@ -1487,6 +1487,7 @@ can read the branch name from .gitmodules."
 (defhydra hydra-magit-launcher (:color blue)
   ("g" thblt/magit-status "Status")
   ("C-g" thblt/magit-status)
+  ("o" thblt/magit-status-prompt "Status (other)")
   ("d" magit-dispatch "Dispatch")
   ("f" magit-file-dispatch "File dispatch")
   ("l" magit-list-repositories "List repos")
@@ -1524,6 +1525,11 @@ can read the branch name from .gitmodules."
    (projectile-completing-read
     "Magit for: " (projectile-relevant-known-projects)
     :action 'magit-status)))
+
+(defun thblt/magit-status-prompt ()
+  "Like `thblt/magit-status', but always prompt for a repo."
+  (interactive)
+  (thblt/magit-status t))
 
 ;;;;; magit-list-repositories
 
