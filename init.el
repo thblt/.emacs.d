@@ -978,6 +978,47 @@ philo G, à partir d'un découpage de premier niveau en séances."
      (seance (format "[SÉANCE %s] " seance))
      (t ""))))
 
+;;;; Markdown
+
+(defun thblt/markdown-meta-up ()
+  (interactive)
+  (call-interactively
+   (cond
+    ((markdown-table-at-point-p) 'markdown-table-move-row-up)
+    ((markdown-list-item-at-point-p) 'markdown-move-list-item-up)
+    (t 'markdown-move-subtree-up))))
+
+(defun thblt/markdown-meta-down ()
+  (interactive)
+  (call-interactively
+   (cond
+    ((markdown-table-at-point-p) 'markdown-table-move-row-down)
+    ((markdown-list-item-at-point-p) 'markdown-move-list-item-down)
+    (t 'markdown-move-subtree-down))))
+
+(defun thblt/markdown-meta-left ()
+  (interactive)
+  (call-interactively
+   (cond
+    ((markdown-table-at-point-p) 'markdown-table-move-column-left)
+    ((markdown-on-heading-p) 'markdown-promote-subtree)
+    ((markdown-list-item-at-point-p) 'markdown-promote-list-item)
+    (t 'markdown-promote-subtree))))
+
+(defun thblt/markdown-meta-right ()
+  (interactive)
+  (call-interactively
+   (cond
+    ((markdown-table-at-point-p) 'markdown-table-move-column-right)
+    ((markdown-on-heading-p) 'markdown-demote-subtree)
+    ((markdown-list-item-at-point-p) 'markdown-demote-list-item)
+    (t 'markdown-demote-subtree))))
+
+(define-key markdown-mode-map (kbd "M-<up>") 'thblt/markdown-meta-up)
+(define-key markdown-mode-map (kbd "M-<down>") 'thblt/markdown-meta-down)
+(define-key markdown-mode-map (kbd "M-<left>") 'thblt/markdown-meta-left)
+(define-key markdown-mode-map (kbd "M-<right>") 'thblt/markdown-meta-right)
+
 ;;; Writing code
 
 ;;;; Settings
