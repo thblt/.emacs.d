@@ -220,11 +220,6 @@ local."
 
 ;; Theme is loaded at the very end of this file.
 
-(defun disable-all-themes ()
-  "Disable all enabled themes."
-  (interactive)
-  (mapc 'disable-theme custom-enabled-themes))
-
 ;;;; Projectile
 
 (eval-when-compile (require 'projectile))
