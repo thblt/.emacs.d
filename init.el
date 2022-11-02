@@ -255,13 +255,6 @@ local."
 
 ;;;; UI Utilities
 
-;;;;; Hydra
-
-(eval-when-compile
-  (require 'hydra))
-
-(setq hydra-hint-display-type 'message)
-
 ;;;;; Vertico + Orderless + Embark
 
 (require 'vertico)
@@ -424,8 +417,8 @@ local."
 
 ;;;; The editor appearance hydra
 
+(require 'hydra)
 (eval-when-compile
-  (require 'hydra)
   (require 'visual-fill-column))
 
 (eval-and-compile
@@ -456,7 +449,7 @@ nil; otherwise it's evaluated normally."
   ("tv" thblt/modus-vivendi-theme "Modus Vivendi")
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
-  ;; @FIXME This breaks is `visual-fill-column' hasn't been loaded yet.
+  ;; @FIXME This breaks if `visual-fill-column' hasn't been loaded yet.
   ("c" thblt/visual-fill-column-toggle-centering (thblt/hydra-indicator "Centering" visual-fill-column-center-text))
   ("g" thblt/visual-fill-column-width-decrease "Width -")
   ("h" thblt/visual-fill-column-width-increase "Width +")
