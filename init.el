@@ -374,7 +374,6 @@ local."
 ;;;;; Consult
 
 (define-key global-map [remap switch-to-buffer] 'consult-buffer)
-(define-key global-map [remap yank-pop] 'consult-yank-pop)
 (define-key global-map [remap goto-line] 'consult-goto-line)
 
 ;;;; BÉPO adjustments
