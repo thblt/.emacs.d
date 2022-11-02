@@ -211,8 +211,8 @@ local."
 ;; Note to self: theme is configured in solaris.el
 (defun thblt/dark-theme () "Activate dark theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
 (defun thblt/light-theme () "Activate light theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
-(defun thblt/dark-hc-theme () "Activate dark (high contrast) theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark-high-contrast t))
-(defun thblt/light-hc-theme () "Activate light (high contrast) theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light-high-contrast t))
+;; (defun thblt/dark-hc-theme () "Activate dark (high contrast) theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark-high-contrast t))
+;; (defun thblt/light-hc-theme () "Activate light (high contrast) theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light-high-contrast t))
 (defun thblt/modus-operandi-theme () "Activate modus-operandi theme." (interactive) (thblt/disable-all-themes) (load-theme 'modus-operandi t))
 (defun thblt/modus-vivendi-theme () "Activate modus-vivendi theme." (interactive) (thblt/disable-all-themes) (load-theme 'modus-vivendi t))
 (defun thblt/zenburn-theme () "Activate Zenburn-ish theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-zenburn t))
@@ -446,11 +446,11 @@ nil; otherwise it's evaluated normally."
   ("é" thblt/text-scale-reset (thblt/hydra-indicator "Default size"
                                                      (not (bound-and-true-p text-scale-mode))))
   ("p" text-scale-increase "Size +")
-  ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
+  ;; ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
   ("tl" thblt/light-theme "Light theme")
-  ("tL" thblt/light-hc-theme "Light (hc) theme")
+  ;; ("tL" thblt/light-hc-theme "Light (hc) theme")
   ("td" thblt/dark-theme "Dark theme")
-  ("tD" thblt/dark-hc-theme "Dark (hc) theme")
+  ;; ("tD" thblt/dark-hc-theme "Dark (hc) theme")
   ("tz" thblt/zenburn-theme "Zenburn theme")
   ("to" thblt/modus-operandi-theme "Modus Operandi")
   ("tv" thblt/modus-vivendi-theme "Modus Vivendi")
@@ -464,33 +464,32 @@ nil; otherwise it's evaluated normally."
   ("-" toggle-word-wrap (thblt/hydra-indicator "Word wrap" word-wrap))
   ("L" display-line-numbers-mode (thblt/hydra-indicator "Line numbers" display-line-numbers-mode))
 
-  ("r" rainbow-mode (thblt/hydra-indicator "Rainbow" rainbow-mode) :column "Helpers")
-
-  ("W" superword-mode (thblt/hydra-indicator "super-word" superword-mode))
-  ("w" subword-mode (thblt/hydra-indicator "SubWord" subword-mode))
-
   ("a" auto-fill-mode (thblt/hydra-indicator "Auto fill" auto-fill-function) :column "Magic/more magic")
   ("A" refill-mode (thblt/hydra-indicator "Auto refill" refill-mode))
   ("I" aggressive-indent-mode (thblt/hydra-indicator "Aggressive indent" aggressive-indent-mode))
   ("de" toggle-debug-on-error (thblt/hydra-indicator "Debug on error" debug-on-error))
   ("dq" toggle-debug-on-quit (thblt/hydra-indicator "Debug on quit" debug-on-quit))
 
+  ("r" rainbow-mode (thblt/hydra-indicator "Rainbow" rainbow-mode))
+  ("W" superword-mode (thblt/hydra-indicator "super-word" superword-mode))
+  ("w" subword-mode (thblt/hydra-indicator "SubWord" subword-mode))
+
   ("!" flycheck-mode (thblt/hydra-indicator "Code" flycheck-mode) :column "Utility")
   ("?" flyspell-mode  (thblt/hydra-indicator "Spell" flyspell-mode))
   ("F" thblt/ispell-use-french (thblt/hydra-indicator "Français" (string= (bound-and-true-p ispell-local-dictionary) "french")))
   ("E" thblt/ispell-use-english (thblt/hydra-indicator "English" (string= (bound-and-true-p ispell-local-dictionary) "english")))
 
-  ("R" auto-revert-mode (thblt/hydra-indicator "Auto-revert" auto-revert-mode) :column "Misc"))
+  ("R" auto-revert-mode (thblt/hydra-indicator "Auto-revert" auto-revert-mode)))
 
 (define-key global-map (kbd "C-c l") 'hydra-editor-appearance/body)
 
 (defun thblt/visual-fill-column-reset (&optional activate)
   "Turn visual-fill-column off and on again.
 
-If visual-fill-column isn't enabled, activate it if ACTIVATE,
-otherwise do nothing.
+  If visual-fill-column isn't enabled, activate it if ACTIVATE,
+  otherwise do nothing.
 
-For use by `hydra-editor-appearance/body'."
+  For use by `hydra-editor-appearance/body'."
   (interactive)
   (when (or
          activate
