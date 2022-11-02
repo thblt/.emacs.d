@@ -1519,13 +1519,16 @@ can read the branch name from .gitmodules."
 
 ;;;; Misc utilities
 
-(define-key global-map (kbd "C-x C-p") 'proced)
 
 ;; (define-key global-map (kbd "<f12>") 'sunrise)
 (setq dired-omit-files "^\\.")
 (add-hook 'dired-mode-hook 'hl-line-mode)
 (add-hook 'ibuffer-mode-hook 'hl-line-mode)
 (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
+;;;;; Proced
+
+(define-key global-map (kbd "C-x C-p") 'proced)
+(add-hook 'proced-mode-hook 'hl-line-mode)
 
 (defalias 'tdoe 'toggle-debug-on-error)
 
