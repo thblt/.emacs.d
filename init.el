@@ -324,6 +324,8 @@ local."
         ("COMMIT_EDITMSG" :popup t :select t)
         ("^magit.*$'" :regexp t :frame nil)
         (" *transient*" :frame nil :popup t :select nil :align below)
+        ;; ** Forge **.
+        (forge-post-mode :dedicate t :frame t)
         ;; ** Org **
         ("*Org PDF LaTeX Output*" :select nil)
         ("*Org Preview LaTeX Output*" :select nil)
@@ -349,6 +351,8 @@ local."
         ;; ** Local variables warning **
         ("*Local Variables*" :same t :frame nil :popup t :select t)
         ("*Backtrace*" :frame t :select t :dedicate t)
+        ;; ** M-x report-emacs-bug
+        ("*Bug Help*" :frame nil :align below)
         ;; ** Misc **
         (" *undo-tree*" :frame nil)
         ("*Register Preview*" :frame nil :noselect t)
