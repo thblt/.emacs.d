@@ -280,6 +280,22 @@ local."
                  #'completion--in-region)
                args)))
 
+;;;;;; Embark + projectile
+
+;; Specify type for projectile functions.
+;; See https://www.reddit.com/r/emacs/comments/t7cdlp/comment/hziin2z/
+(add-to-list 'marginalia-command-categories '(projectile-find-file . file))
+(add-to-list 'marginalia-command-categories '(projectile-switch-project . file))
+
+;;;;;; Embark + magit
+
+(defun thblt/embark-magit-status (file)
+  "Run `magit-status` on repo containing the embark target."
+  (interactive "GFile: ")
+  (magit-status (locate-dominating-file file ".git")))
+
+(define-key embark-file-map (kbd "v v") 'thblt/embark-magit-status)
+
 ;;;;; Shackle
 
 (eval-when-compile
