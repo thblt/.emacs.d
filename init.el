@@ -388,7 +388,7 @@ local."
 (defmacro thblt/digit-argument-with-value (char)
   "Simulate `digit-argument' as if it was called by pressing CHAR.
 
-  This can be used to update the digit argument from arbitrary keys."
+This can be used to update the digit argument from arbitrary keys."
   `(lambda () (interactive)
      (prefix-command-preserve-state)
      (let ((last-command-event ,char))
