@@ -980,6 +980,8 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 ;;;; Markdown
 
+(eval-when-compile (require 'markdown-mode))
+
 (defun thblt/markdown-meta-up ()
   (interactive)
   (call-interactively
@@ -1013,11 +1015,11 @@ philo G, à partir d'un découpage de premier niveau en séances."
     ((markdown-on-heading-p) 'markdown-demote-subtree)
     ((markdown-list-item-at-point-p) 'markdown-demote-list-item)
     (t 'markdown-demote-subtree))))
-
-(define-key markdown-mode-map (kbd "M-<up>") 'thblt/markdown-meta-up)
-(define-key markdown-mode-map (kbd "M-<down>") 'thblt/markdown-meta-down)
-(define-key markdown-mode-map (kbd "M-<left>") 'thblt/markdown-meta-left)
-(define-key markdown-mode-map (kbd "M-<right>") 'thblt/markdown-meta-right)
+(with-eval-after-load 'markdown-mode
+  (define-key markdown-mode-map (kbd "M-<up>") 'thblt/markdown-meta-up)
+  (define-key markdown-mode-map (kbd "M-<down>") 'thblt/markdown-meta-down)
+  (define-key markdown-mode-map (kbd "M-<left>") 'thblt/markdown-meta-left)
+  (define-key markdown-mode-map (kbd "M-<right>") 'thblt/markdown-meta-right))
 
 ;;; Writing code
 
