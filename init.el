@@ -142,8 +142,9 @@ local."
 
 ;; Don't show the menu bar, unless this is MacOS.  Never show toolbar
 ;; or scrollbars.
-(when (window-system)
-  (unless (string= 'system-type 'darwin) (menu-bar-mode -1))
+
+(unless (string= 'system-type 'darwin) (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1)
   (scroll-bar-mode -1))
 
