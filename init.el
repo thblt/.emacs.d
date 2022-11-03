@@ -142,9 +142,10 @@ local."
 
 ;; Don't show the menu bar, unless this is MacOS.  Never show toolbar
 ;; or scrollbars.
-(unless (string= 'system-type 'darwin) (menu-bar-mode -1))
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+(when (window-system)
+  (unless (string= 'system-type 'darwin) (menu-bar-mode -1))
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1))
 
 ;; Mouse wheel scrolling makes big jumps by default, let's make it smoother.
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; one line at a time
