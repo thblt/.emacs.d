@@ -671,7 +671,7 @@ execute `imenu' instead."
 
 ;;;; isearch, replace, query-replace
 
-(define-key global-map (kbd "C-M-%") 'vr/query-replace)
+(define-key global-map [remap query-replace] 'vr/query-replace)
 (define-key global-map (kbd "C-c r") 'vr/replace)
 
 ;; Leave the cursor at the beginning of an isearch match
