@@ -1503,19 +1503,10 @@ can read the branch name from .gitmodules."
 (defun znc ()
   "Connect to ZNC."
   (interactive)
-  (if-let ((pwfunc (plist-get
-                    (car
-                     (auth-source-search
-                      :max 1
-                      :host "znc.thb.lt"))
-                    :secret)))
-      (erc-tls
-       :server "k9.thb.lt"
-       :port 2002
-       :nick "thblt"
-       :password (format "%s:%s" "thblt" (funcall pwfunc)))
-    (auth-source-forget-all-cached)
-    (message "No password, maybe retry (I've cleared auth-source-cache)")))
+  (erc-tls
+   :server "k9.thb.lt"
+   :port 2002
+   :nick "thblt"))
 
 ;;;; Magit and Git
 
