@@ -669,11 +669,24 @@ execute `imenu' instead."
 (advice-add 'yank :after (lambda (_) (pulse-momentary-highlight-region (point) (mark))))
 (advice-add 'yank-pop :after (lambda (_) (pulse-momentary-highlight-region (point) (mark))))
 
-;;;; Replace
+;;;; isearch, replace, query-replace
 
 (define-key global-map (kbd "C-M-%") 'vr/query-replace)
 (define-key global-map (kbd "C-c r") 'vr/replace)
-(define-key global-map (kbd "C-c m") 'vr/mc-mark)
+
+;; Leave the cursor at the beginning of an isearch match
+;; From: https://endlessparentheses.com/leave-the-cursor-at-start-of-match-after-isearch.html
+(add-hook 'isearch-mode-end-hook
+          #'thblt/goto-match-beginning)
+
+(defun thblt/goto-match-beginning ()
+  "Go to the start of current isearch match.
+Use in `isearch-mode-end-hook'."
+  (when (and isearch-forward
+             (number-or-marker-p isearch-other-end)
+             (not mark-active)
+             (not isearch-mode-end-hook-quit))
+    (goto-char isearch-other-end)))
 
 ;;;; Minor modes
 
