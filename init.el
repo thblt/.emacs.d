@@ -818,6 +818,8 @@ interactively, DEFAULT-FUN otherwise ."
             (with-maybe-region thblt/capitalize-something capitalize-region capitalize-word))
 (define-key global-map [remap kill-ring-save]
             (with-maybe-region thblt/kill-ring-save kill-ring-save thblt/line-to-kill-ring))
+(define-key global-map [remap kill-region]
+            (with-maybe-region thblt/kill-region kill-region kill-whole-line))
 
 (defun thblt/line-to-kill-ring ()
   "Copy the active line to kill-ring"
