@@ -167,7 +167,7 @@ local."
 (global-set-key (kbd "C-c b") 'switch-to-minibuffer)
 
 ;; No right fringe
-(fringe-mode '(nil . 0))
+(when (fboundp 'fringe-mode) (fringe-mode '(nil . 0)))
 ;; Better truncation indicator
 (unless standard-display-table
   (setq standard-display-table (make-display-table)))
