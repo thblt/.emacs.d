@@ -1211,7 +1211,11 @@ Otherwise, disable bicycle-tab and reemit binding."
 (setq auto-compile-display-buffer nil)
 
 (auto-compile-on-load-mode)
-(auto-compile-on-save-mode)
+;; (auto-compile-on-save-mode) ; Commented out because of side
+;; effects: compilation happens in the current process, so
+;; (eval-when-compile BODY) actually runs BODY.  `load-prefer-newer'
+;; is enough.  Just check it's enabled:
+(cl-assert load-prefer-newer)
 
 (with-eval-after-load 'eldoc
   (diminish 'eldoc-mode))
