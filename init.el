@@ -409,10 +409,21 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key universal-argument-map (kbd "/") (thblt/digit-argument-with-value ?9))
 (define-key universal-argument-map (kbd "*") (thblt/digit-argument-with-value ?0))
 
-;; Beginning and end of buffer
-
-(define-key global-map(kbd "M-ê") 'beginning-of-buffer)
-(define-key global-map (kbd "M-Ê") 'end-of-buffer)
+;; Some key translations
+;; Swap é and w
+(define-key key-translation-map (kbd "M-é") (kbd "M-w"))
+(define-key key-translation-map (kbd "M-w") (kbd "M-é"))
+(define-key key-translation-map (kbd "C-é") (kbd "C-w"))
+(define-key key-translation-map (kbd "C-w") (kbd "C-é"))
+(define-key key-translation-map (kbd "C-M-é") (kbd "C-M-w"))
+(define-key key-translation-map (kbd "C-M-w") (kbd "C-M-é"))
+;; Read êÊ as <> (key right of left shift)
+(define-key key-translation-map(kbd "M-ê") (kbd "M-<"))
+(define-key key-translation-map(kbd "C-ê") (kbd "C-<"))
+(define-key key-translation-map(kbd "C-M-ê") (kbd "C-M-<"))
+(define-key key-translation-map(kbd "M-Ê") (kbd "M->"))
+(define-key key-translation-map(kbd "C-Ê") (kbd "C->"))
+(define-key key-translation-map(kbd "C-M-Ê") (kbd "C-M->"))
 
 (defmacro thblt/self-insert-this (char)
   "Run `self-insert' as if it was called by pressing CHAR."
