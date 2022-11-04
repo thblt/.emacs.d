@@ -454,7 +454,7 @@ nil; otherwise it's evaluated normally."
                          (propertize " " 'face 'shadow))
              ,desc)))
 
-(defhydra hydra-editor-appearance ()
+(defhydra hydra-editor-appearance (:idle 1)
   ("b" text-scale-decrease "Size -" :column "Font and theme")
   ("é" thblt/text-scale-reset (thblt/hydra-indicator "Default size"
                                                      (not (bound-and-true-p text-scale-mode))))
@@ -1117,8 +1117,8 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 (with-eval-after-load 'lsp-mode
   (define-key lsp-mode-map (kbd "C-c C-f")
-    (with-maybe-region
-     thblt/lsp-format lsp-format-region lsp-format-buffer)))
+              (with-maybe-region
+               thblt/lsp-format lsp-format-region lsp-format-buffer)))
 
 (with-eval-after-load 'lsp-lens
   (diminish 'lsp-lens-mode))
@@ -1347,6 +1347,7 @@ can read the branch name from .gitmodules."
 (defhydra hydra-smartparens
   (
    :hint nil
+   :idle 1
    :color pink
    :pre (set-cursor-color "green")
    :post (thblt/restore-cursor-color)
@@ -1488,7 +1489,7 @@ can read the branch name from .gitmodules."
 
 ;;;; Magit and Git
 
-(defhydra hydra-magit-launcher (:color blue)
+(defhydra hydra-magit-launcher (:color blue :idle 1)
   ("g" thblt/magit-status "Status")
   ("C-g" thblt/magit-status)
   ("o" thblt/magit-status-prompt "Status (other)")
