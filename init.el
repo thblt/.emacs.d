@@ -14,6 +14,8 @@
 (message "│        ‘8’       o888o 8\"\"888P’  ‘V88V\"V8P’ ‘Y888\"\"8o o888o      o888ooooood8     88         88     ┃")
 (message "┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
 
+(when (and (daemonp) (window-system) (error "It's happening!!!")))
+
 ;;; Introduction
 
 ;; This chapter deals with the general use of Emacs, and is limited to
