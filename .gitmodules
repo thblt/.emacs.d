@@ -90,9 +90,9 @@
 	url = https://github.com/skeeto/emacsql
 	branch = master
 	build-nix-shell-packages = llvmPackages.clang.cc
-  comment = ↓ Instead of rm, try to run the binary and rm it if it fails.
-  build-step = rm sqlite/emacsql-sqlite
-  build-step = make binary
+	comment = ↓ Instead of rm, try to run the binary and rm it if it fails.
+	build-step = rm sqlite/emacsql-sqlite
+	build-step = make binary
 [submodule "embark"]
 	path = lib/embark
 	url = https://github.com/oantolin/embark
@@ -133,9 +133,12 @@
 	path = lib/ghub
 	url = https://github.com/magit/ghub
 	branch = master
+[submodule "git-modes"]
+	path = lib/git-modes
+	url = https://github.com/magit/git-modes
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
-  info-path = doc
+	info-path = doc
 	url = https://github.com/haskell/haskell-mode
 	branch = master
 [submodule "ht"]
@@ -166,8 +169,8 @@
 	path = lib/lsp-mode
 	url = https://github.com/emacs-lsp/lsp-mode
 	branch = master
-  load-path = .
-  load-path = clients
+	load-path = .
+	load-path = clients
 [submodule "lsp-ui"]
 	path = lib/lsp-ui
 	url = https://github.com/emacs-lsp/lsp-ui
@@ -176,7 +179,7 @@
 	path = lib/magit
 	url = https://github.com/magit/magit
 	branch = master
-  recursive-byte-compile = true
+	recursive-byte-compile = true
 	info-path = Documentation
 [submodule "magit-popup"]
 	path = lib/magit-popup
@@ -205,7 +208,7 @@
 [submodule "notmuch"]
 	path = lib/notmuch
 	url = https://git.notmuchmail.org/git/notmuch
- 	load-path = emacs
+	load-path = emacs
 	branch = master
 [submodule "orderless"]
 	path = lib/orderless
@@ -323,8 +326,8 @@
 	branch = master
 [submodule "vertico"]
 	path = lib/vertico
-  load-path = .
-  load-path = extensions
+	load-path = .
+	load-path = extensions
 	url = https://github.com/minad/vertico
 	branch = main
 [submodule "visual-fill-column"]
