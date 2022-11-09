@@ -467,7 +467,7 @@ nil; otherwise it's evaluated normally."
                          (propertize " " 'face 'shadow))
              ,desc)))
 
-(defhydra hydra-editor-appearance (:idle 1)
+(defhydra hydra-editor-appearance ()
   ("b" text-scale-decrease "Size -" :column "Font and theme")
   ("é" thblt/text-scale-reset (thblt/hydra-indicator "Default size"
                                                      (not (bound-and-true-p text-scale-mode))))
