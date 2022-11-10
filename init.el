@@ -1563,8 +1563,6 @@ can read the branch name from .gitmodules."
 
 ;; =magit-list-repositories= provides a summary view of multiple
 ;; repositories.
-;;
-;; First, let's configure the view.
 
 (setq magit-repolist-columns
       '(("Name"       25  magit-repolist-column-ident nil)
