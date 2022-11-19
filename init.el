@@ -361,6 +361,7 @@ local."
         ("*Compile-Log*" :frame nil :popup t :select t)
         ;; ** Local variables warning **
         ("*Local Variables*" :same t :frame nil :popup t :select t)
+        ;; ** Errors **
         ("*Backtrace*" :frame t :select t :dedicate t)
         ;; ** M-x report-emacs-bug
         ("*Bug Help*" :frame nil :align below)
@@ -369,7 +370,7 @@ local."
         ("*Register Preview*" :frame nil :noselect t)
         (flycheck-error-list-mode :select t)
         ((compilation-mode "\\`\\*firestarter\\*\\'"
-                           "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t)
+                           "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t :frame t)
         ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
 
       shackle-default-rule '(:frame t)
