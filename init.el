@@ -190,7 +190,7 @@ local."
 (add-to-list 'default-frame-alist '(font . "Iosevka"))
 (set-face-attribute 'default nil
                     :height (pcase (system-name)
-                              ("dru" 140)
+                              ("dru" 130)
                               ("maladict" 110)))
 (set-face-attribute 'fixed-pitch nil
                     :family "Iosevka")
