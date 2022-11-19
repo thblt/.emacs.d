@@ -113,10 +113,6 @@
 	path = lib/f
 	url = https://github.com/rejeep/f.el
 	branch = master
-[submodule "flycheck"]
-	path = lib/flycheck
-	url = https://github.com/flycheck/flycheck
-	branch = master
 [submodule "flyspell-correct"]
 	path = lib/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct
@@ -161,20 +157,6 @@
 	path = lib/llama
 	url = https://git.sr.ht/~tarsius/llama
 	branch = main
-[submodule "lsp-haskell"]
-	path = lib/lsp-haskell
-	url = https://github.com/emacs-lsp/lsp-haskell
-	branch = master
-[submodule "lsp-mode"]
-	path = lib/lsp-mode
-	url = https://github.com/emacs-lsp/lsp-mode
-	branch = master
-	load-path = .
-	load-path = clients
-[submodule "lsp-ui"]
-	path = lib/lsp-ui
-	url = https://github.com/emacs-lsp/lsp-ui
-	branch = master
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit

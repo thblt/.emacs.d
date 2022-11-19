@@ -1114,6 +1114,8 @@ philo G, à partir d'un découpage de premier niveau en séances."
   (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
   (diminish 'company-mode))
 
+;;;;; Eglot @TODO
+
 ;;;;; Evil Nerd Commenter
 
 (define-key global-map [remap comment-dwim] 'evilnc-comment-or-uncomment-lines)
@@ -1138,26 +1140,6 @@ philo G, à partir d'un découpage de premier niveau en séances."
 (global-hi-lock-mode)
 (with-eval-after-load 'hi-lock
   (diminish 'hi-lock-mode))
-
-;;;;; LSP
-
-(eval-when-compile
-  (require 'lsp))
-
-(with-eval-after-load 'lsp-mode
-  (define-key lsp-mode-map (kbd "C-c C-f")
-              (with-maybe-region
-               thblt/lsp-format lsp-format-region lsp-format-buffer)))
-
-(with-eval-after-load 'lsp-lens
-  (diminish 'lsp-lens-mode))
-
-(add-hook 'c-mode-hook 'lsp-deferred)
-(add-hook 'c++-mode-hook 'lsp-deferred)
-(add-hook 'haskell-mode-hook 'lsp-deferred)
-(add-hook 'nix-mode-hook 'lsp-deferred)
-(add-hook 'rust-mode-hook 'lsp-deferred)
-(add-hook 'sh-mode-hook 'lsp-deferred)
 
 ;;;;; Outline, hideshow, bicycle
 
