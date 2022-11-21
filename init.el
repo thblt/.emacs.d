@@ -387,6 +387,14 @@ local."
   (project-remember-projects-under "/etc/nixos/")
   (project-remember-projects-under "~/.dotfiles.private/"))
 
+(defun thblt/magit-repos-from-project (&rest _)
+  "Overwrite `magit-repository-directories' with `project-known-projects'."
+  (setq magit-repository-directories
+        (mapcar (lambda (p) (cons p 0))
+                (project-known-project-roots))))
+
+(advice-add 'magit-list-repositories :before 'thblt/magit-repos-from-project)
+
 ;;;; BÉPO adjustments
 
 ;; Unshifted digit argument
@@ -799,8 +807,6 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
       (thblt/guess-module-name-from-path buffer-file-name))))
 
 ;;;; Editing text from outside: atomic-chrome
-
-(message "%s and %s" (daemonp) server-name)
 
 (when (string= (daemonp) "server")
   (atomic-chrome-start-server))
