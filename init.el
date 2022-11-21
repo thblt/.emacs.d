@@ -372,6 +372,14 @@ local."
 (define-key project-prefix-map (kbd "g") 'thblt/project-rg)
 (define-key project-prefix-map (kbd "v") 'thblt/project-magit)
 
+(defun thblt/project-discover-projects ()
+  (interactive)
+  (project-remember-projects-under "~/.emacs.d/" t)
+  (project-remember-projects-under "~/Documents/" t)
+  (project-remember-projects-under "~/.dotfiles/")
+  (project-remember-projects-under "/etc/nixos/")
+  (project-remember-projects-under "~/.dotfiles.private/"))
+
 ;;;; BÉPO adjustments
 
 ;; Unshifted digit argument
