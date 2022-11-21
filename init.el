@@ -1273,6 +1273,62 @@ Otherwise, disable bicycle-tab and reemit binding."
 (with-eval-after-load 'rust-mode
   (define-key rust-mode-map [remap recompile] 'rustic-cargo-build))
 
+(defvar-local thblt/rust-run-binary-target nil
+  "The current binary target, set by `thblt/rust-run'.")
+
+(defun thblt/rust-run (target)
+  "Like `rust-run', but prompt for a target if necessary.
+
+The last run target is stored in `thblt/rust-run-binary-target'.
+To force target selection, use a prefix argument."
+  ;; Notice this could be generalized to all targets, eg for `rust-build'.
+  (interactive
+   (list
+    (let*
+        ((json
+          (with-temp-buffer
+            (call-process "cargo" nil (current-buffer) nil
+                          "metadata" "--format-version" "1")
+            (goto-char (point-min))
+            (json-parse-buffer :null-object nil)))
+         ;; !! this is a bit dirty. !!
+         (members
+          (seq-map (lambda (wm)
+                     (car (split-string wm " ")))
+                   (gethash "workspace_members" json)))
+         (targets
+          (-flatten ; from dash.el, but not strictly required.
+           (seq-map (lambda (v)
+                      (seq-keep (lambda (target)
+                                  (when
+                                      (seq-contains-p
+                                       ;; Filter out non-binary targets.
+                                       (gethash "kind" target) "bin" 'string=)
+                                    (gethash "name" target))) v))
+                    (seq-map (lambda (package)
+                               (gethash "targets" package))
+                             (seq-filter
+                              (lambda (pkg)
+                                (seq-contains-p members
+                                                (gethash "name" pkg)))
+                              (gethash "packages" json))))))
+         (default-run
+          (gethash "default_run"
+                   (car
+                    (seq-filter
+                     (lambda (item)
+                       (string= "raoc2021" (gethash "name" item)))
+                     (gethash "packages" json))))))
+      (or default-run
+          (and (not current-prefix-arg)
+               thblt/rust-run-binary-target)
+          (completing-read "Target: " targets)))))
+  (rust--compile "%s run %s --bin %s" rust-cargo-bin rust-cargo-default-arguments target)
+  ;; @TODO Should we still save if this is the default target?
+  (when (called-interactively-p) (setq thblt/rust-run-binary-target target)))
+
+(define-key rust-mode-map [remap rust-run] 'thblt/rust-run)
+
 ;;;;; Bash, shell, and so on
 
 (add-hook 'sh-mode-hook
