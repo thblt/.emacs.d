@@ -206,9 +206,9 @@ local."
 
 (defun thblt/replace-theme (theme)
   "Like `load-theme', but also disable all other themes."
-  (interactive (list (completing-read "Theme: " (custom-available-themes))))
+  (interactive (list (intern (completing-read "Theme: " (custom-available-themes)))))
   (thblt/disable-all-themes)
-  (load-theme (intern theme) t))
+  (load-theme theme t))
 
 (eval-when-compile (require 'solarized))
 
