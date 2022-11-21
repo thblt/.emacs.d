@@ -84,6 +84,9 @@
 	path = lib/divine
 	url = https://github.com/thblt/divine
 	branch = master
+[submodule "doom-modeline"]
+	path = lib/doom-modeline
+	url = https://github.com/seagle0128/doom-modeline/
 [submodule "doom-themes"]
 	path = lib/doom-themes
 	url = https://github.com/doomemacs/themes
