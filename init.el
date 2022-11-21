@@ -1531,17 +1531,23 @@ can read the branch name from .gitmodules."
 
 ;;;; Misc utilities
 
-;;;;; Dired
+;;;;; Dired + dirvish
 
 (require 'dired)
 (require 'dired-x)
+(require 'dirvish)
 
 ;; (define-key global-map (kbd "<f12>") 'sunrise)
 (setq dired-omit-files "^\\.")
-(add-hook 'dired-mode-hook 'hl-line-mode)
+;; (add-hook 'dired-mode-hook 'hl-line-mode) ; Not required with dirvish
+(dirvish-override-dired-mode)
+
+(define-key global-map [remap list-directory] 'dired)
+
+;;;;; ibuffer
+
 (add-hook 'ibuffer-mode-hook 'hl-line-mode)
 (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
-(define-key global-map [remap list-directory] 'dired)
 
 ;;;;; Proced
 

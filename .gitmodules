@@ -83,6 +83,9 @@
 	path = lib/diminish
 	url = https://github.com/myrjola/diminish.el
 	branch = master
+[submodule "dirvish"]
+	path = lib/dirvish
+	url = https://github.com/alexluigit/dirvish
 [submodule "divine"]
 	path = lib/divine
 	url = https://github.com/thblt/divine
