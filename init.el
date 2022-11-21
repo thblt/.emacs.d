@@ -1753,8 +1753,7 @@ t;;;; Regular expression builder
 
 ;; Restore GC settings.
 (setq gc-cons-percentage (car (get 'gc-cons-percentage 'standard-value))
-      ;; High value is better.
-      gc-cons-threshold 100000000
+      gc-cons-threshold (default-value 'gc-cons-threshold)
       garbage-collection-messages nil)
 
 (message "Reached the end of init.el.")
