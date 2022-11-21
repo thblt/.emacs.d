@@ -22,9 +22,6 @@
 ;; general settings and sane defaults.  It's a bit messy, since it's
 ;; mostly made up of all the bits that don't fit anywhere else.
 
-;; Never load bytecode if .el is more recent
-(setq load-prefer-newer t)
-
 ;;;; Package managers
 
 ;;;;; package.el

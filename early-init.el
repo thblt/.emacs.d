@@ -8,3 +8,6 @@
             (file-attribute-modification-time (file-attributes elc))))
     (message "Recompiling init.el…")
     (byte-compile-file el)))
+
+;; Never load bytecode if .el is more recent
+(setq load-prefer-newer t)
