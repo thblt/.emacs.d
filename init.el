@@ -204,9 +204,21 @@ local."
   (interactive)
   (mapc 'disable-theme custom-enabled-themes))
 
+(defun thblt/replace-theme (theme)
+  "Like `load-theme', but also disable all other themes."
+  (interactive (list (completing-read "Theme: " (custom-available-themes))))
+  (thblt/disable-all-themes)
+  (load-theme (intern theme) t))
+
 (eval-when-compile (require 'solarized))
 
-(setq ;; Solarized
+(setq ;; Leuven
+ leuven-dark-scale-org-agenda-structure nil
+ leuven-scale-org-agenda-structure nil
+ leuven-scale-outline-headlines nil
+ leuven-dark-scale-outline-headlines nil
+
+ ;; Solarized
  solarized-scale-org-headlines nil
  solarized-scale-outline-headlines nil
  solarized-distinct-fringe-background t
