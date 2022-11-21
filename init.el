@@ -798,6 +798,13 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
     (when buffer-file-name
       (thblt/guess-module-name-from-path buffer-file-name))))
 
+;;;; Editing text from outside: atomic-chrome
+
+(message "%s and %s" (daemonp) server-name)
+
+(when (string= (daemonp) "server")
+  (atomic-chrome-start-server))
+
 ;;;; Misc
 
 (defun kill-duplicate-blank-lines ()
