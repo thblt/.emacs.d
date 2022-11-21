@@ -353,6 +353,7 @@ local."
       shackle-inhibit-window-quit-on-same-windows t
       shackle-display-buffer-frame-function 'sway-shackle-display-buffer-frame)
 
+(setq frame-title-format '("%b — GNU Emacs [" (:eval (frame-parameter (selected-frame) 'window-id)) "]"))
 (shackle-mode)
 (sway-socket-tracker-mode)
 (sway-undertaker-mode)
