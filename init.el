@@ -227,13 +227,14 @@ local."
  modus-themes-headings '((t . (raindow background))))
 
 ;; Note to self: theme is configured in solaris.el
-(defun thblt/dark-theme () "Activate dark theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark t))
-(defun thblt/light-theme () "Activate light theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light t))
+(defun thblt/solaris-dark-theme () "Activate dark theme." (interactive) (thblt/replace-theme 'solaris-dark))
+(defun thblt/solaris-light-theme () "Activate light theme." (interactive) (thblt/replace-theme 'solaris-light))
+(defun thblt/doom-one-theme () "Activate doom-one theme." (interactive) (thblt/replace-theme 'doom-one))
 ;; (defun thblt/dark-hc-theme () "Activate dark (high contrast) theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-dark-high-contrast t))
 ;; (defun thblt/light-hc-theme () "Activate light (high contrast) theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-light-high-contrast t))
-(defun thblt/modus-operandi-theme () "Activate modus-operandi theme." (interactive) (thblt/disable-all-themes) (load-theme 'modus-operandi t))
-(defun thblt/modus-vivendi-theme () "Activate modus-vivendi theme." (interactive) (thblt/disable-all-themes) (load-theme 'modus-vivendi t))
-(defun thblt/zenburn-theme () "Activate Zenburn-ish theme." (interactive) (thblt/disable-all-themes) (load-theme 'solaris-zenburn t))
+(defun thblt/modus-operandi-theme () "Activate modus-operandi theme." (interactive) (thblt/replace-theme 'modus-operandi))
+(defun thblt/modus-vivendi-theme () "Activate modus-vivendi theme." (interactive) (thblt/replace-theme 'modus-vivendi))
+(defun thblt/zenburn-theme () "Activate Zenburn-ish theme." (interactive) (thblt/replace-theme 'solaris-zenburn))
 
 ;; Theme is loaded at the very end of this file.
 
@@ -473,13 +474,14 @@ nil; otherwise it's evaluated normally."
                                                      (not (bound-and-true-p text-scale-mode))))
   ("p" text-scale-increase "Size +")
   ;; ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
-  ("tl" thblt/light-theme "Light theme")
+  ;; ("tl" thblt/light-theme "Light theme")
   ;; ("tL" thblt/light-hc-theme "Light (hc) theme")
-  ("td" thblt/dark-theme "Dark theme")
+  ;; ("td" thblt/dark-theme "Dark theme")
   ;; ("tD" thblt/dark-hc-theme "Dark (hc) theme")
+  ("td" thblt/doom-one-theme "Doom one theme")
   ("tz" thblt/zenburn-theme "Zenburn theme")
   ("to" thblt/modus-operandi-theme "Modus Operandi")
-  ("tv" thblt/modus-vivendi-theme "Modus Vivendi")
+  ;; ("tv" thblt/modus-vivendi-theme "Modus Vivendi")
 
   ("f" thblt/visual-fill-column-toggle-mode (thblt/hydra-indicator "Visual fill" visual-fill-column-mode) :column "Appearance")
   ;; @FIXME This breaks if `visual-fill-column' hasn't been loaded yet.
@@ -1730,7 +1732,7 @@ t;;;; Regular expression builder
 (unkillable-scratch)
 
 ;; We also activate the theme late, for the same reason.
-(thblt/light-theme)
+(thblt/doom-one-theme)
 
 ;; Restore GC settings.
 (setq gc-cons-percentage (car (get 'gc-cons-percentage 'standard-value))
