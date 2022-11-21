@@ -1733,6 +1733,7 @@ t;;;; Regular expression builder
 
 ;; We also activate the theme late, for the same reason.
 (thblt/doom-one-theme)
+(doom-modeline-mode)
 
 ;; Restore GC settings.
 (setq gc-cons-percentage (car (get 'gc-cons-percentage 'standard-value))
