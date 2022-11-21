@@ -1546,7 +1546,7 @@ can read the branch name from .gitmodules."
 ;;;; Notmuch
 
 (require 'notmuch)
-(require 'smtpmail))
+(require 'smtpmail)
 
 (setq-default notmuch-search-oldest-first nil)
 
