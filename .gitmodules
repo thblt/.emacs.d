@@ -51,6 +51,9 @@
 	path = lib/closql
 	url = https://github.com/emacscollective/closql
 	branch = master
+[submodule "color-identifiers-mode"]
+	path = lib/color-identifiers-mode
+	url = https://github.com/ankurdave/color-identifiers-mode/
 [submodule "company"]
 	path = lib/company
 	url = https://github.com/company-mode/company-mode
@@ -81,6 +84,9 @@
 	path = lib/divine
 	url = https://github.com/thblt/divine
 	branch = master
+[submodule "doom-themes"]
+	path = lib/doom-themes
+	url = https://github.com/doomemacs/themes
 [submodule "editorconfig"]
 	path = lib/editorconfig
 	url = https://github.com/editorconfig/editorconfig-emacs
