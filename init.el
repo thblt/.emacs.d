@@ -241,9 +241,7 @@ local."
 
 ;;;;; Hydra
 
-(eval-when-compile
-  (require 'hydra))
-
+(require 'hydra)
 (setq hydra-hint-display-type 'lv)
 
 ;;;;; Vertico + Orderless + Embark
@@ -282,9 +280,7 @@ local."
 
 ;;;;; Shackle
 
-(eval-when-compile
-  (require 'magit))
-
+(require 'magit)
 (require 'shackle)
 (require 'sway)
 
@@ -456,8 +452,7 @@ This can be used to update the digit argument from arbitrary keys."
 ;;;; The editor appearance hydra
 
 (require 'hydra)
-(eval-when-compile
-  (require 'visual-fill-column))
+(require 'visual-fill-column)
 
 (eval-and-compile
   (defmacro thblt/hydra-indicator (desc active)
@@ -603,9 +598,8 @@ execute `imenu' instead."
 
 ;;;; Spell checking
 
-(eval-when-compile
-  (require 'flyspell)
-  (require 'ispell))
+(require 'flyspell)
+(require 'ispell)
 
 (setq ispell-program-name "aspell"
       ispell-silently-savep t)
@@ -645,8 +639,7 @@ execute `imenu' instead."
 
 ;;;;; beginend
 
-(eval-when-compile
-  (require 'beginend))
+(require 'beginend)
 
 (beginend-global-mode)
 
@@ -656,8 +649,7 @@ execute `imenu' instead."
 
 ;;;;; mwim
 
-(eval-when-compile
-  (require 'haskell-interactive-mode))
+(require 'haskell-interactive-mode)
 
 (define-key global-map [remap move-beginning-of-line] 'mwim-beginning)
 (define-key global-map [remap move-end-of-line] 'mwim-end)
@@ -758,7 +750,7 @@ Use in `isearch-mode-end-hook'."
 
 ;;;;; Vundo
 
-(eval-when-compile (require 'vundo))
+(require 'vundo)
 
 (define-key global-map (kbd "C-x u") 'vundo)
 (with-eval-after-load 'vundo
@@ -888,9 +880,8 @@ interactively, DEFAULT-FUN otherwise ."
 
 ;;;; AucTex
 
-(eval-when-compile
-  (require 'latex)
-  (require 'tex-site))
+(require 'latex)
+(require 'tex-site)
 
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
@@ -916,10 +907,9 @@ interactively, DEFAULT-FUN otherwise ."
 
 ;;;; Org-Mode
 
-(eval-when-compile
-  (require 'org)
-  (require 'org-num)
-  (require 'ox-latex))
+(require 'org)
+(require 'org-num)
+(require 'ox-latex)
 
 (setq org-fold-catch-invisible-edits t
       org-hide-leading-stars t
@@ -965,7 +955,7 @@ interactively, DEFAULT-FUN otherwise ."
 
 ;;;;; Export
 
-(eval-when-compile (require 'ox-extra))
+(require 'ox-extra)
 
 (with-eval-after-load 'org
   (when (require 'ox-extra nil t)
@@ -1034,7 +1024,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 ;;;; Markdown
 
-(eval-when-compile (require 'markdown-mode))
+(require 'markdown-mode)
 
 (defun thblt/markdown-meta-up ()
   (interactive)
@@ -1109,8 +1099,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 ;;;;; Company
 
-(eval-when-compile
-  (require 'company))
+(require 'company)
 
 (add-hook 'prog-mode-hook 'company-mode)
 
@@ -1131,8 +1120,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 ;;;;; Hi-lock
 
-(eval-when-compile
-  (require 'hi-lock))
+(require 'hi-lock)
 
 (add-hook 'prog-mode-hook
           (lambda ()
@@ -1240,8 +1228,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;;; Haskell
 
-(eval-when-compile
-  (require 'haskell-svg))
+(require 'haskell-svg)
 
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 (setq haskell-interactive-popup-errors nil
@@ -1270,7 +1257,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;;; Rust
 
-(eval-when-compile (require 'rust-mode))
+(require 'rust-mode)
 
 (add-hook 'rust-mode-hook
           (lambda ()
@@ -1444,9 +1431,8 @@ can read the branch name from .gitmodules."
 
 ;;;; ERC
 
-(eval-when-compile
-  (require 'erc)
-  (require 'erc-track))
+(require 'erc)
+(require 'erc-track)
 
 (setq erc-server-auto-reconnect t
       erc-kill-buffer-on-part t
@@ -1540,9 +1526,8 @@ can read the branch name from .gitmodules."
 
 ;;;;; Dired
 
-(eval-when-compile
-  (require 'dired)
-  (require 'dired-x))
+(require 'dired)
+(require 'dired-x)
 
 ;; (define-key global-map (kbd "<f12>") 'sunrise)
 (setq dired-omit-files "^\\.")
@@ -1560,9 +1545,8 @@ can read the branch name from .gitmodules."
 
 ;;;; Notmuch
 
-(eval-when-compile
-  (require 'notmuch)
-  (require 'smtpmail))
+(require 'notmuch)
+(require 'smtpmail))
 
 (setq-default notmuch-search-oldest-first nil)
 
@@ -1609,10 +1593,9 @@ can read the branch name from .gitmodules."
 
 ;;;; PDF Tools
 
-(eval-when-compile
-  (require 'tex)
-  (require 'pdf-misc)
-  (require 'pdf-tools))
+(require 'tex)
+(require 'pdf-misc)
+(require 'pdf-tools)
 
 (add-to-list 'magic-mode-alist '("%PDF" . pdf-view-mode))
 (autoload 'pdf-view-mode "pdf-tools")
@@ -1639,17 +1622,16 @@ can read the branch name from .gitmodules."
   "External viewer for PDF files.")
 
 (defun thblt/open-pdf-externally (file)
-  "Open FILE in `thblt/external-pdf-viewer'.
+"Open FILE in `thblt/external-pdf-viewer'.
 
 Interactively, use buffer-file-name."
   (interactive `(,(or buffer-file-name
                       (error "Need a file!"))))
-  (start-process "PDF viewer" nil thblt/external-pdf-viewer file))
+(start-process "PDF viewer" nil thblt/external-pdf-viewer file))
 
 t;;;; Regular expression builder
 
-(eval-when-compile
-  (require 're-builder))
+(require 're-builder)
 
 (setq reb-re-syntax 'string)
 
@@ -1659,8 +1641,7 @@ t;;;; Regular expression builder
 ;; paste.lisp.org, and similar services.  It generates a HTML page out
 ;; of a buffer or region and publishes it using scp.
 
-(eval-when-compile
-  (require 'scpaste))
+(require 'scpaste)
 
 (setq scpaste-scp-destination "thblt@k9.thb.lt:/var/www/paste.thb.lt/"
       scpaste-http-destination "https://paste.thb.lt"
