@@ -811,6 +811,9 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 (when (string= (daemonp) "server")
   (atomic-chrome-start-server))
 
+;; Close window after editing
+(add-hook 'atomic-chrome-edit-done-hook 'save-buffers-kill-terminal)
+
 ;;;; Misc
 
 (defun kill-duplicate-blank-lines ()
