@@ -356,6 +356,8 @@ local."
 
 ;;;;; project.el
 
+(setq project-vc-merge-submodules nil)
+
 (rg-define-search thblt/project-rg :query ask :format regexp :files "everything" :case-fold-search smart :dir
   (if (project-current) (project-root (project-current))
     (project-prompt-project-dir))
