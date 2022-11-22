@@ -1189,7 +1189,6 @@ Otherwise, disable bicycle-tab and reemit binding."
 (diminish 'reveal-mode)
 (add-hook 'org-mode-hook (## reveal-mode -1))
 
-
 ;;;;;; Outline heading generator (outshine-style)
 
 (defun thblt/outline-configure (delimiter)
@@ -1423,19 +1422,17 @@ can read the branch name from .gitmodules."
   (dolist (module (list "divine-core.el" "divine-commands.el" "divine.el"))
     (load (expand-file-name module (borg-worktree "divine")))))
 
-
 (defun thblt/restore-cursor-color ()
   (set-cursor-color
    (face-attribute 'default :foreground)))
 
 (defhydra hydra-smartparens
-  (
-   :hint nil
-   :idle 1
-   :color pink
-   :pre (set-cursor-color "green")
-   :post (thblt/restore-cursor-color)
-   :foreign-keys warn)
+  ( :hint nil
+    :idle 1
+    :color pink
+    :pre (set-cursor-color "green")
+    :post (thblt/restore-cursor-color)
+    :foreign-keys warn )
   "
  Moving^^^^                       Slurp & Barf^^   Wrapping^^            Sexp juggling^^^^               Destructive
 ------------------------------------------------------------------------------------------------------------------------
