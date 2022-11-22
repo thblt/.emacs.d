@@ -273,6 +273,9 @@
 	path = lib/shackle
 	url = https://depp.brause.cc/shackle.git
 	branch = master
+[submodule "shrink-path"]
+	path = lib/shrink-path
+	url = https://gitlab.com/bennya/shrink-path.el/
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
