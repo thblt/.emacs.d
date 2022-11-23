@@ -1285,14 +1285,14 @@ Otherwise, disable bicycle-tab and reemit binding."
 (with-eval-after-load 'rust-mode
   (define-key rust-mode-map [remap recompile] 'rustic-cargo-build))
 
-(defvar-local thblt/rust-run-binary-target nil
+(defvar-local thblt/rust-run-target nil
   "The current binary target, set by `thblt/rust-run'.")
 
 (defun thblt/rust-run (target)
   "Like `rust-run', but prompt for a target if necessary.
 
-The last run target is stored in `thblt/rust-run-binary-target'.
-To force target selection, use a prefix argument."
+The last run target is stored in `thblt/rust-run-target'.  To
+force target selection, use a prefix argument."
   ;; Notice this could be generalized to all targets, eg for `rust-build'.
   (interactive
    (list
@@ -1333,11 +1333,12 @@ To force target selection, use a prefix argument."
                      (gethash "packages" json))))))
       (or default-run
           (and (not current-prefix-arg)
-               thblt/rust-run-binary-target)
+               (member thblt/rust-run-target targets)
+               thblt/rust-run-target)
           (completing-read "Target: " targets)))))
   (rust--compile "%s run %s --bin %s" rust-cargo-bin rust-cargo-default-arguments target)
   ;; @TODO Should we still save if this is the default target?
-  (when (called-interactively-p) (setq thblt/rust-run-binary-target target)))
+  (when (called-interactively-p) (setq thblt/rust-run-target target)))
 
 (define-key rust-mode-map [remap rust-run] 'thblt/rust-run)
 
