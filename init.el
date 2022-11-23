@@ -228,11 +228,13 @@ local."
 (defun thblt/solaris-light-theme () "Activate light theme." (interactive) (thblt/replace-theme 'solaris-light))
 (defun thblt/doom-one-theme () "Activate doom-one theme." (interactive) (thblt/replace-theme 'doom-one))
 (defun thblt/doom-one-light-theme () "Activate doom-one-light theme." (interactive) (thblt/replace-theme 'doom-one-light))
+(defun thblt/doom-zenburn-theme () "Activate Doom Zenburn theme." (interactive) (thblt/replace-theme 'doom-zenburn))
 ;; (defun thblt/dark-hc-theme () "Activate dark (high contrast) theme." (interactive) (thblt/replace-them 'solaris-dark-high-contrast t))
 ;; (defun thblt/light-hc-theme () "Activate light (high contrast) theme." (interactive) (thblt/replace-them-theme 'solaris-light-high-contrast t))
 (defun thblt/modus-operandi-theme () "Activate modus-operandi theme." (interactive) (thblt/replace-theme 'modus-operandi))
 (defun thblt/modus-vivendi-theme () "Activate modus-vivendi theme." (interactive) (thblt/replace-theme 'modus-vivendi))
 (defun thblt/zenburn-theme () "Activate Zenburn-ish theme." (interactive) (thblt/replace-theme 'solaris-zenburn))
+
 
 ;; Theme is loaded at the very end of this file.
 
@@ -480,14 +482,14 @@ nil; otherwise it's evaluated normally."
   ("é" thblt/text-scale-reset (thblt/hydra-indicator "Default size"
                                                      (not (bound-and-true-p text-scale-mode))))
   ("p" text-scale-increase "Size +")
+  ("td" thblt/doom-one-theme "Doom one")
+  ("tl" thblt/doom-one-light-theme "Doom one light")
+  ("tz" thblt/doom-zenburn-theme "Doom Zenburn")
   ;; ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
   ;; ("tl" thblt/light-theme "Light theme")
   ;; ("tL" thblt/light-hc-theme "Light (hc) theme")
   ;; ("td" thblt/dark-theme "Dark theme")
   ;; ("tD" thblt/dark-hc-theme "Dark (hc) theme")
-  ("td" thblt/doom-one-theme "Doom one")
-  ("tl" thblt/doom-one-light-theme "Doom one light")
-  ("tz" thblt/zenburn-theme "Zenburn")
   ;; ("to" thblt/modus-operandi-theme "Modus Operandi")
   ;; ("tv" thblt/modus-vivendi-theme "Modus Vivendi")
 

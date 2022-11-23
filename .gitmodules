@@ -280,14 +280,6 @@
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
 	branch = master
-[submodule "solaris"]
-	path = lib/solaris
-	url = https://github.com/thblt/solaris-theme-emacs.git
-	branch = master
-[submodule "solarized"]
-	path = lib/solarized
-	url = https://github.com/bbatsov/solarized-emacs
-	branch = master
 [submodule "spinner"]
 	path = lib/spinner
 	url = https://github.com/Malabarba/spinner.el
