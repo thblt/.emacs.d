@@ -86,6 +86,8 @@
 [submodule "dirvish"]
 	path = lib/dirvish
 	url = https://github.com/alexluigit/dirvish
+	load-path = .
+	load-path = extensions
 [submodule "divine"]
 	path = lib/divine
 	url = https://github.com/thblt/divine
