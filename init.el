@@ -207,34 +207,21 @@ local."
   (thblt/disable-all-themes)
   (load-theme theme t))
 
-(eval-when-compile (require 'solarized))
-
 (setq ;; Leuven
  leuven-dark-scale-org-agenda-structure nil
  leuven-scale-org-agenda-structure nil
  leuven-scale-outline-headlines nil
  leuven-dark-scale-outline-headlines nil
 
- ;; Solarized
- solarized-scale-org-headlines nil
- solarized-scale-outline-headlines nil
- solarized-distinct-fringe-background t
  ;; Modus
  modus-themes-fringes 'subtle
  modus-themes-headings '((t . (raindow background))))
 
-;; Note to self: theme is configured in solaris.el
-(defun thblt/solaris-dark-theme () "Activate dark theme." (interactive) (thblt/replace-theme 'solaris-dark))
-(defun thblt/solaris-light-theme () "Activate light theme." (interactive) (thblt/replace-theme 'solaris-light))
 (defun thblt/doom-one-theme () "Activate doom-one theme." (interactive) (thblt/replace-theme 'doom-one))
 (defun thblt/doom-one-light-theme () "Activate doom-one-light theme." (interactive) (thblt/replace-theme 'doom-one-light))
 (defun thblt/doom-zenburn-theme () "Activate Doom Zenburn theme." (interactive) (thblt/replace-theme 'doom-zenburn))
-;; (defun thblt/dark-hc-theme () "Activate dark (high contrast) theme." (interactive) (thblt/replace-them 'solaris-dark-high-contrast t))
-;; (defun thblt/light-hc-theme () "Activate light (high contrast) theme." (interactive) (thblt/replace-them-theme 'solaris-light-high-contrast t))
 (defun thblt/modus-operandi-theme () "Activate modus-operandi theme." (interactive) (thblt/replace-theme 'modus-operandi))
 (defun thblt/modus-vivendi-theme () "Activate modus-vivendi theme." (interactive) (thblt/replace-theme 'modus-vivendi))
-(defun thblt/zenburn-theme () "Activate Zenburn-ish theme." (interactive) (thblt/replace-theme 'solaris-zenburn))
-
 
 ;; Theme is loaded at the very end of this file.
 
