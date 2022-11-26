@@ -10,6 +10,7 @@
 [submodule "atomic-chrome"]
 	path = lib/atomic-chrome
 	url = https://github.com/alpha22jp/atomic-chrome/
+	branch = master
 [submodule "auctex"]
 	path = lib/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
@@ -57,6 +58,7 @@
 [submodule "color-identifiers-mode"]
 	path = lib/color-identifiers-mode
 	url = https://github.com/ankurdave/color-identifiers-mode/
+	branch = master
 [submodule "company"]
 	path = lib/company
 	url = https://github.com/company-mode/company-mode
@@ -88,6 +90,7 @@
 	url = https://github.com/alexluigit/dirvish
 	load-path = .
 	load-path = extensions
+	branch = main
 [submodule "divine"]
 	path = lib/divine
 	url = https://github.com/thblt/divine
@@ -95,9 +98,11 @@
 [submodule "doom-modeline"]
 	path = lib/doom-modeline
 	url = https://github.com/seagle0128/doom-modeline/
+	branch = master
 [submodule "doom-themes"]
 	path = lib/doom-themes
 	url = https://github.com/doomemacs/themes
+	branch = master
 [submodule "editorconfig"]
 	path = lib/editorconfig
 	url = https://github.com/editorconfig/editorconfig-emacs
@@ -149,6 +154,7 @@
 [submodule "git-modes"]
 	path = lib/git-modes
 	url = https://github.com/magit/git-modes
+	branch = master
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	info-path = doc
@@ -278,6 +284,7 @@
 [submodule "shrink-path"]
 	path = lib/shrink-path
 	url = https://gitlab.com/bennya/shrink-path.el/
+	branch = master
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
@@ -335,6 +342,7 @@
 [submodule "websocket"]
 	path = lib/websocket
 	url = https://github.com/ahyatt/emacs-websocket/
+	branch = master
 [submodule "wgrep"]
 	path = lib/wgrep
 	url = https://github.com/mhayashi1120/Emacs-wgrep/
