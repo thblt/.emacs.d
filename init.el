@@ -1084,7 +1084,8 @@ philo G, à partir d'un découpage de premier niveau en séances."
 (setq-default comment-empty-lines nil
               tab-width 2
               cperl-indent-level 2
-              indent-tabs-mode nil)
+              indent-tabs-mode nil
+              compilation-scroll-output t)
 
 (global-set-key (kbd "<f8>") 'ffap)
 (global-set-key (kbd "C-c C-b C-b") 'recompile)
