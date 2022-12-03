@@ -365,16 +365,41 @@ local."
                        (project-prompt-project-dir))))
   (magit-status))
 
+(defun thblt/project-vterm (default-directory)
+  (interactive (list (if (project-current) (project-root (project-current))
+                       (project-prompt-project-dir))))
+  (vterm))
+
+
+;; Add our commands to the project picker
+(add-to-list 'project-switch-commands '(thblt/project-rg "Ripgrep"))
+(add-to-list 'project-switch-commands '(thblt/project-magit "Magit"))
+;; (add-to-list 'project-switch-commands '(thblt/project-vterm "Vterm"))
+;; Delete commands we don't use.
+(cl-delete-if
+ (##member (car %)
+           '(project-find-regexp project-vc-dir project-eshell))
+ project-switch-commands)
+
 (define-key project-prefix-map (kbd "g") 'thblt/project-rg)
 (define-key project-prefix-map (kbd "v") 'thblt/project-magit)
+;; (define-key project-prefix-map (kbd "T") 'thblt/project-vterm)
 
 (defun thblt/project-discover-projects ()
   (interactive)
-  (project-remember-projects-under "~/.emacs.d/" t)
-  (project-remember-projects-under "~/Documents/" t)
-  (project-remember-projects-under "~/.dotfiles/")
-  (project-remember-projects-under "/etc/nixos/")
-  (project-remember-projects-under "~/.dotfiles.private/"))
+  (mapc
+   (lambda (p)
+     (let ((root (car p))
+           (recursive (cdr p)))
+       (message "Looking for projects into %s%s…"
+                root
+                (if recursive ", recursively" ""))
+       (project-remember-projects-under root recursive)))
+   '(("~/.emacs.d/" . t)
+     ("~/Documents/" . t)
+     ("~/.dotfiles/" . nil)
+     ("/etc/nixos/" . nil)
+     ("~/.dotfiles.private/" . nil))))
 
 (defun thblt/magit-repos-from-project (&rest _)
   "Overwrite `magit-repository-directories' with `project-known-projects'."
