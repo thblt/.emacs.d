@@ -1361,6 +1361,11 @@ force target selection, use a prefix argument."
                (member thblt/rust-run-target targets)
                thblt/rust-run-target)
           (completing-read "Target: " targets)))))
+  ;; Save buffers
+  (when-let (project-current (project-current))
+    (mapc (lambda (buf) (with-current-buffer buf (when (buffer-file-name) (save-buffer))))
+          (project-buffers project-current)))
+  ;; Compile
   (rust--compile "%s run %s --bin %s" rust-cargo-bin rust-cargo-default-arguments target)
   ;; @TODO Should we still save if this is the default target?
   (when (called-interactively-p) (setq thblt/rust-run-target target)))
