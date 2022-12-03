@@ -225,6 +225,13 @@ local."
 
 ;;;; UI Utilities
 
+;;;;; General launcher
+
+(defvar thblt/launcher-map (make-sparse-keymap)
+  "Keymap for the launchers.")
+
+(define-key global-map (kbd "C-è") thblt/launcher-map)
+
 ;;;;; Hydra
 
 (require 'hydra)
@@ -1648,7 +1655,8 @@ can read the branch name from .gitmodules."
 
 ;;;;; Proced
 
-(define-key global-map (kbd "C-x C-p") 'proced)
+;; (define-key thblt/launcher-map (kbd "p") 'proced)
+
 (add-hook 'proced-mode-hook 'hl-line-mode)
 
 (defalias 'tdoe 'toggle-debug-on-error)
@@ -1660,7 +1668,7 @@ can read the branch name from .gitmodules."
 
 (setq-default notmuch-search-oldest-first nil)
 
-(define-key global-map (kbd "M-<f12>") 'notmuch)
+;; (define-key thblt/launcher-map (kbd "m") 'notmuch)
 
 (setq send-mail-function 'smtpmail-send-it
       notmuch-saved-searches
