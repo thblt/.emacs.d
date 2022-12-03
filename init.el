@@ -1316,7 +1316,8 @@ force target selection, use a prefix argument."
                    (car
                     (seq-filter
                      (lambda (item)
-                       (string= "raoc2021" (gethash "name" item)))
+                       ;;(string= "raoc2021" (gethash "name" item))
+                       t )
                      (gethash "packages" json))))))
       (or default-run
           (and (not current-prefix-arg)
