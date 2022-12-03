@@ -186,7 +186,7 @@ local."
 (set-face-attribute 'default nil
                     :height (pcase (system-name)
                               ("dru" 130)
-                              ("maladict" 110)))
+                              ("maladict" 100)))
 (set-face-attribute 'fixed-pitch nil
                     :family "Iosevka")
 
