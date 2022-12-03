@@ -1192,7 +1192,9 @@ philo G, à partir d'un découpage de premier niveau en séances."
   "If point is on an outline heading, run `bicycle-cycle'.
 Otherwise, disable bicycle-tab and reemit binding."
   (interactive)
-  (if (outline-on-heading-p)
+  (if (and
+       (outline-on-heading-p)
+       (not (region-active-p)))
       (call-interactively 'bicycle-cycle)
     (let ((outline-minor-mode nil))
       (call-interactively (key-binding (kbd "TAB"))))))
