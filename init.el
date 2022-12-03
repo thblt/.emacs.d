@@ -492,6 +492,7 @@ nil; otherwise it's evaluated normally."
   ("b" text-scale-decrease "Size -" :column "Font and theme")
   ("é" thblt/text-scale-reset (thblt/hydra-indicator "Default size"
                                                      (not (bound-and-true-p text-scale-mode))))
+  ("É" thblt/font-size-set "Set default")
   ("p" text-scale-increase "Size +")
   ("td" thblt/doom-one-theme "Doom one")
   ("tl" thblt/doom-one-light-theme "Doom one light")
@@ -562,6 +563,15 @@ nil; otherwise it's evaluated normally."
   "For use by `hydra-editor-appearance/body'."
   (interactive)
   (text-scale-set 0))
+
+(defun thblt/font-size-set (size)
+  "For use by `hydra-editor-appearance/body'."
+  (interactive
+   (list
+    (string-to-number (completing-read "Base-size" '("80" "85" "90" "95" "100" "105" "110" "115" "120" "130" "140") nil nil))))
+  (set-face-attribute 'default nil
+                      :height size)
+  (thblt/text-scale-reset))
 
 (defun thblt/visual-fill-column-toggle-mode ()
   "For use by `hydra-editor-appearance/body'."
