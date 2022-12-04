@@ -1174,9 +1174,9 @@ philo G, à partir d'un découpage de premier niveau en séances."
 (add-hook 'prog-mode-hook
           (lambda ()
             (interactive)
-            (hi-lock-set-pattern "@?FIXME" 'hi-red-b)
-            (hi-lock-set-pattern "@?XXX" 'hi-red-b)
-            (hi-lock-set-pattern "@?TODO" 'hi-aquamarine))) ; @TODO Find a better face
+            (hi-lock-face-buffer "@?FIXME" 'hi-red-b)
+            (hi-lock-face-buffer "@?XXX" 'hi-red-b)
+            (hi-lock-face-buffer "@?TODO" 'hi-aquamarine))) ; @TODO Find a better face
 
 (global-hi-lock-mode)
 (with-eval-after-load 'hi-lock
