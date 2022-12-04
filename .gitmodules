@@ -214,11 +214,6 @@
 	path = lib/no-littering
 	url = https://github.com/tarsius/no-littering
 	branch = master
-[submodule "notmuch"]
-	path = lib/notmuch
-	url = https://git.notmuchmail.org/git/notmuch
-	load-path = emacs
-	branch = master
 [submodule "orderless"]
 	path = lib/orderless
 	url = https://github.com/oantolin/orderless
