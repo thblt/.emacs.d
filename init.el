@@ -358,6 +358,7 @@ local."
 
 ;;;;; project.el
 
+(require 'project)
 (setq project-vc-merge-submodules nil)
 
 (require 'rg) ; Needed. This evals without it, but doesn't work.
