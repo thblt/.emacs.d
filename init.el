@@ -1682,7 +1682,7 @@ can read the branch name from .gitmodules."
 
   ;; Then the bulk of the config:
 
-  (setq mu4e-completing-read-function 'ivy-completing-read
+  (setq mu4e-completing-read-function 'completing-read
 
         ;; General settings
         ;; mu4e-mu-binary (expand-file-name "build/mu/mu" (borg-worktree "mu"))
@@ -1706,35 +1706,31 @@ can read the branch name from .gitmodules."
         mu4e-view-show-images t
 
         ;; UI symbols
-        mu4e-use-fancy-chars nil
-        mu4e-headers-attach-mark '("A" . "A")
-        mu4e-headers-encrypted-mark '("" . "")
-        mu4e-headers-flagged-mark '("+" . "+")
+        mu4e-use-fancy-chars t
+        mu4e-headers-attach-mark '("" . "")
+        mu4e-headers-personal-mark '("" . "")
+        ;; mu4e-headers-encrypted-mark '("" . "")
+        ;; mu4e-headers-flagged-mark '("+" . "+")
         mu4e-headers-list-mark '("" . "")
-        mu4e-headers-new-mark '("" . "")
-        mu4e-headers-read-mark '("" . "")
-        mu4e-headers-replied-mark '("" . "↩")
-        mu4e-headers-seen-mark '("" . "")
-        mu4e-headers-unseen-mark '("" . "")
-        mu4e-headers-unread-mark '("" . "")
-        mu4e-headers-signed-mark '("" . "")
-        mu4e-headers-trashed-mark '("T" . "T")
+        ;; mu4e-headers-new-mark '("" . "")
+        ;; mu4e-headers-read-mark '("" . "")
+        mu4e-headers-replied-mark '("" . "✓")
+        mu4e-headers-passed-mark '("" . "")
+        ;; mu4e-headers-seen-mark '("" . "")
+        ;; mu4e-headers-unseen-mark '("" . "")
+        ;; mu4e-headers-unread-mark '("" . "")
+        ;; mu4e-headers-signed-mark '("" . "")
+        ;; mu4e-headers-trashed-mark '("T" . "T")
 
-        mu4e-headers-from-or-to-prefix '("" . "→ ")
+        ;; mu4e-headers-from-or-to-prefix '("" . "→ ")
 
-        mu4e-headers-default-prefix '(" " . " ─")
-        mu4e-headers-duplicate-prefix '("D" . "D")
-        mu4e-headers-empty-parent-prefix '("X" . " X")
-        mu4e-headers-first-child-prefix '("|" . "╰─")
-        mu4e-headers-has-child-prefix '("+" . "╰┬")
+        mu4e-attachment-dir "~/Téléchargements/"
 
-        mu4e-attachment-dir "~"
-
-        mu4e-headers-fields '((:flags          . 5)
-                              (:mailing-list   . 18)
-                              (:human-date     . 12)
+        mu4e-headers-fields '((:human-date     . 12)
+                              (:flags          . 5)
                               (:from-or-to     . 25)
-                              (:thread-subject . nil))
+                              (:subject . nil)
+                              )
 
         mu4e-refile-folder (lambda (msg)
                              (let ((maildir (mu4e-message-field msg :maildir)))
@@ -1779,24 +1775,29 @@ can read the branch name from .gitmodules."
                                   ( smtpmail-stream-type    . tls )
                                   ( smtpmail-smtp-service   . 465 ))))
 
-        mu4e-bookmarks `(("(m:/thb.lt/INBOX) or (m:/ac-amiens/INBOX) or (m:/Ac/INBOX)"
+        mu4e-bookmarks `(("(m:/thb.lt/INBOX) or (m:/ac-amiens/INBOX)"
                           "Global inbox" ?i)
-                         ("(m:/thb.lt/Archive) or (m:/ac-amiens/Archive) or (m:/Ac/Archive)"
+                         ("(m:/thb.lt/Archive) or (m:/ac-amiens/Archive)"
                           "Archives" ?a)
                          ("(flag:flagged)" "Flagged" ?f)
-                         ("(m:/thb.lt/Sent) or (m:/ac-amiens/Sent) or (m:/Ac/Sent)"
+                         ("(m:/thb.lt/Sent) or (m:/ac-amiens/Sent)"
                           "Sent" ?s)
-                         ("(m:/thb.lt/Drafts) or (m:/ac-amiens/Drafts) or (m:/Ac/Drafts)"
-                          "Drafts"       ?d))
-        )
+                         ("(m:/thb.lt/Drafts) or (m:/ac-amiens/Drafts)"
+                          "Drafts"       ?d)))
 
   (add-hook 'mu4e-view-mode-hook (lambda ()
                                    (setq visual-fill-column-width 80)
                                    (visual-line-mode 1)
                                    (visual-fill-column-mode 1)))
 
+  (defun thblt/mu4e-update-and-rerun ()
+    (interactive)
+    (mu4e-update-mail-and-index nil)
+    (mu4e-search-rerun))
+
   (define-key mu4e-headers-mode-map (kbd "(") 'mu4e-headers-prev-unread)
   (define-key mu4e-headers-mode-map (kbd ")") 'mu4e-headers-next-unread)
+  (define-key mu4e-headers-mode-map (kbd "G") 'thblt/mu4e-update-and-rerun)
   (define-key mu4e-view-mode-map (kbd "(") 'mu4e-view-headers-prev-unread)
   (define-key mu4e-view-mode-map (kbd ")") 'mu4e-view-headers-next-unread)
   (define-key mu4e-view-mode-map  (kbd "c") 'visual-fill-column-mode))
