@@ -849,17 +849,6 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
 
 ;;;; Misc
 
-(defun kill-duplicate-blank-lines ()
-  "Replace successive empty lines by a single one."
-  (interactive)
-  (let ((regexp (rx bol (* whitespace) eol)))
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward regexp nil t)
-        (forward-line 1)
-        (while (looking-at-p regexp)
-          (kill-whole-line 1)))))) ; t because kill-line returns nil
-
 (defmacro with-maybe-region (name region-fun default-fun)
   "Create a command NAME wrapping REGION-FUN and DEFAULT-FUN.
 
