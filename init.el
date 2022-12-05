@@ -1654,156 +1654,49 @@ can read the branch name from .gitmodules."
 
 (defalias 'tdoe 'toggle-debug-on-error)
 
-;;;; Mu4e
+;;;; Notmuch
 
-;; I use mu/mu4e provided by the OS' package manager for now.  For
-;; future reference, here's a working gitmodules entry:
-;;
-;; [submodule "mu"]
-;; 	path = lib/mu
-;; 	url = https://github.com/djcb/mu
-;; 	branch = master
-;; 	build-nix-shell-packages = gnumake meson cmake glib ninja pkg-config gmime3 xapian
-;; 	build-step = make
-;; 	build-step = borg-update-autoloads
-;; 	build-step = borg-byte-compile
-;; 	build-step = borg-makeinfo
-(require 'mu4e nil t)
+(require 'notmuch)
+(require 'smtpmail)
 
-(with-eval-after-load 'mu4e
-  (require 'mu4e-contrib)
-  (define-key thblt/launcher-map (kbd "m") 'mu4e)
+(setq-default notmuch-search-oldest-first nil)
 
-  (defun mu4e-message-maildir-matches (msg rx)
-    (when rx
-      (if (listp rx)
-          ;; if rx is a list, try each one for a match
-          (or (mu4e-message-maildir-matches msg (car rx))
-              (mu4e-message-maildir-matches msg (cdr rx)))
-        ;; not a list, check rx
-        (string-match rx (mu4e-message-field msg :maildir)))))
+(define-key thblt/launcher-map (kbd "m") 'notmuch)
 
-  ;; Then the bulk of the config:
+(setq send-mail-function 'smtpmail-send-it
+      notmuch-saved-searches
+      '((:name "Inbox" :query "tag:inbox" :key "i")
+        (:name "Inbox (unread)" :query "tag:inbox and tag:unread" :key "I")
+        (:name "Archived" :query "tag:archive" :key "a")
+        (:name "Sent" :query "tag:sent" :key "s")
+        (:name "Drafts" :query "tag:draft" :key "d")
+        (:name "Lost" :query "tag:lost" :key "l"))
+      notmuch-fcc-dirs
+      '(("thibault@thb.lt" . "thb.lt/Sent +thb.lt +sent -inbox ")
+        ("thibault.polge@ac-amiens.fr" . "ac-amiens/Sent +ac-amiens +sent -inbox ")))
 
-  (setq mu4e-completing-read-function 'completing-read
+(defun thblt/smtpconfig-ac-amiens.fr ()
+  "SMTP settings for ac-amiens.fr."
+  (setq smtpmail-smtp-server  "smtp.ac-amiens.fr"
+        smtpmail-smtp-user    "tpolge"
+        smtpmail-stream-type  'tls
+        smtpmail-smtp-service 465))
 
-        ;; General settings
-        ;; mu4e-mu-binary (expand-file-name "build/mu/mu" (borg-worktree "mu"))
-        message-send-mail-function 'smtpmail-send-it
-        message-kill-buffer-on-exit t
-        mu4e-change-filenames-when-moving t  ; Required for mbsync
-        mu4e-get-mail-command "mbsync -a"
-        mu4e-headers-auto-update t
-        mu4e-html2text-command 'mu4e-shr2text
-        mu4e-update-interval 60 ;; seconds
-        mu4e-sent-messages-behavior 'sent
+(defun thblt/smtpconfig-thb.lt ()
+  "SMTP settings for thb.lt."
+  (setq smtpmail-smtp-server  "ssl0.ovh.net"
+        smtpmail-smtp-user    "thibault@thb.lt"
+        smtpmail-stream-type  'tls
+        smtpmail-smtp-service 465))
 
-        ;; Behavior
-        mu4e-compose-dont-reply-to-self t
+(defun thblt/message-send-configure-smtp ()
+  "Pick SMTP server by From field."
+  (pcase (message-field-value "From")
+    ((rx "thb.lt>" eol) (thblt/smtpconfig-thb.lt))
+    ((rx "ac-amiens.fr>" eol) (thblt/smtpconfig-ac-amiens.fr))
+    (_ (error "I don't know how to configure SMTP here"))))
 
-        ;; UI settings
-        mu4e-confirm-quit nil
-        mu4e-hide-index-messages t
-        mu4e-split-view 'vertical
-        mu4e-headers-include-related t  ; Include related messages in threads
-        mu4e-view-show-images t
-
-        ;; UI symbols
-        mu4e-use-fancy-chars t
-        mu4e-headers-attach-mark '("" . "")
-        mu4e-headers-personal-mark '("" . "")
-        ;; mu4e-headers-encrypted-mark '("" . "")
-        ;; mu4e-headers-flagged-mark '("+" . "+")
-        mu4e-headers-list-mark '("" . "")
-        ;; mu4e-headers-new-mark '("" . "")
-        ;; mu4e-headers-read-mark '("" . "")
-        mu4e-headers-replied-mark '("" . "✓")
-        mu4e-headers-passed-mark '("" . "")
-        ;; mu4e-headers-seen-mark '("" . "")
-        ;; mu4e-headers-unseen-mark '("" . "")
-        ;; mu4e-headers-unread-mark '("" . "")
-        ;; mu4e-headers-signed-mark '("" . "")
-        ;; mu4e-headers-trashed-mark '("T" . "T")
-
-        ;; mu4e-headers-from-or-to-prefix '("" . "→ ")
-
-        mu4e-attachment-dir "~/Téléchargements/"
-
-        mu4e-headers-fields '((:human-date     . 12)
-                              (:flags          . 5)
-                              (:from-or-to     . 25)
-                              (:subject . nil)
-                              )
-
-        mu4e-refile-folder (lambda (msg)
-                             (let ((maildir (mu4e-message-field msg :maildir)))
-                               (if (string-suffix-p "/Inbox" maildir)
-                                   (concat (substring maildir 0 -5) "Archive")
-                                 maildir)))
-
-        mu4e-context-policy 'pick-first
-        mu4e-compose-context-policy 'ask
-
-        mu4e-contexts `(
-                        ,(make-mu4e-context
-                          :name "thb.lt"
-                          :enter-func (lambda () (mu4e-message "thb.lt"))
-                          :match-func (lambda (msg)
-                                        (when msg
-                                          (mu4e-message-maildir-matches msg "^/thb.lt/")))
-                          :vars '(( user-mail-address   . "thibault@thb.lt"  )
-                                  ( mu4e-sent-folder        . "/thb.lt/Sent" )
-                                  ( mu4e-drafts-folder      . "/thb.lt/Drafts" )
-                                  ( mu4e-trash-folder       . "/thb.lt/Trash" )
-                                  ;; ( mu4e-refile-folder      . "/thb.lt/Archive" )
-                                  ( smtpmail-local-domain   . "thb.lt" )
-                                  ( smtpmail-smtp-server    . "ssl0.ovh.net" )
-                                  ( smtpmail-smtp-user      . "thibault@thb.lt" )
-                                  ( smtpmail-stream-type    . tls )
-                                  ( smtpmail-smtp-service   . 465 )))
-
-                        ,(make-mu4e-context
-                          :name "Académie"
-                          :enter-func (lambda () (mu4e-message "Académie"))
-                          :match-func (lambda (msg)
-                                        (when msg
-                                          (mu4e-message-maildir-matches msg "^/ac-amiens/")))
-                          :vars '(( user-mail-address       . "thibault.polge@ac-amiens.fr"  )
-                                  ( mu4e-sent-folder        . "/ac-amiens/Sent" )
-                                  ( mu4e-drafts-folder      . "/ac-amiens/Drafts" )
-                                  ( mu4e-trash-folder       . "/ac-amiens/Trash" )
-                                  ( smtpmail-local-domain   . "ac-amiens.fr" )
-                                  ( smtpmail-smtp-server    . "smtp.ac-amiens.fr" )
-                                  ( smtpmail-smtp-user      . "tpolge" )
-                                  ( smtpmail-stream-type    . tls )
-                                  ( smtpmail-smtp-service   . 465 ))))
-
-        mu4e-bookmarks `(("(m:/thb.lt/INBOX) or (m:/ac-amiens/INBOX)"
-                          "Global inbox" ?i)
-                         ("(m:/thb.lt/Archive) or (m:/ac-amiens/Archive)"
-                          "Archives" ?a)
-                         ("(flag:flagged)" "Flagged" ?f)
-                         ("(m:/thb.lt/Sent) or (m:/ac-amiens/Sent)"
-                          "Sent" ?s)
-                         ("(m:/thb.lt/Drafts) or (m:/ac-amiens/Drafts)"
-                          "Drafts"       ?d)))
-
-  (add-hook 'mu4e-view-mode-hook (lambda ()
-                                   (setq visual-fill-column-width 80)
-                                   (visual-line-mode 1)
-                                   (visual-fill-column-mode 1)))
-
-  (defun thblt/mu4e-update-and-rerun ()
-    (interactive)
-    (mu4e-update-mail-and-index nil)
-    (mu4e-search-rerun))
-
-  (define-key mu4e-headers-mode-map (kbd "(") 'mu4e-headers-prev-unread)
-  (define-key mu4e-headers-mode-map (kbd ")") 'mu4e-headers-next-unread)
-  (define-key mu4e-headers-mode-map (kbd "G") 'thblt/mu4e-update-and-rerun)
-  (define-key mu4e-view-mode-map (kbd "(") 'mu4e-view-headers-prev-unread)
-  (define-key mu4e-view-mode-map (kbd ")") 'mu4e-view-headers-next-unread)
-  (define-key mu4e-view-mode-map  (kbd "c") 'visual-fill-column-mode))
+(add-hook 'message-send-hook 'thblt/message-send-configure-smtp)
 
 ;;;; Password management (password-store)
 
