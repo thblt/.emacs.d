@@ -502,9 +502,12 @@ nil; otherwise it's evaluated normally."
                                                      (not (bound-and-true-p text-scale-mode))))
   ("É" thblt/font-size-set "Set default")
   ("p" text-scale-increase "Size +")
-  ("td" thblt/doom-one-theme "Doom one")
-  ("tl" thblt/doom-one-light-theme "Doom one light")
-  ("tz" thblt/doom-zenburn-theme "Doom Zenburn")
+  ("td" thblt/doom-one-theme (thblt/hydra-indicator "Doom one"
+                                                    (member 'doom-one custom-enabled-themes)))
+  ("tl" thblt/doom-one-light-theme (thblt/hydra-indicator "D.one light"
+                                                          (member 'doom-one-light custom-enabled-themes)))
+  ("tz" thblt/doom-zenburn-theme (thblt/hydra-indicator "Doom Zenburn"
+                                                        (member 'doom-zenburn custom-enabled-themes)))
   ;; ("V" variable-pitch-mode (thblt/hydra-indicator "Var. pitch" buffer-face-mode))
   ;; ("tl" thblt/light-theme "Light theme")
   ;; ("tL" thblt/light-hc-theme "Light (hc) theme")
