@@ -1261,13 +1261,12 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;; effects: compilation happens in the current process, so
 ;; (eval-when-compile BODY) actually runs BODY.  `load-prefer-newer'
 ;; is enough.  Just check it's enabled:
-(cl-assert load-prefer-newer)
+(unless load-prefer-newer
+  (warn "thblt: You really want to enable `load-prefer-newer'"))
+
 
 (with-eval-after-load 'eldoc
   (diminish 'eldoc-mode))
-
-(add-hook 'emacs-lisp-mode-hook 'llama-mode)
-(add-hook 'lisp-interaction-mode-hook 'llama-mode)
 
 ;;;;; Haskell
 
@@ -1368,7 +1367,7 @@ force target selection, use a prefix argument."
   ;; Compile
   (rust--compile "%s run %s --bin %s" rust-cargo-bin rust-cargo-default-arguments target)
   ;; @TODO Should we still save if this is the default target?
-  (when (called-interactively-p) (setq thblt/rust-run-target target)))
+  (when (called-interactively-p 'any) (setq thblt/rust-run-target target)))
 
 (define-key rust-mode-map [remap rust-run] 'thblt/rust-run)
 
