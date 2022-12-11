@@ -1140,15 +1140,17 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 (diminish 'aggressive-indent-mode " ⭾")
 
-;;;;; Company
+;;;;; Corfu
 
-(require 'company)
-
-(add-hook 'prog-mode-hook 'company-mode)
-
-(with-eval-after-load 'company
-  (define-key company-mode-map (kbd "M-TAB") 'company-complete-common)
-  (diminish 'company-mode))
+(use-package corfu
+  :defer nil
+  :init (setq corfu-auto t
+              corfu-auto-delay 0
+              corfu-auto-prefix 0
+              corfu-quit-no-match 'separator
+              corfu-popupinfo-delay (cons 0.5 0))
+  (corfu-popupinfo-mode)
+  (global-corfu-mode))
 
 ;;;;; Eglot @TODO
 

@@ -59,10 +59,6 @@
 	path = lib/color-identifiers-mode
 	url = https://github.com/ankurdave/color-identifiers-mode/
 	branch = master
-[submodule "company"]
-	path = lib/company
-	url = https://github.com/company-mode/company-mode
-	branch = master
 [submodule "company-auctex"]
 	path = lib/company-auctex
 	url = https://github.com/alexeyr/company-auctex
@@ -77,6 +73,9 @@
 	path = lib/consult
 	url = https://github.com/minad/consult
 	branch = main
+[submodule "corfu"]
+	path = lib/corfu
+	url = https://github.com/minad/corfu
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
