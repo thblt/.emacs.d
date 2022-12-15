@@ -106,10 +106,6 @@
 	path = lib/editorconfig
 	url = https://github.com/editorconfig/editorconfig-emacs
 	branch = master
-[submodule "eglot"]
-	path = lib/eglot
-	url = https://github.com/joaotavora/eglot
-	branch = master
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = https://github.com/skeeto/emacsql
