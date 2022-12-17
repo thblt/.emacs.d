@@ -1150,6 +1150,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
               corfu-auto-prefix 0
               corfu-quit-no-match 'separator
               corfu-popupinfo-delay (cons 0.5 0))
+  (require 'corfu-popupinfo)
   (corfu-popupinfo-mode)
   :hook prog-mode)
 

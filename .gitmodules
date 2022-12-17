@@ -76,6 +76,8 @@
 [submodule "corfu"]
 	path = lib/corfu
 	url = https://github.com/minad/corfu
+	load-path=.
+	load-path=extensions
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
