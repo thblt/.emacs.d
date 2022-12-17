@@ -1146,14 +1146,12 @@ philo G, à partir d'un découpage de premier niveau en séances."
 (use-package corfu
   :defer nil
   :init (setq corfu-auto t
-              corfu-auto-delay 0
+              corfu-auto-delay 0.1
               corfu-auto-prefix 0
               corfu-quit-no-match 'separator
               corfu-popupinfo-delay (cons 0.5 0))
   (corfu-popupinfo-mode)
-  (global-corfu-mode))
-
-;;;;; Eglot @TODO
+  :hook prog-mode)
 
 ;;;;; Evil Nerd Commenter
 
