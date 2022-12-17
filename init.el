@@ -115,6 +115,7 @@ local."
  disabled-command-function nil)
 
 (minibuffer-depth-indicate-mode)
+(pixel-scroll-mode)
 
 ;; Don't warn when opening large files.  The warning *could* be
 ;; useful, but it almost only happens with PDF files, which don't
