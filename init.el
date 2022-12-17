@@ -369,10 +369,10 @@ local."
   :confirm prefix :flags
   ("--hidden -g !.git"))
 
-(defun thblt/project-magit (default-directory)
+(defun thblt/project-magit (directory)
   (interactive (list (if (project-current) (project-root (project-current))
                        (project-prompt-project-dir))))
-  (magit-status))
+  (magit-status directory))
 
 (defun thblt/project-vterm (default-directory)
   (interactive (list (if (project-current) (project-root (project-current))
