@@ -214,7 +214,11 @@ local."
 
  ;; Modus
  modus-themes-fringes 'subtle
- modus-themes-headings '((t . (raindow background))))
+ modus-themes-headings '((t . (raindow background)))
+
+ ;; Doom
+ doom-one-brighter-comments t)
+
 
 (defun thblt/doom-one-theme () "Activate doom-one theme." (interactive) (thblt/replace-theme 'doom-one))
 (defun thblt/doom-one-light-theme () "Activate doom-one-light theme." (interactive) (thblt/replace-theme 'doom-one-light))
