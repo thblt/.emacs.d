@@ -1151,7 +1151,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
   :defer nil
   :init (setq corfu-auto t
               corfu-auto-delay 0.1
-              corfu-auto-prefix 0
+              corfu-auto-prefix 3
               corfu-quit-no-match 'separator
               corfu-popupinfo-delay (cons 0.5 0))
   (require 'corfu-popupinfo)
