@@ -1679,7 +1679,8 @@ can read the branch name from .gitmodules."
         (:name "Lost" :query "tag:lost" :key "l"))
       notmuch-fcc-dirs
       '(("thibault@thb.lt" . "thb.lt/Sent +thb.lt +sent -inbox ")
-        ("thibault.polge@ac-amiens.fr" . "ac-amiens/Sent +ac-amiens +sent -inbox ")))
+        ("thibault.polge@ac-amiens.fr" . "ac-amiens/Sent +ac-amiens +sent -inbox "))
+      notmuch-archive-tags '("-inbox" "+archive"))
 
 (defun thblt/smtpconfig-ac-amiens.fr ()
   "SMTP settings for ac-amiens.fr."
