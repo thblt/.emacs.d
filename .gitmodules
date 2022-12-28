@@ -181,6 +181,9 @@
 	path = lib/llama
 	url = https://git.sr.ht/~tarsius/llama
 	branch = main
+[submodule "loccur"]
+	path = lib/loccur
+	url = https://github.com/fourier/loccur
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit
