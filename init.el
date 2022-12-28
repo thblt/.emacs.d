@@ -1119,6 +1119,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
 (add-hook 'prog-mode-hook 'hl-line-mode)
+(add-hook 'conf-mode-hook 'hl-line-mode)
 
 (setq-default comment-empty-lines nil
               tab-width 2
