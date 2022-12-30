@@ -1168,6 +1168,13 @@ philo G, à partir d'un découpage de premier niveau en séances."
 (with-eval-after-load 'flycheck
   (diminish 'flycheck-mode))
 
+;;;;; Flymake
+
+(require 'flymake)
+(define-key flymake-mode-map (kbd "C-c C-p") 'flymake-goto-prev-error)
+(define-key flymake-mode-map (kbd "C-c C-n")  'flymake-goto-next-error)
+(define-key flymake-mode-map (kbd "C-c C-c C-e") 'consult-flymake)
+
 ;;;;; Hi-lock
 
 (require 'hi-lock)
