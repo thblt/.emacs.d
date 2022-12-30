@@ -1159,6 +1159,14 @@ philo G, à partir d'un découpage de premier niveau en séances."
   (corfu-popupinfo-mode)
   :hook prog-mode)
 
+;;;;; Eglot
+
+(require 'eglot)
+(define-key eglot-mode-map (kbd "C-c C-c C-f") 'eglot-format-buffer)
+(add-hook 'rust-ts-mode-hook 'eglot-ensure)
+(add-hook 'rust-mode-hook 'eglot-ensure)
+(add-hook 'haskell-mode-hook 'eglot-ensure)
+
 ;;;;; Evil Nerd Commenter
 
 (define-key global-map [remap comment-dwim] 'evilnc-comment-or-uncomment-lines)
