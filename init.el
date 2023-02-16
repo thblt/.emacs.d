@@ -1287,6 +1287,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 (unless load-prefer-newer
   (warn "thblt: You really want to enable `load-prefer-newer'"))
 
+(defalias 'tdoe 'toggle-debug-on-error)
 
 (with-eval-after-load 'eldoc
   (diminish 'eldoc-mode))
@@ -1673,8 +1674,6 @@ can read the branch name from .gitmodules."
 (define-key thblt/launcher-map (kbd "p") 'proced)
 
 (add-hook 'proced-mode-hook 'hl-line-mode)
-
-(defalias 'tdoe 'toggle-debug-on-error)
 
 ;;;; Notmuch
 
