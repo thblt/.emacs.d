@@ -1670,7 +1670,7 @@ can read the branch name from .gitmodules."
 
 ;;;;; Proced
 
-;; (define-key thblt/launcher-map (kbd "p") 'proced)
+(define-key thblt/launcher-map (kbd "p") 'proced)
 
 (add-hook 'proced-mode-hook 'hl-line-mode)
 
