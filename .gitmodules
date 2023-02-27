@@ -246,10 +246,6 @@
 	path = lib/package-lint
 	url = https://github.com/purcell/package-lint
 	branch = master
-[submodule "packed"]
-	path = lib/packed
-	url = https://github.com/tarsius/packed
-	branch = main
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
 	url = https://github.com/vedang/pdf-tools
