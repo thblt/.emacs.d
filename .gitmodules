@@ -33,7 +33,7 @@
 [submodule "backline"]
 	path = lib/backline
 	url = https://github.com/tarsius/backline
-	branch = master
+	branch = main
 [submodule "beginend"]
 	path = lib/beginend
 	url = https://github.com/DamienCassou/beginend
@@ -41,11 +41,11 @@
 [submodule "bicycle"]
 	path = lib/bicycle
 	url = https://github.com/tarsius/bicycle
-	branch = master
+	branch = main
 [submodule "borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg
-	branch = master
+	branch = main
 	signingkey = 8F44F72AB931831C
 [submodule "borg-nix-shell"]
 	path = lib/borg-nix-shell
@@ -54,7 +54,7 @@
 [submodule "closql"]
 	path = lib/closql
 	url = https://github.com/emacscollective/closql
-	branch = master
+	branch = main
 [submodule "color-identifiers-mode"]
 	path = lib/color-identifiers-mode
 	url = https://github.com/ankurdave/color-identifiers-mode/
@@ -78,6 +78,7 @@
 	url = https://github.com/minad/corfu
 	load-path=.
 	load-path=extensions
+	branch = main
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
@@ -111,7 +112,7 @@
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = https://github.com/skeeto/emacsql
-	branch = master
+	branch = main
 	build-nix-shell-packages = llvmPackages.clang.cc
 	comment = ↓ Instead of rm, try to run the binary and rm it if it fails.
 	build-step = rm sqlite/emacsql-sqlite
@@ -143,7 +144,7 @@
 [submodule "forge"]
 	path = lib/forge
 	url = https://github.com/magit/forge
-	branch = master
+	branch = main
 [submodule "free-keys"]
 	path = lib/free-keys
 	url = https://github.com/Fuco1/free-keys
@@ -151,11 +152,11 @@
 [submodule "ghub"]
 	path = lib/ghub
 	url = https://github.com/magit/ghub
-	branch = master
+	branch = main
 [submodule "git-modes"]
 	path = lib/git-modes
 	url = https://github.com/magit/git-modes
-	branch = master
+	branch = main
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	info-path = doc
@@ -184,10 +185,11 @@
 [submodule "loccur"]
 	path = lib/loccur
 	url = https://github.com/fourier/loccur
+	branch = master
 [submodule "magit"]
 	path = lib/magit
 	url = https://github.com/magit/magit
-	branch = master
+	branch = main
 	recursive-byte-compile = true
 	info-path = Documentation
 [submodule "magit-popup"]
@@ -213,7 +215,7 @@
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = https://github.com/tarsius/no-littering
-	branch = master
+	branch = main
 [submodule "notmuch"]
 	path = lib/notmuch
 	url = https://git.notmuchmail.org/git/notmuch
@@ -239,7 +241,7 @@
 [submodule "outline-minor-faces"]
 	path = lib/outline-minor-faces
 	url = https://github.com/tarsius/outline-minor-faces
-	branch = master
+	branch = main
 [submodule "package-lint"]
 	path = lib/package-lint
 	url = https://github.com/purcell/package-lint
@@ -247,7 +249,7 @@
 [submodule "packed"]
 	path = lib/packed
 	url = https://github.com/tarsius/packed
-	branch = master
+	branch = main
 [submodule "pdf-tools"]
 	path = lib/pdf-tools
 	url = https://github.com/vedang/pdf-tools
