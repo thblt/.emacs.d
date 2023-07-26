@@ -230,7 +230,6 @@
 	url = https://git.savannah.gnu.org/git/emacs/org-mode.git
 	branch = main
 	load-path = lisp
-	load-path = contrib/lisp
 	info-path = doc
 	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
