@@ -93,10 +93,6 @@
 	load-path = .
 	load-path = extensions
 	branch = main
-[submodule "divine"]
-	path = lib/divine
-	url = https://github.com/thblt/divine
-	branch = master
 [submodule "doom-modeline"]
 	path = lib/doom-modeline
 	url = https://github.com/seagle0128/doom-modeline/
