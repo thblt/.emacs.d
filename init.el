@@ -1228,7 +1228,7 @@ Otherwise, disable bicycle-tab and reemit binding."
   (define-key outline-minor-mode-map (kbd "<tab>") 'thblt/bicycle-tab)
   (advice-add 'outline-flag-region :after 'backline-update)
   (add-hook 'outline-minor-mode-hook
-            'outline-minor-faces-add-font-lock-keywords)
+            #'outline-minor-faces-mode)
   (diminish 'outline-minor-mode))
 
 (with-eval-after-load 'hideshow
