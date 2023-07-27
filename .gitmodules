@@ -79,6 +79,9 @@
 	load-path=.
 	load-path=extensions
 	branch = main
+[submodule "crux"]
+	path = lib/crux
+	url = https://github.com/bbatsov/crux
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
