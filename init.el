@@ -1129,8 +1129,8 @@ philo G, à partir d'un découpage de premier niveau en séances."
               compilation-scroll-output t)
 
 (global-set-key (kbd "<f8>") 'ffap)
-(global-set-key (kbd "C-c C-b C-b") 'recompile)
-(global-set-key (kbd "C-c C-b b") 'compile)
+(global-set-key (kbd "C-c C-c C-b") 'recompile)
+(global-set-key (kbd "C-c C-c b") 'compile)
 
 ;;;; Minor modes
 ;;;;; Aggressive indent
