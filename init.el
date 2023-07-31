@@ -1389,6 +1389,7 @@ force target selection, use a prefix argument."
                thblt/rust-run-target)
           (completing-read "Target: " targets)))))
   ;; Save buffers
+  (require 'rust-compile)
   (when-let (project-current (project-current))
     (mapc (lambda (buf) (with-current-buffer buf (when (buffer-file-name) (save-buffer))))
           (project-buffers project-current)))
