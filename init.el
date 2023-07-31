@@ -315,7 +315,9 @@ local."
         ("*Org Export Dispatcher*" :frame nil)
         ("*Org Select*" :frame nil)
         ("*Org Links*" :frame nil :select nil)
-        ((:custom org-src-mode) :dedicate t);; Support noselect
+        ((:custom (lambda (buffer) (with-current-buffer buffer
+                                     (bound-and-true-p
+                                      org-src-mode))) :frame t :dedicate t))
         ;; ** Common Emacs UI elements **
         ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
         ;; ** GPG prompts (for transparently editing GPG files)
