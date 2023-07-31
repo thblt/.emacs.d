@@ -51,14 +51,8 @@
       read-process-output-max (* 1024 1024)
       ;; Less noise
       native-comp-async-report-warnings-errors nil
-      ;; Numbered backups, because catastrophes happen.  The numbers
-      ;; may be a bit crazy, but better safe than sorry.
 
-      version-control t
-      kept-new-versions 500
-      kept-old-versions 500
-      delete-old-versions t
-      ;; But lockfiles are so 1990
+      ;; Lockfiles are so 1990
       create-lockfiles nil
       ;; Don't lose the contents of system clipboard when killing from Emacs:
       save-interprogram-paste-before-kill t
@@ -73,7 +67,6 @@
       browse-url-browser-function (if (eq system-type 'windows-nt) 'browse-url-default-browser 'browse-url-generic)
       ;; browse-url-generic-program "setsid"
       browse-url-generic-program "firefox")
-;; browse-url-generic-args '("xdg-open"))
 
 (load custom-file t)
 
