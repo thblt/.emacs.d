@@ -326,7 +326,8 @@ local."
         (" *Deletions*" :frame nil :popup t :select t) ; Dired deletion info
         (" *Marked Files*" :frame nil :popup t :select t)
         ;; ** Embark **
-        (" *Embark Actions*" :frame nil :align right :select nil) ; Dired deletion info
+        ;; Warning: `:frame t' on the rule below breaks embark-act.
+        (" *Embark Actions*" :frame nil :select nil)
         ;; ** Sunrise commander **
         (sunrise-mode :custom (lambda (&rest _)))
         ;; ** Proced **
