@@ -52,6 +52,8 @@
       ;; Less noise
       native-comp-async-report-warnings-errors nil
 
+      make-backup-files nil
+
       ;; Lockfiles are so 1990
       create-lockfiles nil
       ;; Don't lose the contents of system clipboard when killing from Emacs:
