@@ -82,6 +82,7 @@
 [submodule "crux"]
 	path = lib/crux
 	url = https://github.com/bbatsov/crux
+	branch = master
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
@@ -308,7 +309,7 @@
 [submodule "transient"]
 	path = lib/transient
 	url = https://github.com/magit/transient
-	branch = master
+	branch = main
 [submodule "treepy"]
 	path = lib/treepy
 	url = https://github.com/volrath/treepy.el
@@ -350,7 +351,7 @@
 [submodule "with-editor"]
 	path = lib/with-editor
 	url = https://github.com/magit/with-editor
-	branch = master
+	branch = main
 [submodule "yaml"]
 	path = lib/yaml
 	url = https://github.com/zkry/yaml.el
