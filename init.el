@@ -695,6 +695,13 @@ execute `imenu' instead."
       beginend-modes)
 (diminish 'beginend-global-mode)
 
+;;;;; crux
+
+(define-key global-map [remap kill-line] 'crux-smart-kill-line)
+(define-key global-map (kbd "C-<return>") 'crux-smart-open-line)
+(define-key global-map (kbd "C-M-<return>") 'crux-smart-open-line-above)
+(define-key global-map (kbd "C-j") 'crux-top-join-line)
+
 ;;;;; mwim
 
 (require 'haskell-interactive-mode)
