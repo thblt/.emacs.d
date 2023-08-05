@@ -1162,6 +1162,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 (require 'eglot)
 (define-key eglot-mode-map (kbd "C-c C-c C-f") 'eglot-format-buffer)
+(define-key eglot-mode-map (kbd "M-RET") 'eglot-code-actions)
 (add-hook 'rust-ts-mode-hook 'eglot-ensure)
 (add-hook 'rust-mode-hook 'eglot-ensure)
 (add-hook 'haskell-mode-hook 'eglot-ensure)
