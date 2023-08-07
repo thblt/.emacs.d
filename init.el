@@ -842,14 +842,6 @@ a lowercase letter and dropping the extension, unless KEEP-EXTENSION."
     (when buffer-file-name
       (thblt/guess-module-name-from-path buffer-file-name))))
 
-;;;; Editing text from outside: atomic-chrome
-
-(when (string= (daemonp) "server")
-  (atomic-chrome-start-server))
-
-;; Close window after editing
-(add-hook 'atomic-chrome-edit-done-hook 'save-buffers-kill-terminal)
-
 ;;;; Misc
 
 (defmacro with-maybe-region (name region-fun default-fun)

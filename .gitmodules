@@ -7,10 +7,6 @@
 	url = https://github.com/jwiegley/emacs-async
 	branch = master
 	signingkey = DE55B769FC578A14A5BE5430C144D8F4F19FE630
-[submodule "atomic-chrome"]
-	path = lib/atomic-chrome
-	url = https://github.com/alpha22jp/atomic-chrome/
-	branch = master
 [submodule "auctex"]
 	path = lib/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
