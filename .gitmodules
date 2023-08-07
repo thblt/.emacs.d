@@ -26,10 +26,6 @@
 	path = lib/auto-compile
 	url = https://github.com/emacscollective/auto-compile
 	branch = main
-[submodule "avy"]
-	path = lib/avy
-	url = https://github.com/abo-abo/avy
-	branch = master
 [submodule "backline"]
 	path = lib/backline
 	url = https://github.com/tarsius/backline
@@ -55,14 +51,6 @@
 	path = lib/closql
 	url = https://github.com/emacscollective/closql
 	branch = main
-[submodule "color-identifiers-mode"]
-	path = lib/color-identifiers-mode
-	url = https://github.com/ankurdave/color-identifiers-mode/
-	branch = master
-[submodule "company-auctex"]
-	path = lib/company-auctex
-	url = https://github.com/alexeyr/company-auctex
-	branch = master
 [submodule "compat"]
 	path = lib/compat
 	url = https://git.sr.ht/~pkal/compat
@@ -79,10 +67,6 @@
 	load-path=.
 	load-path=extensions
 	branch = main
-[submodule "crux"]
-	path = lib/crux
-	url = https://github.com/bbatsov/crux
-	branch = master
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
@@ -173,14 +157,6 @@
 	path = lib/hydra
 	url = https://github.com/abo-abo/hydra
 	branch = master
-[submodule "kurecolor"]
-	path = lib/kurecolor
-	url = https://github.com/emacsfodder/kurecolor
-	branch = master
-[submodule "llama"]
-	path = lib/llama
-	url = https://git.sr.ht/~tarsius/llama
-	branch = main
 [submodule "loccur"]
 	path = lib/loccur
 	url = https://github.com/fourier/loccur
@@ -284,17 +260,9 @@
 	path = lib/shackle
 	url = https://depp.brause.cc/shackle.git
 	branch = master
-[submodule "shrink-path"]
-	path = lib/shrink-path
-	url = https://gitlab.com/bennya/shrink-path.el/
-	branch = master
 [submodule "smartparens"]
 	path = lib/smartparens
 	url = https://github.com/Fuco1/smartparens
-	branch = master
-[submodule "spinner"]
-	path = lib/spinner
-	url = https://github.com/Malabarba/spinner.el
 	branch = master
 [submodule "super-save"]
 	path = lib/super-save

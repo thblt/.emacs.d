@@ -214,7 +214,6 @@ local."
  ;; Doom
  doom-one-brighter-comments t)
 
-
 (defun thblt/doom-one-theme () "Activate doom-one theme." (interactive) (thblt/replace-theme 'doom-one))
 (defun thblt/doom-one-light-theme () "Activate doom-one-light theme." (interactive) (thblt/replace-theme 'doom-one-light))
 (defun thblt/doom-zenburn-theme () "Activate Doom Zenburn theme." (interactive) (thblt/replace-theme 'doom-zenburn))
@@ -391,8 +390,8 @@ local."
 ;; (add-to-list 'project-switch-commands '(thblt/project-vterm "Vterm"))
 ;; Delete commands we don't use.
 (cl-delete-if
- (##member (car %)
-           '(project-find-regexp project-vc-dir project-eshell))
+ (lambda (x) (member (car x)
+                     '(project-find-regexp project-vc-dir project-eshell)))
  project-switch-commands)
 
 (define-key project-prefix-map (kbd "g") 'thblt/project-rg)
@@ -682,11 +681,6 @@ execute `imenu' instead."
 (define-key global-map (kbd "C-M-«") 'beginning-of-defun)
 (define-key global-map (kbd "C-M-»") 'end-of-defun)
 
-;;;;; avy
-
-(define-key global-map (kbd "C-:") 'avy-goto-char-timer)
-(define-key global-map (kbd "M-g f") 'avy-goto-line)
-
 ;;;;; beginend
 
 (require 'beginend)
@@ -696,13 +690,6 @@ execute `imenu' instead."
 (mapc (lambda (m) (diminish (cdr m)))
       beginend-modes)
 (diminish 'beginend-global-mode)
-
-;;;;; crux
-
-(define-key global-map [remap kill-line] 'crux-smart-kill-line)
-(define-key global-map (kbd "C-<return>") 'crux-smart-open-line)
-(define-key global-map (kbd "C-M-<return>") 'crux-smart-open-line-above)
-(define-key global-map (kbd "C-j") 'crux-top-join-line)
 
 ;;;;; mwim
 
@@ -1250,7 +1237,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (add-hook 'outline-mode-hook 'reveal-mode)
 (diminish 'reveal-mode)
-(add-hook 'org-mode-hook (## reveal-mode -1))
+(add-hook 'org-mode-hook (lambda () reveal-mode -1))
 
 ;;;;;; Outline heading generator (outshine-style)
 
