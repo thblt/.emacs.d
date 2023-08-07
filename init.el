@@ -874,12 +874,15 @@ interactively, DEFAULT-FUN otherwise ."
      (call-interactively
       (if (use-region-p) ',region-fun ',default-fun))))
 
-(define-key global-map [remap upcase-word]
+(define-key global-map [remap upcase-region]
             (with-maybe-region thblt/upcase-something upcase-region upcase-word))
-(define-key global-map [remap downcase-word]
+(define-key global-map [remap downcase-region]
             (with-maybe-region thblt/downcase-something downcase-region downcase-word))
-(define-key global-map [remap capitalize-word]
+(define-key global-map [remap capitalize-region]
             (with-maybe-region thblt/capitalize-something capitalize-region capitalize-word))
+(keymap-unset global-map "M-c")
+(keymap-unset global-map "M-l")
+(keymap-unset global-map "M-u")
 (define-key global-map [remap kill-ring-save]
             (with-maybe-region thblt/kill-ring-save kill-ring-save thblt/line-to-kill-ring))
 (define-key global-map [remap kill-region]
