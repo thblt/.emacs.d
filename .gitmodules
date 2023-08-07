@@ -253,6 +253,9 @@
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
+[submodule "posframe"]
+	path = lib/posframe
+	url = https://github.com/tumashu/posframe
 [submodule "queue"]
 	path = lib/queue
 	url = https://github.com/emacsmirror/queue
@@ -326,6 +329,10 @@
 	load-path = .
 	load-path = extensions
 	url = https://github.com/minad/vertico
+	branch = main
+[submodule "vertico-posframe"]
+	path = lib/vertico-posframe
+	url = https://github.com/tumashu/vertico-posframe
 	branch = main
 [submodule "visual-fill-column"]
 	path = lib/visual-fill-column

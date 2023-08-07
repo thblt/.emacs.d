@@ -240,7 +240,9 @@ local."
 ;;;;; Vertico + Orderless + Embark
 
 (require 'vertico)
+(require 'vertico-posframe)
 (vertico-mode)
+(vertico-posframe-mode)
 (marginalia-mode)
 
 (require 'orderless)
@@ -1176,6 +1178,8 @@ philo G, à partir d'un découpage de premier niveau en séances."
 (add-hook 'rust-ts-mode-hook 'eglot-ensure)
 (add-hook 'rust-mode-hook 'eglot-ensure)
 (add-hook 'haskell-mode-hook 'eglot-ensure)
+(add-hook 'eglot-managed-mode-hook (lambda ()
+                                     (when eglot-managed-mode-hook (eldoc-box-hover-mode))))
 
 ;;;;; Evil Nerd Commenter
 
