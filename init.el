@@ -239,9 +239,7 @@ local."
 ;;;;; Vertico + Orderless + Embark
 
 (require 'vertico)
-(require 'vertico-posframe)
 (vertico-mode)
-(vertico-posframe-mode)
 (marginalia-mode)
 
 (require 'orderless)
@@ -855,13 +853,10 @@ interactively, DEFAULT-FUN otherwise ."
      (call-interactively
       (if (use-region-p) ',region-fun ',default-fun))))
 
-(define-key global-map [remap upcase-region]
-            (with-maybe-region thblt/upcase-something upcase-region upcase-word))
-(define-key global-map [remap downcase-region]
-            (with-maybe-region thblt/downcase-something downcase-region downcase-word))
-(define-key global-map [remap capitalize-region]
-            (with-maybe-region thblt/capitalize-something capitalize-region capitalize-word))
-(keymap-unset global-map "M-c")
+(define-key global-map [remap upcase-region] 'upcase-dwim)
+(define-key global-map [remap downcase-region] 'downcase-dwim)
+(define-key global-map [remap capitalize-word] 'capitalize-dwim)
+;; (keymap-unset global-map "M-c")
 (keymap-unset global-map "M-l")
 (keymap-unset global-map "M-u")
 (define-key global-map [remap kill-ring-save]
