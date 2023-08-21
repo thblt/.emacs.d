@@ -1299,23 +1299,19 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;;; Nix
 
-(add-hook 'nix-mode-hook
-          (lambda ()
-            (thblt/outline-configure "# ")))
+;; (add-hook 'nix-mode-hook
+;;           (lambda ()
+;;             (thblt/outline-configure "# ")))
 
 ;;;;; Python
 
-(add-hook 'python-mode-hook
-          (lambda ()
-            (thblt/outline-configure "# ")))
+;; (add-hook 'python-mode-hook
+;;           (lambda ()
+;;             (thblt/outline-configure "# ")))
 
 ;;;;; Rust
 
 (require 'rust-mode)
-
-(add-hook 'rust-mode-hook
-          (lambda ()
-            (thblt/outline-configure "// ")))
 
 (with-eval-after-load 'rust-mode
   (define-key rust-mode-map [remap recompile] 'rustic-cargo-build))
