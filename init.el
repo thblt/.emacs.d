@@ -300,6 +300,13 @@ local."
                 (eq major-mode 'magit-diff-mode)
                 magit-display-buffer-noselect))))
          :select nil :frame t :dedicate t)
+        (magit-status-mode :same t)
+        ((:custom ;; Magit log select
+          ,(lambda (buffer)
+             (with-current-buffer buffer
+               (eq major-mode 'magit-log-select-mode)
+               magit-display-buffer-noselect)))
+         :select t :frame t :dedicate t)
         ((:custom ;; Support noselect
           ,(lambda (buffer)
              (with-current-buffer buffer
