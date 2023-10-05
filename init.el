@@ -38,6 +38,10 @@
   (require 'borg)
   (borg-initialize))
 
+;; So I can play with .el files in lib/ without creating a full
+;; package before I start.
+(add-to-list 'load-path borg-drones-directory)
+
 ;;;;; Paths
 
 (require 'no-littering)
@@ -194,7 +198,7 @@ local."
   (modify-all-frames-parameters '((inhibit-double-buffering . t))))
 
 (add-to-list 'custom-theme-load-path borg-drones-directory)
-(add-to-list 'load-path borg-drones-directory)
+
 (setq x-underline-at-descent-line t)
 
 (defun thblt/disable-all-themes ()
