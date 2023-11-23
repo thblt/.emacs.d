@@ -471,12 +471,12 @@ This can be used to update the digit argument from arbitrary keys."
 (define-key key-translation-map (kbd "C-M-é") (kbd "C-M-w"))
 (define-key key-translation-map (kbd "C-M-w") (kbd "C-M-é"))
 ;; Read êÊ as <> (key right of left shift)
-(define-key key-translation-map(kbd "M-ê") (kbd "M-<"))
-(define-key key-translation-map(kbd "C-ê") (kbd "C-<"))
-(define-key key-translation-map(kbd "C-M-ê") (kbd "C-M-<"))
-(define-key key-translation-map(kbd "M-Ê") (kbd "M->"))
-(define-key key-translation-map(kbd "C-Ê") (kbd "C->"))
-(define-key key-translation-map(kbd "C-M-Ê") (kbd "C-M->"))
+(define-key key-translation-map (kbd "M-ê") (kbd "M-<"))
+(define-key key-translation-map (kbd "C-ê") (kbd "C-<"))
+(define-key key-translation-map (kbd "C-M-ê") (kbd "C-M-<"))
+(define-key key-translation-map (kbd "M-Ê") (kbd "M->"))
+(define-key key-translation-map (kbd "C-Ê") (kbd "C->"))
+(define-key key-translation-map (kbd "C-M-Ê") (kbd "C-M->"))
 
 (defmacro thblt/self-insert-this (char)
   "Run `self-insert' as if it was called by pressing CHAR."
