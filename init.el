@@ -903,6 +903,10 @@ interactively, DEFAULT-FUN otherwise ."
 ;;;;; Autosave when losing focus
 
 (super-save-mode +1)
+
+(add-to-list 'super-save-predicates
+             (lambda () (not (member major-mode '(notmuch-message-mode message-mode)))))
+
 (diminish 'super-save-mode)
 
 ;;;;; What to do when saving
