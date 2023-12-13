@@ -1165,13 +1165,20 @@ philo G, à partir d'un découpage de premier niveau en séances."
 ;;;;; Eglot
 
 (require 'eglot)
-(define-key eglot-mode-map (kbd "C-c C-c C-f") 'eglot-format-buffer)
-(define-key eglot-mode-map (kbd "M-RET") 'eglot-code-actions)
 (add-hook 'rust-ts-mode-hook 'eglot-ensure)
 (add-hook 'rust-mode-hook 'eglot-ensure)
 (add-hook 'haskell-mode-hook 'eglot-ensure)
 (add-hook 'eglot-managed-mode-hook (lambda ()
-                                     (when eglot-managed-mode-hook (eldoc-box-hover-mode))))
+                                     (when eglot-managed-mode-hook
+                                       (eglot-inlay-hints-mode -1)
+                                       (eldoc-box-hover-mode -1))))
+
+(define-key eglot-mode-map (kbd "C-c C-c C-f") 'eglot-format-buffer)
+(define-key eglot-mode-map (kbd "M-RET") 'eglot-code-actions)
+(define-key eglot-mode-map (kbd "C-c C-l C-h") 'eglot-inlay-hints-mode)
+(define-key eglot-mode-map (kbd "C-c C-l C-r") 'eglot-rename)
+(define-key eglot-mode-map (kbd "C-c C-l r") 'eglot-reconnect)
+(define-key eglot-mode-map (kbd "C-c C-l C-d") 'eldoc-box-help-at-point)
 
 ;;;;; Evil Nerd Commenter
 
