@@ -44,10 +44,10 @@
 	branch = main
 [submodule "compat"]
 	path = lib/compat
-	url = https://git.sr.ht/~pkal/compat
+	url = https://github.com/emacs-compat/compat
 	build-nix-shell-packages = gnumake
 	build-step = make
-	branch = master
+	branch = main
 [submodule "consult"]
 	path = lib/consult
 	url = https://github.com/minad/consult
@@ -83,6 +83,7 @@
 [submodule "eldoc-box"]
 	path = lib/eldoc-box
 	url = https://github.com/casouri/eldoc-box
+	branch = master
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = https://github.com/skeeto/emacsql
