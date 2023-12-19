@@ -1175,6 +1175,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
 (add-hook 'eglot-managed-mode-hook (lambda ()
                                      (when eglot-managed-mode-hook
                                        (eglot-inlay-hints-mode -1)
+                                       (eldoc-mode -1)
                                        (eldoc-box-hover-mode -1))))
 
 (define-key eglot-mode-map (kbd "C-c C-c C-f") 'eglot-format-buffer)
@@ -1183,6 +1184,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
 (define-key eglot-mode-map (kbd "C-c C-l C-r") 'eglot-rename)
 (define-key eglot-mode-map (kbd "C-c C-l r") 'eglot-reconnect)
 (define-key eglot-mode-map (kbd "C-c C-l C-d") 'eldoc-box-help-at-point)
+(define-key eglot-mode-map (kbd "C-c C-l C-f") 'eglot-format-buffer)
 
 ;;;;; Evil Nerd Commenter
 
@@ -1341,6 +1343,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 ;;;;; Rust
 
 (require 'rust-mode)
+(require 'rust-ts-mode)
 
 (with-eval-after-load 'rust-mode
   (define-key rust-mode-map [remap recompile] 'rustic-cargo-build))
@@ -1408,6 +1411,11 @@ force target selection, use a prefix argument."
   (when (called-interactively-p 'any) (setq thblt/rust-run-target target)))
 
 (define-key rust-mode-map [remap rust-run] 'thblt/rust-run)
+
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
+(define-key rust-ts-mode-map (kbd "C-c C-c C-r")'thblt/rust-run)
+(define-key rust-ts-mode-map (kbd "C-c C-c C-l") 'rust-run-clippy)
+(define-key rust-ts-mode-map (kbd "C-c C-l C-f") 'rust--format-buffer)
 
 ;;;;; Bash, shell, and so on
 
