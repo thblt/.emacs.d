@@ -13,7 +13,7 @@
 (message "│       ‘888’       888  o.  )88b  888   888  d8(  888   888        888       o     88         88     ┃")
 (message "│        ‘8’       o888o 8\"\"888P’  ‘V88V\"V8P’ ‘Y888\"\"8o o888o      o888ooooood8     88         88     ┃")
 (message "┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
-
+(message "Version %s" emacs-version)
 ;;; Introduction
 
 ;; This chapter deals with the general use of Emacs, and is limited to
@@ -1415,7 +1415,7 @@ force target selection, use a prefix argument."
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 (define-key rust-ts-mode-map (kbd "C-c C-c C-r")'thblt/rust-run)
 (define-key rust-ts-mode-map (kbd "C-c C-c C-l") 'rust-run-clippy)
-(define-key rust-ts-mode-map (kbd "C-c C-l C-f") 'rust--format-buffer)
+(define-key rust-ts-mode-map (kbd "C-c C-l C-f") 'rust-format-buffer)
 
 ;;;;; Bash, shell, and so on
 
