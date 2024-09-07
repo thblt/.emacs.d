@@ -5,7 +5,7 @@
 [submodule "auctex"]
 	path = lib/auctex
 	url = https://git.savannah.gnu.org/git/auctex.git
-	branch = master
+	branch = main
 	info-path = doc
 	build-nix-shell-packages = autoconf emacs gnumake perl tetex texinfo
 	build-step = ./autogen.sh
