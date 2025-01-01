@@ -123,8 +123,8 @@ local."
 
 ;; Line numbers
 (setq-default display-line-numbers-type 'relative
-              display-line-numbers-major-tick 10
-              display-line-numbers-minor-tick 5
+              display-line-numbers-major-tick 0
+              display-line-numbers-minor-tick 0
               display-line-numbers-current-absolute t)
 
 ;; Line numbers in mode-line
