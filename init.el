@@ -1888,8 +1888,8 @@ t;;;; Regular expression builder
 (thblt/doom-one-theme)
 
 ;; Restore GC settings.
-(setq gc-cons-percentage (car (get 'gc-cons-percentage 'standard-value))
-      gc-cons-threshold (default-value 'gc-cons-threshold)
+(setq gc-cons-percentage(car (get 'gc-cons-percentage 'standard-value))
+      gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value))
       garbage-collection-messages nil)
 
 (message "Reached the end of init.el.")
