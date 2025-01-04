@@ -1601,7 +1601,7 @@ can read the branch name from .gitmodules."
       ;;; Render timestamps as invisible,
       erc-hide-timestamps t
       ;; actually disable them,
-      erc-timestamp-format-right nil
+      erc-timestamp-format nil
       ;; but show them in the minibuffer.
       erc-echo-timestamps t)
 
