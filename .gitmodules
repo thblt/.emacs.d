@@ -2,17 +2,6 @@
 	path = lib/aggressive-indent-mode
 	url = https://github.com/Malabarba/aggressive-indent-mode
 	branch = master
-[submodule "auctex"]
-	path = lib/auctex
-	url = https://git.savannah.gnu.org/git/auctex.git
-	branch = main
-	info-path = doc
-	build-nix-shell-packages = autoconf emacs gnumake perl tetex texinfo
-	build-step = ./autogen.sh
-	build-step = ./configure --without-texmf-dir
-	build-step = make
-	build-step = borg-update-autoloads
-	build-step = borg-makeinfo
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = https://github.com/emacscollective/auto-compile
@@ -38,16 +27,6 @@
 	path = lib/borg-nix-shell
 	url = https://github.com/thblt/borg-nix-shell
 	branch = master
-[submodule "closql"]
-	path = lib/closql
-	url = https://github.com/emacscollective/closql
-	branch = main
-[submodule "compat"]
-	path = lib/compat
-	url = https://github.com/emacs-compat/compat
-	build-nix-shell-packages = gnumake
-	build-step = make
-	branch = main
 [submodule "consult"]
 	path = lib/consult
 	url = https://github.com/minad/consult
@@ -58,10 +37,6 @@
 	load-path=.
 	load-path=extensions
 	branch = main
-[submodule "dash"]
-	path = lib/dash
-	url = https://github.com/magnars/dash.el
-	branch = master
 [submodule "diminish"]
 	path = lib/diminish
 	url = https://github.com/myrjola/diminish.el
@@ -84,14 +59,6 @@
 	path = lib/eldoc-box
 	url = https://github.com/casouri/eldoc-box
 	branch = master
-[submodule "emacsql"]
-	path = lib/emacsql
-	url = https://github.com/skeeto/emacsql
-	branch = main
-	build-nix-shell-packages = llvmPackages.clang.cc
-	comment = ↓ Instead of rm, try to run the binary and rm it if it fails.
-	build-step = rm sqlite/emacsql-sqlite
-	build-step = make binary
 [submodule "embark"]
 	path = lib/embark
 	url = https://github.com/oantolin/embark
@@ -116,30 +83,14 @@
 	path = lib/flyspell-correct
 	url = https://github.com/d12frosted/flyspell-correct
 	branch = master
-[submodule "forge"]
-	path = lib/forge
-	url = https://github.com/magit/forge
-	branch = main
 [submodule "free-keys"]
 	path = lib/free-keys
 	url = https://github.com/Fuco1/free-keys
 	branch = master
-[submodule "ghub"]
-	path = lib/ghub
-	url = https://github.com/magit/ghub
-	branch = main
-[submodule "git-modes"]
-	path = lib/git-modes
-	url = https://github.com/magit/git-modes
-	branch = main
 [submodule "haskell-mode"]
 	path = lib/haskell-mode
 	info-path = doc
 	url = https://github.com/haskell/haskell-mode
-	branch = master
-[submodule "ht"]
-	path = lib/ht
-	url = https://github.com/Wilfred/ht.el
 	branch = master
 [submodule "htmlize"]
 	path = lib/htmlize
@@ -152,16 +103,6 @@
 [submodule "loccur"]
 	path = lib/loccur
 	url = https://github.com/fourier/loccur
-	branch = master
-[submodule "magit"]
-	path = lib/magit
-	url = https://github.com/magit/magit
-	branch = main
-	recursive-byte-compile = true
-	info-path = Documentation
-[submodule "magit-popup"]
-	path = lib/magit-popup
-	url = https://github.com/magit/magit-popup
 	branch = master
 [submodule "marginalia"]
 	path = lib/marginalia
@@ -200,10 +141,6 @@
 	info-path = doc
 	build-nix-shell-packages = emacs git gnumake texinfo
 	build-step = make
-[submodule "org-contrib"]
-	path = lib/org-contrib
-	url = https://git.sr.ht/~bzg/org-contrib
-	branch = master
 [submodule "outline-minor-faces"]
 	path = lib/outline-minor-faces
 	url = https://github.com/tarsius/outline-minor-faces
@@ -217,10 +154,6 @@
 	build-step = borg-update-autoloads
 	build-step = borg-byte-compile
 	build-step = borg-makeinfo
-[submodule "queue"]
-	path = lib/queue
-	url = https://github.com/emacsmirror/queue
-	branch = master
 [submodule "rainbow-mode"]
 	path = lib/rainbow-mode
 	url = https://github.com/emacsmirror/rainbow-mode
@@ -228,10 +161,6 @@
 [submodule "rg"]
 	path = lib/rg
 	url = https://github.com/dajva/rg.el
-	branch = master
-[submodule "rust-mode"]
-	path = lib/rust-mode
-	url = https://github.com/rust-lang/rust-mode
 	branch = master
 [submodule "s"]
 	path = lib/s
@@ -261,10 +190,6 @@
 	path = lib/tablist
 	url = https://github.com/politza/tablist
 	branch = master
-[submodule "transient"]
-	path = lib/transient
-	url = https://github.com/magit/transient
-	branch = main
 [submodule "treepy"]
 	path = lib/treepy
 	url = https://github.com/volrath/treepy.el
@@ -285,8 +210,8 @@
 	branch = main
 [submodule "visual-fill-column"]
 	path = lib/visual-fill-column
-	url = https://github.com/joostkremers/visual-fill-column
-	branch = master
+	url = https://codeberg.org/joostkremers/visual-fill-column
+	branch = main
 [submodule "visual-regexp"]
 	path = lib/visual-regexp
 	url = https://github.com/benma/visual-regexp.el

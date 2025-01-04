@@ -936,9 +936,6 @@ interactively, DEFAULT-FUN otherwise ."
 (require 'latex)
 (require 'tex-site)
 
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
-
 (add-hook 'LaTeX-mode-hook
           (lambda ()
             (visual-line-mode t)
@@ -1007,12 +1004,6 @@ interactively, DEFAULT-FUN otherwise ."
   (sp-local-pair "“" "”"))
 
 ;;;;; Export
-
-(require 'ox-extra)
-
-(with-eval-after-load 'org
-  (when (require 'ox-extra nil t)
-    (ox-extras-activate '(ignore-headlines))))
 
 ;; (setq org-latex-pdf-process (list "latexmk -CA %f" "latexmk -f -pdfxe -xelatex %f"))
 (setq org-latex-pdf-process (list "latexmk -f -pdfxe -xelatex %f"))
@@ -1170,7 +1161,7 @@ philo G, à partir d'un découpage de premier niveau en séances."
 
 (require 'eglot)
 (add-hook 'rust-ts-mode-hook 'eglot-ensure)
-(add-hook 'rust-mode-hook 'eglot-ensure)
+(add-hook 'rust-ts-mode-hook 'eglot-ensure)
 (add-hook 'haskell-mode-hook 'eglot-ensure)
 (add-hook 'eglot-managed-mode-hook (lambda ()
                                      (when eglot-managed-mode-hook
@@ -1342,11 +1333,10 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 ;;;;; Rust
 
-(require 'rust-mode)
 (require 'rust-ts-mode)
 
-(with-eval-after-load 'rust-mode
-  (define-key rust-mode-map [remap recompile] 'rustic-cargo-build))
+(with-eval-after-load 'rust-ts-mode
+  (define-key rust-ts-mode-map [remap recompile] 'rustic-cargo-build))
 
 (defvar-local thblt/rust-run-target nil
   "The current binary target, set by `thblt/rust-run'.")
@@ -1410,7 +1400,7 @@ force target selection, use a prefix argument."
   ;; @TODO Should we still save if this is the default target?
   (when (called-interactively-p 'any) (setq thblt/rust-run-target target)))
 
-(define-key rust-mode-map [remap rust-run] 'thblt/rust-run)
+(define-key rust-ts-mode-map [remap rust-run] 'thblt/rust-run)
 
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 (define-key rust-ts-mode-map (kbd "C-c C-c C-r")'thblt/rust-run)
