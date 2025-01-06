@@ -145,15 +145,6 @@
 	path = lib/outline-minor-faces
 	url = https://github.com/tarsius/outline-minor-faces
 	branch = main
-[submodule "pdf-tools"]
-	path = lib/pdf-tools
-	url = https://github.com/vedang/pdf-tools
-	branch = master
-	build-nix-shell-disable = 1
-	build-step = "cd server; ./autobuild"
-	build-step = borg-update-autoloads
-	build-step = borg-byte-compile
-	build-step = borg-makeinfo
 [submodule "rainbow-mode"]
 	path = lib/rainbow-mode
 	url = https://github.com/emacsmirror/rainbow-mode
