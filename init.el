@@ -28,20 +28,6 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize 'no-activate)
 
-;;;;; Borg
-
-;; Borg comes second, because it comes first.  The second initialized
-;; manager will be the first in load-path.
-
-(eval-and-compile
-  (add-to-list 'load-path (expand-file-name "lib/borg" user-emacs-directory))
-  (require 'borg)
-  (borg-initialize))
-
-;; So I can play with .el files in lib/ without creating a full
-;; package before I start.
-(add-to-list 'load-path borg-drones-directory)
-
 ;;;;; Paths
 
 (require 'no-littering)
@@ -196,8 +182,6 @@ local."
            (string= (system-name) "margolotta"))
   ;; Fixes flickering on Wayland/NVidia
   (modify-all-frames-parameters '((inhibit-double-buffering . t))))
-
-(add-to-list 'custom-theme-load-path borg-drones-directory)
 
 (setq x-underline-at-descent-line t)
 
@@ -818,10 +802,6 @@ Use in `isearch-mode-end-hook'."
 
 ;;;;; Yasnippet
 
-(setq yas-snippet-dirs
-      (list (no-littering-expand-etc-file-name "snippets")
-            (borg-worktree "yasnippet-snippets/snippets")))
-
 ;; @FIXME Takes almost a second!
 (yas-global-mode)
 (diminish 'yas-minor-mode)
@@ -1416,83 +1396,6 @@ force target selection, use a prefix argument."
 ;;; Tools
 
 ;; This section deals with tools that aren't editors.
-
-;;;; Borg
-
-;;;;; Helpers
-
-(defun thblt/borg-fix-branch-declarations ()
-  "Verify that all Borg drones have a branch declared in .gitmodules."
-  (interactive)
-  (let ((errors))
-    (mapc (lambda (drone)
-            (unless (borg-get drone "branch")
-              (add-to-list 'errors drone)
-              (call-process "git" nil nil nil
-                            "config" "-f" borg-gitmodules-file "--add" (format "submodule.%s.branch" drone) "master")))
-          (borg-drones))
-    (when errors
-      (borg--sort-submodule-sections borg-gitmodules-file)
-      (message "These modules were updated: %s" errors))))
-
-(defun thblt/borg-drones-track-upstream ()
-  "Make all Borg drones track the branch they're configured to.
-
-This is probably obsolete because `git submodule update --remote'
-can read the branch name from .gitmodules."
-  (interactive)
-  (require 'magit-git)
-  (dolist (drone (borg-drones))
-    (let* ((default-directory (borg-worktree drone))
-           (current-branch (magit-git-string "branch" "--show-current"))
-           (remote-branch (borg-get drone "branch"))
-           (local-branch (or (borg-get drone "local-branch") remote-branch))
-           (enable-dir-local-variables nil))
-      (if (null remote-branch)
-          (warn "No remote branch configured for drone %s, ignoring." drone)
-        (unless (string= current-branch local-branch)
-          (message "Switching to `%s' on %s (was `%s') " local-branch drone current-branch)
-          (magit-git "branch" "-f" local-branch "HEAD")
-          (magit-git "checkout" local-branch))
-        (magit-git "branch" local-branch "--set-upstream-to" (format "%s/%s" "origin" remote-branch))))))
-
-(defun thblt/borg-check-urls ()
-  "Verify that all Borg drones remote URLs begin with http."
-  (interactive)
-  (mapc (lambda (drone)
-          (let ((url (borg-get drone "url")))
-            (unless (string-prefix-p "http" url)
-              (message "Bad remote URL on %s: %s" drone url))))
-        (borg-drones)))
-
-;;;;; Project integration
-
-(defun thblt/borg-project-update (clone &rest _)
-  "Make Project discover Borg drone CLONE."
-  (project-remember-project (borg-worktree clone)))
-
-(defun thblt/borg-project-remove (clone &rest _)
-  "Make Project discover Borg drone CLONE."
-  (project-forget-project (borg-worktree clone)))
-
-(advice-add 'borg-clone :after 'thblt/borg-project-update)
-(advice-add 'borg-assimilate :after 'thblt/borg-project-update)
-(advice-add 'borg-remove :after (lambda (&rest _) ))
-
-;;;; Divine
-
-;;(require 'divine)
-;;(divine-global-mode)
-
-(defun divine-reload ()
-  "Force reload Divine."
-  (interactive)
-  (dolist (module (list "divine-core.el" "divine-commands.el" "divine.el"))
-    (load (expand-file-name module (borg-worktree "divine")))))
-
-(defun thblt/restore-cursor-color ()
-  (set-cursor-color
-   (face-attribute 'default :foreground)))
 
 (defhydra hydra-smartparens
   ( :hint nil
