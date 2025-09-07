@@ -14,6 +14,7 @@
 (message "│        ‘8’       o888o 8\"\"888P’  ‘V88V\"V8P’ ‘Y888\"\"8o o888o      o888ooooood8     88         88     ┃")
 (message "┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
 (message "Version %s" emacs-version)
+
 ;;; Introduction
 
 ;; This chapter deals with the general use of Emacs, and is limited to
@@ -126,7 +127,7 @@ local."
 ;; Don't show the menu bar, unless this is MacOS.  Never show toolbar
 ;; or scrollbars.
 
-(unless (string= 'system-type 'darwin) (menu-bar-mode -1))
+(menu-bar-mode (if (eq system-type 'darwin) t -1))
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1)
   (scroll-bar-mode -1))
@@ -173,14 +174,17 @@ local."
                     :height (pcase (system-name)
                               ("dru" 130)
                               ("maladict" 100)
-			                        ("margolotta" 110)))
+			                        ("margolotta" 110)
+                              ;; macOS hostnames aren’t stable,
+                              ;; luckily I only own one Mac.
+			                        ((pred (lambda (_) (eq system-type 'darwin))) 130)))
 
 (set-face-attribute 'fixed-pitch nil
                     :family "Iosevka")
 
+;; Fix flickering on Wayland/NVidia
 (when (and (eq system-type 'gnu/linux)
            (string= (system-name) "margolotta"))
-  ;; Fixes flickering on Wayland/NVidia
   (modify-all-frames-parameters '((inhibit-double-buffering . t))))
 
 (setq x-underline-at-descent-line t)
@@ -267,94 +271,95 @@ local."
 
 ;;;;; Shackle
 
-(require 'magit)
-(require 'shackle)
-(require 'sway)
+(when (eq system-type 'linux)
+  (require 'magit)
+  (require 'shackle)
+  (require 'sway)
 
-(setq shackle-rules
-      `(("*Help*" :align t :select t)
-        ("*Error*" :align t :poput t :select t :frame nil)
-        ("*Backtrace*" :align t :poput t :select t :frame nil)
-        ;; ** Magit **
-        (magit-status-mode :same t)
-        ((:custom ;; Magit diffs
-          ,(lambda (buffer)
-             (with-current-buffer buffer
-               (and
-                (eq major-mode 'magit-diff-mode)
-                magit-display-buffer-noselect))))
-         :select nil :frame t :dedicate t)
-        (magit-status-mode :same t)
-        ((:custom ;; Magit log select
-          ,(lambda (buffer)
-             (with-current-buffer buffer
-               (eq major-mode 'magit-log-select-mode)
-               magit-display-buffer-noselect)))
-         :select t :frame t :dedicate t)
-        ((:custom ;; Support noselect
-          ,(lambda (buffer)
-             (with-current-buffer buffer
-               (bound-and-true-p magit-display-buffer-noselect))))
-         :select nil :frame nil :dedicate t)
-        (magit-log-mode :same t)
-        (magit-submodule-list-mode :same t)
-        (magit-revision-mode :same t)
-        (magit-process-mode :frame nil)
-        ("COMMIT_EDITMSG" :popup t :select t)
-        ("^magit.*$'" :regexp t :frame nil)
-        (" *transient*" :frame nil :popup t :select nil :align below)
-        ;; ** Forge **.
-        (forge-post-mode :dedicate t :frame t)
-        ;; ** Org **
-        ("*Org PDF LaTeX Output*" :select nil)
-        ("*Org Preview LaTeX Output*" :select nil)
-        ("*Org Export Dispatcher*" :frame nil)
-        ("*Org Select*" :frame nil)
-        ("*Org Links*" :frame nil :select nil)
-        ((:custom (lambda (buffer) (with-current-buffer buffer
-                                     (bound-and-true-p
-                                      org-src-mode))) :frame t :dedicate t))
-        ;; ** Common Emacs UI elements **
-        ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
-        ;; ** GPG prompts (for transparently editing GPG files)
-        ("*Keys*" :frame nil :popup t :select t)
-        ;; ** Dired **
-        (" *Deletions*" :frame nil :popup t :select t) ; Dired deletion info
-        (" *Marked Files*" :frame nil :popup t :select t)
-        ;; ** Embark **
-        ;; Warning: `:frame t' on the rule below breaks embark-act.
-        (" *Embark Actions*" :frame nil :select nil)
-        ;; ** Sunrise commander **
-        (sunrise-mode :custom (lambda (&rest _)))
-        ;; ** Proced **
-        ("*Proced*" :same t)
-        (" *Marked Processes*" :frame nil :popup t :select t)
-        ;; ** Byte-compiler
-        ("*Compile-Log*" :frame nil :popup t :select t)
-        ;; ** Local variables warning **
-        ("*Local Variables*" :same t :frame nil :popup t :select t)
-        ;; ** Errors **
-        ("*Backtrace*" :frame t :select t :dedicate t)
-        ;; ** M-x report-emacs-bug
-        ("*Bug Help*" :frame nil :align below)
-        ;; ** Misc **
-        (" *undo-tree*" :frame nil)
-        ("*Register Preview*" :frame nil :noselect t)
-        (flycheck-error-list-mode :select t)
-        ((compilation-mode "\\`\\*firestarter\\*\\'"
-                           "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t :frame t)
-        ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
+  (setq shackle-rules
+        `(("*Help*" :align t :select t)
+          ("*Error*" :align t :poput t :select t :frame nil)
+          ("*Backtrace*" :align t :poput t :select t :frame nil)
+          ;; ** Magit **
+          (magit-status-mode :same t)
+          ((:custom ;; Magit diffs
+            ,(lambda (buffer)
+               (with-current-buffer buffer
+                 (and
+                  (eq major-mode 'magit-diff-mode)
+                  magit-display-buffer-noselect))))
+           :select nil :frame t :dedicate t)
+          (magit-status-mode :same t)
+          ((:custom ;; Magit log select
+            ,(lambda (buffer)
+               (with-current-buffer buffer
+                 (eq major-mode 'magit-log-select-mode)
+                 magit-display-buffer-noselect)))
+           :select t :frame t :dedicate t)
+          ((:custom ;; Support noselect
+            ,(lambda (buffer)
+               (with-current-buffer buffer
+                 (bound-and-true-p magit-display-buffer-noselect))))
+           :select nil :frame nil :dedicate t)
+          (magit-log-mode :same t)
+          (magit-submodule-list-mode :same t)
+          (magit-revision-mode :same t)
+          (magit-process-mode :frame nil)
+          ("COMMIT_EDITMSG" :popup t :select t)
+          ("^magit.*$'" :regexp t :frame nil)
+          (" *transient*" :frame nil :popup t :select nil :align below)
+          ;; ** Forge **.
+          (forge-post-mode :dedicate t :frame t)
+          ;; ** Org **
+          ("*Org PDF LaTeX Output*" :select nil)
+          ("*Org Preview LaTeX Output*" :select nil)
+          ("*Org Export Dispatcher*" :frame nil)
+          ("*Org Select*" :frame nil)
+          ("*Org Links*" :frame nil :select nil)
+          ((:custom (lambda (buffer) (with-current-buffer buffer
+                                       (bound-and-true-p
+                                        org-src-mode))) :frame t :dedicate t))
+          ;; ** Common Emacs UI elements **
+          ("*Completions*" :frame nil :popup t :select t) ; Magit helper popups
+          ;; ** GPG prompts (for transparently editing GPG files)
+          ("*Keys*" :frame nil :popup t :select t)
+          ;; ** Dired **
+          (" *Deletions*" :frame nil :popup t :select t) ; Dired deletion info
+          (" *Marked Files*" :frame nil :popup t :select t)
+          ;; ** Embark **
+          ;; Warning: `:frame t' on the rule below breaks embark-act.
+          (" *Embark Actions*" :frame nil :select nil)
+          ;; ** Sunrise commander **
+          (sunrise-mode :custom (lambda (&rest _)))
+          ;; ** Proced **
+          ("*Proced*" :same t)
+          (" *Marked Processes*" :frame nil :popup t :select t)
+          ;; ** Byte-compiler
+          ("*Compile-Log*" :frame nil :popup t :select t)
+          ;; ** Local variables warning **
+          ("*Local Variables*" :same t :frame nil :popup t :select t)
+          ;; ** Errors **
+          ("*Backtrace*" :frame t :select t :dedicate t)
+          ;; ** M-x report-emacs-bug
+          ("*Bug Help*" :frame nil :align below)
+          ;; ** Misc **
+          (" *undo-tree*" :frame nil)
+          ("*Register Preview*" :frame nil :noselect t)
+          (flycheck-error-list-mode :select t)
+          ((compilation-mode "\\`\\*firestarter\\*\\'"
+                             "\\`\\*magit-diff: .*?\\'") :regexp t :noselect t :frame t)
+          ((inferior-scheme-mode "*shell*" "*eshell*") :popup t))
 
-      shackle-default-rule '(:frame t)
-      shackle-default-size 0.4
-      shackle-inhibit-window-quit-on-same-windows t
-      shackle-display-buffer-frame-function 'sway-shackle-display-buffer-frame)
+        shackle-default-rule '(:frame t)
+        shackle-default-size 0.4
+        shackle-inhibit-window-quit-on-same-windows t
+        shackle-display-buffer-frame-function 'sway-shackle-display-buffer-frame)
 
-(setq frame-title-format '("%b — GNU Emacs [" (:eval (frame-parameter (selected-frame) 'window-id)) "]"))
-(shackle-mode)
-(sway-socket-tracker-mode)
-(sway-undertaker-mode)
-(sway-x-focus-through-sway-mode)
+  (setq frame-title-format '("%b — GNU Emacs [" (:eval (frame-parameter (selected-frame) 'window-id)) "]"))
+  (shackle-mode)
+  (sway-socket-tracker-mode)
+  (sway-undertaker-mode)
+  (sway-x-focus-through-sway-mode))
 
 ;;;;; Consult
 
@@ -422,7 +427,17 @@ local."
 
 (advice-add 'magit-list-repositories :before 'thblt/magit-repos-from-project)
 
-;;;; BÉPO adjustments
+;;;; Keyboard adjustments (Mac/BÉPO)
+
+;;;; Mac
+
+(when (eq system-type 'darwin)
+  ;; We need this here for some reason.
+  (setenv "SSH_AUTH_SOCK"
+          (exec-path-from-shell-getenv "SSH_AUTH_SOCK"))
+  (exec-path-from-shell-initialize)
+  (setq ns-command-modifier 'meta
+        ns-option-modifier nil))
 
 ;; Unshifted digit argument
 
