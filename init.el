@@ -1652,7 +1652,7 @@ force target selection, use a prefix argument."
 
 ;;;; Password management (password-store)
 
-(auth-source-pass-enable)
+;; @TODO Bridge rbw
 
 ;;;; PDF Tools
 
