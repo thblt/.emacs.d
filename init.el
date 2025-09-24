@@ -59,7 +59,7 @@
       ;; [[https://askubuntu.com/questions/646631/emacs-doesnot-work-with-xdg-open][here]].
       browse-url-browser-function (if (eq system-type 'windows-nt) 'browse-url-default-browser 'browse-url-generic)
       ;; browse-url-generic-program "setsid"
-      browse-url-generic-program "firefox")
+      browse-url-generic-program (if (eq system-type 'darwin) "open" "xdg-open"))
 
 (load custom-file t)
 
@@ -433,6 +433,7 @@ local."
 
 (when (eq system-type 'darwin)
   ;; We need this here for some reason.
+  (require 'exec-path-from-shell) ;; -getenv has no autoload
   (setenv "SSH_AUTH_SOCK"
           (exec-path-from-shell-getenv "SSH_AUTH_SOCK"))
   (exec-path-from-shell-initialize)
@@ -1241,7 +1242,7 @@ Otherwise, disable bicycle-tab and reemit binding."
 
 (add-hook 'outline-mode-hook 'reveal-mode)
 (diminish 'reveal-mode)
-(add-hook 'org-mode-hook (lambda () reveal-mode -1))
+(add-hook 'org-mode-hook (lambda () (reveal-mode -1)))
 
 ;;;;;; Outline heading generator (outshine-style)
 
@@ -1542,7 +1543,9 @@ force target selection, use a prefix argument."
   (erc-tls
    :server "k9.thb.lt"
    :port 2002
-   :nick "thblt"))
+   :nick "thblt"
+   :password (format "thblt:%s"
+                     (string-trim (shell-command-to-string "rbw get znc.thb.lt")))))
 
 ;;;; Magit and Git
 
@@ -1623,8 +1626,8 @@ force target selection, use a prefix argument."
         (:name "Drafts" :query "tag:draft" :key "d")
         (:name "Lost" :query "tag:lost" :key "l"))
       notmuch-fcc-dirs
-      '(("thibault@thb.lt" . "thb.lt/Sent +thb.lt +sent -inbox ")
-        ("thibault.polge@ac-amiens.fr" . "ac-amiens/Sent +ac-amiens +sent -inbox "))
+      '(("thibault@thb.lt" . "personal/Sent +personal +sent -inbox")
+        ("thibault.polge@ac-amiens.fr" . "work/Sent +work +sent -inbox "))
       notmuch-archive-tags '("-inbox" "+archive"))
 
 (defun thblt/smtpconfig-ac-amiens.fr ()
