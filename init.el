@@ -1514,9 +1514,9 @@ force target selection, use a prefix argument."
       ;; but show them in the minibuffer.
       erc-echo-timestamps t
 
-      ;; Hide most messages (topic, topic author, user list) on join
-      ;; Values from the configure screen for this variable.
-      erc-hide-list '("324" "329" "331" "332" "333" "353")
+      ;; Hide most messages (topic author, user list) on join, except
+      ;; topic.   Values from the configure screen for this variable.
+      erc-hide-list '("324" "331" "333" "353")
       )
 
 (advice-add 'load-theme :after
