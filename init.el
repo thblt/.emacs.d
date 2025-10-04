@@ -271,7 +271,10 @@ local."
 
 ;;;;; Shackle
 
-(when (eq system-type 'linux)
+(when (and
+       (eq system-type 'gnu/linux) ;; Linux only
+       ;; except on WSL
+       (not (string-match-p "Microsoft" (shell-command-to-string "uname -a"))))
   (require 'magit)
   (require 'shackle)
   (require 'sway)
