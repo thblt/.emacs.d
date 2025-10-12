@@ -175,6 +175,7 @@ local."
                               ("dru" 130)
                               ("maladict" 100)
 			                        ("margolotta" 110)
+			                        ("nixos" 110)
                               ;; macOS hostnames aren’t stable,
                               ;; luckily I only own one Mac.
 			                        ((pred (lambda (_) (eq system-type 'darwin))) 130)))
