@@ -1423,7 +1423,7 @@ force target selection, use a prefix argument."
     :color pink
     :pre (set-cursor-color "green")
     :post (thblt/restore-cursor-color)
-    :foreign-keys warn )
+    :foreign-keys warn)
   "
  Moving^^^^                       Slurp & Barf^^   Wrapping^^            Sexp juggling^^^^               Destructive
 ------------------------------------------------------------------------------------------------------------------------
@@ -1637,7 +1637,9 @@ force target selection, use a prefix argument."
       notmuch-fcc-dirs
       '(("thibault@thb.lt" . "personal/Sent +personal +sent -inbox")
         ("thibault.polge@ac-amiens.fr" . "work/Sent +work +sent -inbox "))
-      notmuch-archive-tags '("-inbox" "+archive"))
+      notmuch-archive-tags '("-inbox" "+archive")
+      ;; @FIXME vvv Configure per-account
+      notmuch-draft-folder "personal/Drafts")
 
 (defun thblt/smtpconfig-ac-amiens.fr ()
   "SMTP settings for ac-amiens.fr."
