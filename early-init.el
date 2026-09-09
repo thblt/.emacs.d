@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (let* ((el (expand-file-name "init.el" user-emacs-directory))
        (elc (format "%sc" el)))
 
