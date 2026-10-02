@@ -431,8 +431,6 @@ local."
 
 (advice-add 'magit-list-repositories :before 'thblt/magit-repos-from-project)
 
-;;;; Keyboard adjustments (Mac/BÉPO)
-
 ;;;; Mac
 
 (when (eq system-type 'darwin)
@@ -444,64 +442,6 @@ local."
   (setq ns-command-modifier 'meta
         ns-option-modifier nil))
 
-;; Unshifted digit argument
-
-(defmacro thblt/digit-argument-with-value (char)
-  "Simulate `digit-argument' as if it was called by pressing CHAR.
-
-This can be used to update the digit argument from arbitrary keys."
-  `(lambda () (interactive)
-     (prefix-command-preserve-state)
-     (let ((last-command-event ,char))
-       (call-interactively 'digit-argument))))
-
-(define-key universal-argument-map (kbd "\"") (thblt/digit-argument-with-value ?1))
-(define-key universal-argument-map (kbd "«") (thblt/digit-argument-with-value ?2))
-(define-key universal-argument-map (kbd "»") (thblt/digit-argument-with-value ?3))
-(define-key universal-argument-map (kbd "(") (thblt/digit-argument-with-value ?4))
-(define-key universal-argument-map (kbd ")") (thblt/digit-argument-with-value ?5))
-(define-key universal-argument-map (kbd "@") (thblt/digit-argument-with-value ?6))
-(define-key universal-argument-map (kbd "+") (thblt/digit-argument-with-value ?7))
-(define-key universal-argument-map (kbd "-") (thblt/digit-argument-with-value ?8))
-(define-key universal-argument-map (kbd "/") (thblt/digit-argument-with-value ?9))
-(define-key universal-argument-map (kbd "*") (thblt/digit-argument-with-value ?0))
-
-;; ;; Some key translations
-;; ;; Swap é and w
-;; (define-key key-translation-map (kbd "M-é") (kbd "M-w"))
-;; (define-key key-translation-map (kbd "M-w") (kbd "M-é"))
-;; (define-key key-translation-map (kbd "C-é") (kbd "C-w"))
-;; (define-key key-translation-map (kbd "C-w") (kbd "C-é"))
-;; (define-key key-translation-map (kbd "C-M-é") (kbd "C-M-w"))
-;; (define-key key-translation-map (kbd "C-M-w") (kbd "C-M-é"))
-;; ;; Read êÊ as <> (key right of left shift)
-;; (define-key key-translation-map (kbd "M-ê") (kbd "M-<"))
-;; (define-key key-translation-map (kbd "C-ê") (kbd "C-<"))
-;; (define-key key-translation-map (kbd "C-M-ê") (kbd "C-M-<"))
-;; (define-key key-translation-map (kbd "M-Ê") (kbd "M->"))
-;; (define-key key-translation-map (kbd "C-Ê") (kbd "C->"))
-;; (define-key key-translation-map (kbd "C-M-Ê") (kbd "C-M->"))
-
-(defmacro thblt/self-insert-this (char)
-  "Run `self-insert' as if it was called by pressing CHAR."
-  `(lambda () (interactive)
-     (let ((last-command-event ,char))
-       (call-interactively 'self-insert-command))))
-
-(defvar thblt/normalize-spaces-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd " ") (thblt/self-insert-this ? ))
-    (define-key map (kbd " ") (thblt/self-insert-this ?_))
-    map))
-
-;; Fuck BÉPO's shift-space in prog-mode
-(define-minor-mode thblt/normalize-spaces-mode
-  "Map various non-breaking spaces to a regular space."
-  :lighter " spaces"
-  :keymap thblt/normalize-spaces-mode-map)
-
-(add-hook 'prog-mode-hook 'thblt/normalize-spaces-mode)
-(diminish 'thblt/normalize-spaces-mode)
 
 ;;;; The editor appearance hydra
 
