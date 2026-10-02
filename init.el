@@ -435,13 +435,12 @@ local."
 
 (when (eq system-type 'darwin)
   ;; We need this here for some reason.
-  (require 'exec-path-from-shell) ;; -getenv has no autoload
-  (setenv "SSH_AUTH_SOCK"
-          (exec-path-from-shell-getenv "SSH_AUTH_SOCK"))
   (exec-path-from-shell-initialize)
   (setq ns-command-modifier 'meta
         ns-option-modifier nil))
 
+(unless (getenv "SSH_AUTH_SOCK")
+  (setenv "SSH_AUTH_SOCK" "/run/user/1000/proton-pass-agent"))
 
 ;;;; The editor appearance hydra
 
